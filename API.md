@@ -119,6 +119,7 @@ Tampilan teks untuk pengguna (misalnya `transfer_bank` menjadi "Transfer Bank") 
 | 8 | `api/admin/pesanan.php` | GET | Daftar dan detail pesanan | Ya | C |
 | 9 | `api/admin/ubah-status.php` | POST | Ubah status pesanan atau pembayaran | Ya | C |
 | 10 | `api/admin/paket.php` | POST | Tambah, ubah, hapus paket | Ya | C |
+| 11 | `api/kategori/list.php` | GET | Daftar kategori | Tidak | A |
 
 ---
 
@@ -339,6 +340,28 @@ Menyimpan data pembayaran beserta file bukti. Mengirim file, jadi memakai **`For
 | `jenis` | Ya | teks | `dp` atau `lunas` |
 | `jumlah` | Ya | angka | Lebih dari 0 dan tidak melebihi `total_harga` pesanan |
 | `bukti` | Ya | file | JPG, PNG, atau PDF, maksimal 2 MB |
+
+### 4.6 GET `api/kategori/list.php`
+
+**Pemilik:** A | **Dipakai oleh:** tab kategori di Katalog, dropdown kategori di form Kelola Paket (admin)
+
+Mengambil semua kategori, urut berdasarkan `id`.
+
+**Parameter:** tidak ada.
+
+**Respons sukses (200):**
+
+{
+  "status": "success",
+  "message": "OK",
+  "data": [
+    { "id": 1, "nama_kategori": "Wedding" },
+    { "id": 2, "nama_kategori": "Wisuda" },
+    { "id": 3, "nama_kategori": "Event" }
+  ]
+}
+
+**Kemungkinan error:** 405, 500.
 
 **Aturan penyimpanan file:**
 
