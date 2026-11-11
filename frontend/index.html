@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>For Us Picture. | Foto &amp; Video untuk Cerita yang Ingin Kamu Kenang</title>
+  <meta name="description" content="Jasa foto dan video untuk pernikahan, wisuda, produk, dan acara.">
+
+  <!-- Font (Outfit untuk judul, Plus Jakarta Sans untuk teks isi) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS: style.css selalu paling pertama -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<!-- data-halaman dipakai js/komponen.js untuk menandai menu aktif di navbar -->
+<body data-halaman="beranda">
+
+  <!-- NAVBAR (dimuat dari komponen/navbar.html oleh js/komponen.js) -->
+  <div data-muat="komponen/navbar.html"></div>
+
+  <main>
+
+    <!-- ==================================================================
+         1. HERO
+         [UBAH] Semua teks di bagian ini bisa disalin ulang dari Figma.
+         ================================================================== -->
+    <section class="hero">
+      <div class="container">
+
+        <!-- Catatan: di Figma, desktop menulis "Banjarmasin" dan mobile "Bandung". Samakan. -->
+        <p class="eyebrow">Fotografi &amp; Videografi · Banjarmasin</p>
+
+        <div class="hero-kepala">
+          <h1>Momen berlalu.<br>Cerita tinggal.</h1>
+
+          <div>
+            <p class="lead">Dari janji seumur hidup hingga langkah pertama sebuah mimpi. Kami mengabadikannya, dengan rasa.</p>
+            <div class="hero-tombol">
+              <a href="katalog.html" class="btn btn-primary">Temukan Paket <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+              <a href="#karya" class="btn btn-secondary">Lihat Karya <span class="ikon ikon-bawah" aria-hidden="true"></span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gambar utama. [UBAH] ganti src dengan foto pilihan (simpan di frontend/assets/img/) -->
+        <div class="hero-gambar">
+          <img src="assets/img/hero.jpg" alt="Pasangan pengantin tersenyum di tengah hutan">
+          <div class="hero-keterangan">
+            <p class="eyebrow">Kisah pilihan / 2026</p>
+            <h3>Tentang kita, selamanya.</h3>
+            <p>Nadia &amp; Rizky · Banjarmasin</p>
+          </div>
+          <span class="hero-penanda">01 / 04</span>
+        </div>
+
+        <div class="hero-statistik">
+          <span>Lebih dari 250 cerita telah kami abadikan.</span>
+          <span><span class="bintang">★★★★★</span> 4,9/5 dari 120+ ulasan pelanggan</span>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         2. KATEGORI
+         Nanti isi kartu bisa dibuat dari api/kategori/list.php.
+         Untuk sekarang ditulis langsung supaya tampilannya bisa dicek.
+         ================================================================== -->
+    <section class="section" id="kategori">
+      <div class="container">
+
+        <div class="section-kepala">
+          <div>
+            <span class="eyebrow">01 / Untuk setiap bab hidup</span>
+            <h2>Apa yang ingin kamu kenang?</h2>
+          </div>
+          <a href="katalog.html" class="btn btn-secondary">Semua Paket <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+        </div>
+
+        <div class="grid grid-4">
+
+          <!-- Kartu kategori. [UBAH] teks dan harga "Mulai Rp..." sesuai paket termurah -->
+          <a href="katalog.html?kategori=1" class="kartu-kategori">
+            <img src="assets/img/kategori-wedding.jpg" alt="Wedding">
+            <div class="kartu-kategori-judul">
+              <h3>Wedding</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <p>Janji, tawa, dan segala rasa.</p>
+            <span class="mulai">Mulai Rp4.500.000</span>
+          </a>
+
+          <a href="katalog.html?kategori=2" class="kartu-kategori">
+            <img src="assets/img/kategori-wisuda.jpg" alt="Wisuda">
+            <div class="kartu-kategori-judul">
+              <h3>Wisuda</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <p>Satu pencapaian. Banyak cerita.</p>
+            <span class="mulai">Mulai Rp750.000</span>
+          </a>
+
+          <a href="katalog.html?kategori=3" class="kartu-kategori">
+            <img src="assets/img/kategori-produk.jpg" alt="Produk">
+            <div class="kartu-kategori-judul">
+              <h3>Produk</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <p>Detail yang membuatnya berbeda.</p>
+            <span class="mulai">Mulai Rp1.200.000</span>
+          </a>
+
+          <a href="katalog.html?kategori=4" class="kartu-kategori">
+            <img src="assets/img/kategori-event.jpg" alt="Event">
+            <div class="kartu-kategori-judul">
+              <h3>Event</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <p>Energi acara, terasa kembali.</p>
+            <span class="mulai">Mulai Rp2.000.000</span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         3. PORTOFOLIO (latar hijau muda)
+         ================================================================== -->
+    <section class="section section-tint" id="karya">
+      <div class="container">
+
+        <div class="section-kepala">
+          <div>
+            <span class="eyebrow">02 / Dari balik lensa</span>
+            <h2>Bukan sekadar gambar.<br>Ada cerita di dalamnya.</h2>
+          </div>
+          <div style="max-width:360px;">
+            <p class="lead" style="font-size:16px;">Rasa yang tulus, cahaya yang natural, dan momen yang tidak dibuat-buat.</p>
+            <a href="katalog.html" class="btn btn-secondary" style="margin-top:16px;">Jelajahi Portofolio <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+          </div>
+        </div>
+
+        <!-- Enam foto. [UBAH] ganti judul dan label sesuai Figma -->
+        <div class="grid grid-3" style="row-gap:40px;">
+          <article class="galeri-item">
+            <img src="assets/img/galeri-1.jpg" alt="Nadia dan Ruby">
+            <span class="tag">Wedding</span>
+            <h4>Nadia &amp; Ruby</h4>
+          </article>
+          <article class="galeri-item">
+            <img src="assets/img/galeri-2.jpg" alt="Langkah baru, Alya">
+            <span class="tag">Wisuda</span>
+            <h4>Langkah baru, Alya</h4>
+          </article>
+          <article class="galeri-item">
+            <img src="assets/img/galeri-3.jpg" alt="Ruang untuk bertumbuh">
+            <span class="tag">Produk</span>
+            <h4>Ruang untuk bertumbuh</h4>
+          </article>
+          <article class="galeri-item">
+            <img src="assets/img/galeri-4.jpg" alt="Sebuah janji, Dinda dan Fajar">
+            <span class="tag">Wedding</span>
+            <h4>Sebuah janji, Dinda &amp; Fajar</h4>
+          </article>
+          <article class="galeri-item">
+            <img src="assets/img/galeri-5.jpg" alt="Malam penuh pertemuan">
+            <span class="tag">Event</span>
+            <h4>Malam penuh pertemuan</h4>
+          </article>
+          <article class="galeri-item">
+            <img src="assets/img/galeri-6.jpg" alt="Sampai di sini, bersama">
+            <span class="tag">Wedding</span>
+            <h4>Sampai di sini, bersama</h4>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         4. KEUNGGULAN
+         [UBAH] Teks tiga poin di kanan: salin ulang dari Figma jika berbeda.
+         ================================================================== -->
+    <section class="section">
+      <div class="container">
+        <div class="keunggulan">
+
+          <div>
+            <span class="eyebrow">03 / Mengapa kami</span>
+            <h2 style="margin-top:16px;">Kamu menikmati momen.<br>Kami menjaga ceritanya.</h2>
+            <img src="assets/img/keunggulan.jpg" alt="Fotografer bekerja bersama pasangan pengantin">
+          </div>
+
+          <ul class="keunggulan-daftar">
+            <li>
+              <span class="keunggulan-ikon"><span class="ikon ikon-centang" aria-hidden="true"></span></span>
+              <div>
+                <h4>Dekat, bukan dibuat-buat</h4>
+                <p>Kami hadir dengan tenang, sehingga ekspresi yang kamu lihat di foto adalah yang benar-benar terjadi.</p>
+              </div>
+            </li>
+            <li>
+              <span class="keunggulan-ikon"><span class="ikon ikon-centang" aria-hidden="true"></span></span>
+              <div>
+                <h4>Sinematik, tetap autentik</h4>
+                <p>Pencahayaan natural dan warna yang hangat, tanpa mengubah suasana aslinya.</p>
+              </div>
+            </li>
+            <li>
+              <span class="keunggulan-ikon"><span class="ikon ikon-centang" aria-hidden="true"></span></span>
+              <div>
+                <h4>Profesional dari awal</h4>
+                <p>Dari pemesanan sampai hasil akhir, semuanya jelas, tepat waktu, dan mudah dihubungi.</p>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         5. EMPAT LANGKAH (latar hijau tua)
+         ================================================================== -->
+    <section class="section section-gelap">
+      <div class="container">
+
+        <div class="section-kepala">
+          <div>
+            <span class="eyebrow" style="color:var(--warna-primer);">04 / Empat langkah</span>
+            <h2>Empat langkah menuju<br>cerita indah.</h2>
+          </div>
+        </div>
+
+        <div class="langkah">
+          <div>
+            <div class="langkah-nomor">01</div>
+            <h4>Pilih layanan</h4>
+            <p>Telusuri katalog dan pilih paket yang paling sesuai dengan acaramu.</p>
+          </div>
+          <div>
+            <div class="langkah-nomor">02</div>
+            <h4>Ceritakan acaramu</h4>
+            <p>Isi tanggal, lokasi, dan catatan khusus agar kami tahu apa yang kamu butuhkan.</p>
+          </div>
+          <div>
+            <div class="langkah-nomor">03</div>
+            <h4>Lakukan pembayaran</h4>
+            <p>Bayar DP atau pelunasan, lalu unggah bukti pembayaranmu.</p>
+          </div>
+          <div>
+            <div class="langkah-nomor">04</div>
+            <h4>Kami siap mengabadikan</h4>
+            <p>Admin menghubungimu lewat WhatsApp, dan kami datang di hari-H.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         6. TESTIMONI
+         ================================================================== -->
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-2" style="align-items:center; gap:64px;">
+
+          <div>
+            <span class="eyebrow">05 / Kata mereka</span>
+            <h2 style="margin-top:16px;">Yang tinggal,<br>bukan cuma foto.</h2>
+            <p style="margin-top:24px;"><span class="bintang">★★★★★</span> &nbsp;4,9/5 dari 120+ ulasan</p>
+          </div>
+
+          <figure class="kutipan">
+            <blockquote>“Kami yang biasanya kaku di depan kamera nyaman banget. Setiap hasilnya terasa seperti kami sedang mengulang hari itu lagi.”</blockquote>
+            <figcaption class="kutipan-penulis">
+              <img class="avatar" src="assets/img/avatar-dinda-fajar.jpg" alt="">
+              <div>
+                <strong>Dinda &amp; Fajar</strong>
+                <span>Wedding · Banjarmasin</span>
+              </div>
+            </figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         7. BLOK AJAKAN (latar hijau muda)
+         ================================================================== -->
+    <section class="section-primer section-pendek">
+      <div class="container">
+        <div class="ajakan">
+          <div>
+            <span class="eyebrow" style="color:var(--warna-gelap);">Mari mulai bercerita</span>
+            <h2 style="margin-top:8px;">Momenmu layak dikenang.</h2>
+          </div>
+          <a href="katalog.html" class="btn btn-gelap">Pesan Sekarang <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER (dimuat dari komponen/footer.html) -->
+  <div data-muat="komponen/footer.html"></div>
+
+  <!-- ===================== JAVASCRIPT =====================
+       Aktifkan baris di bawah satu per satu setelah filenya dibuat. -->
+  <!-- <script src="js/config.js" defer></script> -->
+  <!-- <script src="js/util.js" defer></script> -->
+  <!-- <script src="js/api.js" defer></script> -->
+  <!-- <script src="js/ui.js" defer></script> -->
+  <script src="js/komponen.js" defer></script>
+  <!-- <script src="js/beranda.js" defer></script> -->
+</body>
+</html>

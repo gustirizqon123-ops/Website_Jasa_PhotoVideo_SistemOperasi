@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Komponen | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Gaya khusus halaman uji ini saja (tidak dipakai halaman lain) -->
+  <style>
+    .contoh-judul { margin-bottom: 24px; }
+    .contoh-baris { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .swatch { width: 140px; }
+    .swatch-warna { height: 72px; border-radius: 12px; border: 1px solid var(--warna-garis); }
+    .swatch p { margin-top: 8px; font-size: 12px; line-height: 1.4; }
+    .swatch strong { display: block; color: var(--warna-gelap); font-size: 13px; }
+  </style>
+</head>
+
+<body data-halaman="komponen">
+
+  <div data-muat="komponen/navbar.html"></div>
+
+  <main>
+
+    <!-- ===== 1. WARNA =====
+         Bandingkan dengan Figma. Jika berbeda, ubah di css/style.css bagian 1 (Variabel). -->
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow">01 / Warna</span>
+        <h2 class="contoh-judul" style="margin-top:12px;">Palet</h2>
+        <div class="contoh-baris" style="align-items:flex-start;">
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-primer)"></div><p><strong>primer</strong>#95D5B2</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-aksen)"></div><p><strong>aksen</strong>#40916C</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-gelap)"></div><p><strong>gelap</strong>#183B30</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-gelap-2)"></div><p><strong>gelap-2</strong>#12382C</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-teks-redup)"></div><p><strong>teks redup</strong>#6A7770</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-latar)"></div><p><strong>latar</strong>#FAFBF8</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-tint)"></div><p><strong>tint</strong>#EDF5EF</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-garis)"></div><p><strong>garis</strong>#DEE6DF</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-error)"></div><p><strong>error</strong>#C64444</p></div>
+          <div class="swatch"><div class="swatch-warna" style="background:var(--warna-menunggu-bg)"></div><p><strong>menunggu</strong>#FFF4D6</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. TIPOGRAFI ===== -->
+    <section class="section section-tint">
+      <div class="container">
+        <span class="eyebrow">02 / Tipografi</span>
+        <h1 style="margin-block:16px;">Momen berlalu.<br>Cerita tinggal.</h1>
+        <h2>Apa yang ingin kamu kenang?</h2>
+        <h3 style="margin-top:16px;">Wedding Signature</h3>
+        <h4 style="margin-top:16px;">Judul kecil (H4)</h4>
+        <p class="lead" style="margin-top:16px; max-width:560px;">Paragraf pengantar (.lead) memakai Plus Jakarta Sans, dipakai di bawah judul halaman.</p>
+        <p style="margin-top:12px; max-width:560px;">Paragraf biasa untuk teks isi. Periksa ukuran, jarak baris, dan warnanya dengan Figma.</p>
+        <p class="teks-redup teks-kecil" style="margin-top:12px;">Teks redup berukuran kecil, dipakai untuk keterangan.</p>
+        <p class="harga" style="margin-top:16px;">Rp6.500.000 <small>/ acara</small></p>
+      </div>
+    </section>
+
+    <!-- ===== 3. TOMBOL ===== -->
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow">03 / Tombol</span>
+        <h2 class="contoh-judul" style="margin-top:12px;">Tombol</h2>
+        <div class="contoh-baris">
+          <a href="#" class="btn btn-primary">Temukan Paket <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+          <a href="#" class="btn btn-secondary">Lihat Karya <span class="ikon ikon-bawah" aria-hidden="true"></span></a>
+          <a href="#" class="btn btn-aksen">Konfirmasi via WhatsApp</a>
+          <a href="#" class="btn btn-gelap">Pesan Sekarang <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+          <button type="button" class="btn btn-teks">Lihat detail</button>
+          <button type="button" class="btn btn-primary" disabled>Disabled</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. FORM ===== -->
+    <section class="section section-tint">
+      <div class="container">
+        <span class="eyebrow">04 / Form</span>
+        <h2 class="contoh-judul" style="margin-top:12px;">Input</h2>
+        <div class="grid grid-2" style="max-width:760px;">
+          <div>
+            <label class="label" for="nama">Nama lengkap</label>
+            <input class="input" id="nama" type="text" placeholder="Nama kamu">
+          </div>
+          <div>
+            <label class="label" for="wa">Nomor WhatsApp</label>
+            <input class="input input-error" id="wa" type="text" value="0812">
+            <p class="pesan-error">Nomor WhatsApp tidak valid.</p>
+          </div>
+          <div>
+            <label class="label" for="tgl">Tanggal acara</label>
+            <input class="input" id="tgl" type="date">
+            <p class="bantuan">Pilih tanggal acara.</p>
+          </div>
+          <div>
+            <label class="label" for="cat">Catatan tambahan</label>
+            <textarea class="textarea" id="cat" placeholder="Tema, kebutuhan khusus..."></textarea>
+          </div>
+        </div>
+        <div class="alert alert-error" style="margin-top:24px; max-width:760px;">Ada kolom yang belum benar. Periksa kembali.</div>
+      </div>
+    </section>
+
+    <!-- ===== 5. TAB DAN KARTU ===== -->
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow">05 / Tab dan kartu</span>
+        <h2 class="contoh-judul" style="margin-top:12px;">Katalog</h2>
+
+        <div class="tabs" id="tabs">
+          <button type="button" class="tab aktif">Wedding</button>
+          <button type="button" class="tab">Wisuda</button>
+          <button type="button" class="tab">Produk</button>
+          <button type="button" class="tab">Event</button>
+        </div>
+
+        <div class="grid grid-3" style="margin-top:32px;">
+          <article class="card card-paket">
+            <img class="card-paket-gambar" src="../uploads/paket/wedding-signature.jpg" alt="">
+            <div class="card-paket-isi">
+              <span class="badge-label">Pilihan favorit</span>
+              <div>
+                <h3>Wedding Signature</h3>
+                <p class="teks-redup teks-kecil" style="margin-top:4px;">8 jam dokumentasi</p>
+              </div>
+              <p class="harga">Rp6.500.000 <small>/ acara</small></p>
+              <hr class="garis">
+              <ul class="daftar-centang">
+                <li>2 fotografer + 1 videografer</li>
+                <li>500+ foto edit + album cetak</li>
+              </ul>
+              <div class="card-paket-aksi">
+                <a href="#" class="btn btn-primary btn-block">Pesan <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+                <button type="button" class="btn btn-teks btn-block">Lihat detail</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card card-paket terpilih">
+            <div class="card-paket-gambar"></div>
+            <div class="card-paket-isi">
+              <span class="badge-label">Kartu terpilih</span>
+              <h3>Keadaan terpilih / hover</h3>
+              <p class="harga">Rp4.500.000 <small>/ acara</small></p>
+              <div class="card-paket-aksi">
+                <button type="button" class="btn btn-secondary btn-block" id="bukaModal">Buka modal</button>
+              </div>
+            </div>
+          </article>
+
+          <a href="#" class="kartu-kategori">
+            <div style="height:280px; border-radius:16px; background:var(--warna-tint);"></div>
+            <div class="kartu-kategori-judul">
+              <h3>Wedding</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <p>Janji, tawa, dan segala rasa.</p>
+            <span class="mulai">Mulai Rp4.500.000</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 6. BADGE, TOAST ===== -->
+    <section class="section section-tint">
+      <div class="container">
+        <span class="eyebrow">06 / Badge dan notifikasi</span>
+        <h2 class="contoh-judul" style="margin-top:12px;">Badge status</h2>
+        <div class="contoh-baris">
+          <span class="badge badge-menunggu">Menunggu</span>
+          <span class="badge badge-dikonfirmasi">Dikonfirmasi</span>
+          <span class="badge badge-selesai">Selesai</span>
+          <span class="badge badge-batal">Batal</span>
+          <span class="badge badge-terverifikasi">Terverifikasi</span>
+          <span class="badge badge-ditolak">Ditolak</span>
+        </div>
+        <div class="contoh-baris" style="margin-top:24px;">
+          <button type="button" class="btn btn-secondary" id="tampilToast">Toast sukses</button>
+          <button type="button" class="btn btn-secondary" id="tampilToastError">Toast error</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal contoh -->
+  <div class="modal-lapisan" id="modal">
+    <div class="modal">
+      <button type="button" class="modal-tutup" id="tutupModal" aria-label="Tutup">&times;</button>
+      <div class="modal-isi">
+        <span class="eyebrow">Detail paket</span>
+        <h2 style="margin-top:8px;">Wedding Signature</h2>
+        <p style="margin-block:16px;">Contoh isi modal.</p>
+        <button type="button" class="btn btn-primary btn-block">Pesan Wedding Signature</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wadah" id="toastWadah"></div>
+
+  <div data-muat="komponen/footer.html"></div>
+
+  <script src="js/komponen.js" defer></script>
+
+  <!-- SEMENTARA: perilaku demo untuk halaman uji ini saja -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('#tabs .tab').forEach(function (t) {
+        t.addEventListener('click', function () {
+          document.querySelectorAll('#tabs .tab').forEach(function (x) { x.classList.remove('aktif'); });
+          t.classList.add('aktif');
+        });
+      });
+
+      var modal = document.getElementById('modal');
+      document.getElementById('bukaModal').addEventListener('click', function () { modal.classList.add('tampil'); });
+      document.getElementById('tutupModal').addEventListener('click', function () { modal.classList.remove('tampil'); });
+      modal.addEventListener('click', function (e) { if (e.target === modal) { modal.classList.remove('tampil'); } });
+
+      function toast(pesan, jenis) {
+        var el = document.createElement('div');
+        el.className = 'toast ' + jenis;
+        el.textContent = pesan;
+        document.getElementById('toastWadah').appendChild(el);
+        setTimeout(function () { el.remove(); }, 3000);
+      }
+      document.getElementById('tampilToast').addEventListener('click', function () { toast('Pesanan berhasil dibuat', 'toast-sukses'); });
+      document.getElementById('tampilToastError').addEventListener('click', function () { toast('Tanggal sudah dipesan', 'toast-error'); });
+    });
+  </script>
+</body>
+</html>
