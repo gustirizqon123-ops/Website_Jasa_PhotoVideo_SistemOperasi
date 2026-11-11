@@ -111,7 +111,7 @@ Tampilan teks untuk pengguna (misalnya `transfer_bank` menjadi "Transfer Bank") 
 |---|---|---|---|---|---|
 | 1 | `api/paket/list.php` | GET | Daftar paket | Tidak | A |
 | 2 | `api/paket/detail.php` | GET | Detail satu paket | Tidak | A |
-| 3 | `api/pesanan/status.php` | GET | Cek status pesanan (**belum diimplementasi**) | Tidak | A |
+| 3 | `api/pesanan/status.php` | GET | Cek status pesanan | Tidak | A |
 | 4 | `api/pesanan/buat.php` | POST | Simpan pesanan baru | Tidak | B |
 | 5 | `api/pembayaran/upload.php` | POST | Kirim bukti pembayaran | Tidak | B |
 | 6 | `api/admin/login.php` | POST | Login admin | Tidak | C |
@@ -206,7 +206,9 @@ Jika tidak ada paket, `data` berupa array kosong `[]` (tetap `success`).
 
 ### 4.3 GET `api/pesanan/status.php`
 
-> **Status: belum diimplementasi.** File `api/pesanan/status.php` belum ada di repo dan belum ada halaman frontend yang memanggilnya. Bagian ini adalah spesifikasi rencana, bukan perilaku yang sudah berjalan.
+> **Status: backend sudah diimplementasi** (`api/pesanan/status.php`). Halaman frontend Cek Status belum ada.
+
+**Catatan implementasi:** `no_wa` dicocokkan dalam dua bentuk, jadi `0812...` dan `62812...` dianggap nomor yang sama. `kode` tidak membedakan huruf besar/kecil. `jam` dikembalikan dalam format `HH:MM`.
 
 **Pemilik:** A | **Dipakai oleh:** halaman Cek Status Pesanan
 
@@ -752,3 +754,4 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 |---|---|---|
 | | Draf awal | |
 | 2026-11-11 | `api/pesanan/status.php` (4.3) ditandai belum diimplementasi; spesifikasi tidak diubah | |
+| 2026-11-11 | `api/pesanan/status.php` (4.3) selesai diimplementasi; ditambah catatan pencocokan `no_wa` (08/62), `kode` tidak peka huruf besar/kecil, dan format `jam` | |
