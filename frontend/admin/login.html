@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Admin | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- [UBAH] path naik satu folder (../) karena file ini ada di frontend/admin/,
+       bukan di frontend/ langsung seperti index.html/katalog.html -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<!-- Halaman login TIDAK memakai data-halaman="admin-..." dan TIDAK ada
+     data-muat sidebar -- halaman ini sendirian, tanpa sidebar/menu,
+     sesuai catatan di admin.css bagian 8. -->
+<body>
+
+  <div class="admin-login-bungkus">
+    <form class="admin-login-kartu" id="formLoginAdmin" novalidate>
+
+      <div class="admin-login-logo">
+        <div class="admin-sidebar-logo" style="color: var(--warna-gelap);">FP</div>
+      </div>
+
+      <h1 class="admin-login-judul">Masuk sebagai Admin</h1>
+      <p class="admin-login-subjudul">For Us Picture. — Panel Administrasi</p>
+
+      <!-- Kotak error umum, disembunyikan secara default.
+           NANTI: login.js menampilkan ini kalau username/password salah. -->
+      <div class="alert alert-error" id="pesanErrorLogin" style="display:none; margin-bottom: var(--jarak-3);">
+        Username atau password salah.
+      </div>
+
+      <!-- [UBAH] halaman ini TIDAK memuat css/form.css (itu punya B untuk
+           pemesanan/pembayaran), jadi jarak antar field pakai style inline
+           saja, bukan kelas .form-field -->
+      <div style="margin-bottom: var(--jarak-3);">
+        <label class="label" for="username">Username</label>
+        <input class="input" type="text" id="username" name="username" placeholder="Masukkan username" autocomplete="username" required>
+      </div>
+
+      <div style="margin-bottom: var(--jarak-4);">
+        <label class="label" for="password">Password</label>
+        <input class="input" type="password" id="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="tombolMasuk">
+        Masuk
+      </button>
+
+      <p class="teks-tengah teks-kecil" style="margin-top: var(--jarak-3);">
+        <a href="../index.html" class="btn-teks">Kembali ke Beranda</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <!-- [UBAH] path naik satu folder (../js/) karena file ini ada di frontend/admin/ -->
+  <script src="../js/config.js" defer></script>
+  <script src="../js/util.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/admin/login.js" defer></script>
+
+</body>
+</html>
