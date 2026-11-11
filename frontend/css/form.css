@@ -1,0 +1,436 @@
+/* ==========================================================================
+   FOR US PICTURE. - CSS HALAMAN PEMESANAN (milik B)
+   Letak file : frontend/css/form.css
+   Dimuat di  : pemesanan.html, pembayaran.html, konfirmasi.html
+                SETELAH style.css (style.css dulu, baru form.css)
+
+   ATURAN: semua kelas baru di file ini diawali salah satu dari:
+     form-     -> khusus halaman Pemesanan
+     bayar-    -> khusus halaman Pembayaran
+     upload-   -> kotak unggah bukti bayar (dipakai di halaman Pembayaran)
+     selesai-  -> khusus halaman Konfirmasi
+   supaya tidak bertabrakan dengan kelas A (umum) atau kelas C (admin-).
+   Warna, font, jarak TETAP pakai var(--...) dari style.css, jangan menulis
+   kode warna baru di sini.
+
+   CARA MEMBACA FILE INI
+   - Cari tulisan  [UBAH]   untuk nilai yang sering kamu sesuaikan dengan Figma.
+   - Cari tulisan  [UKUR]   untuk nilai yang masih tebakan awal -> cocokkan
+                             lagi dengan Figma begitu desain 3 halaman ini
+                             sudah final (belum diukur presisi piksel).
+   - Cari tulisan  [TAMBAH] untuk tempat menambah gaya baru.
+
+   KELAS DARI style.css YANG SUDAH BISA DIPAKAI LANGSUNG DI 3 HALAMAN INI
+   (jangan dibuat ulang di sini): .container .section .card .btn .btn-primary
+   .btn-secondary .btn-block .label .input .select .textarea .input-error
+   .pesan-error .bantuan .alert .alert-error .badge .badge-menunggu dst,
+   .eyebrow .lead .judul-halaman .garis .ikon .ikon-panah/.ikon-bawah/.ikon-centang
+
+   DAFTAR ISI
+    1. Indikator langkah (Pemesanan -> Pembayaran -> Konfirmasi)
+    2. Halaman Pemesanan (tata letak dua kolom, ringkasan paket)
+    3. Halaman Pembayaran (ringkasan pesanan, rincian baris)
+    4. Kotak unggah bukti bayar
+    5. Halaman Konfirmasi
+    6. Responsif
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. INDIKATOR LANGKAH
+   Dipakai di atas ketiga halaman supaya pelanggan tahu sedang di langkah
+   mana. Markup:
+
+   <ol class="form-langkah">
+     <li class="selesai">1. Pemesanan</li>
+     <li class="aktif">2. Pembayaran</li>
+     <li>3. Konfirmasi</li>
+   </ol>
+
+   [UBAH] kelas "selesai" dan "aktif" ditambahkan manual di tiap halaman HTML
+   (bukan oleh JS), karena setiap halaman memang berbeda file.
+   ========================================================================== */
+.form-langkah {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--jarak-2);
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--jarak-6);
+}
+
+.form-langkah li {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warna-teks-redup);
+  background: var(--warna-tint);
+  border-radius: var(--radius-pill);
+}
+
+.form-langkah li.aktif {
+  color: #FFFFFF;
+  background: var(--warna-gelap);
+}
+
+.form-langkah li.selesai {
+  color: var(--warna-aksen);
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis-kuat);
+}
+
+
+/* ==========================================================================
+   2. HALAMAN PEMESANAN
+   Tata letak dua kolom: form di kiri (lebih lebar), ringkasan paket yang
+   dipilih "menempel" (sticky) di kanan. Markup:
+
+   <div class="form-tata-letak">
+     <form class="form-kolom"> ...field-field form... </form>
+     <aside class="form-ringkasan"> ...kartu ringkasan paket... </aside>
+   </div>
+   ========================================================================== */
+.form-tata-letak {
+  display: grid;
+  grid-template-columns: 1fr 360px;   /* [UKUR] lebar kolom ringkasan kanan */
+  gap: var(--jarak-6);
+  align-items: start;
+}
+
+.form-kolom {
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+  padding: var(--jarak-5);
+}
+
+/* Dua field berdampingan dalam satu baris, contoh: Nama + No. WhatsApp */
+.form-baris-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--jarak-3);
+}
+
+/* Jarak antar kelompok field (label+input) di dalam form */
+.form-field {
+  margin-bottom: var(--jarak-3);
+}
+.form-field:last-child {
+  margin-bottom: 0;
+}
+
+.form-bagian + .form-bagian {
+  margin-top: var(--jarak-5);
+  padding-top: var(--jarak-4);
+  border-top: 1px solid var(--warna-garis);
+}
+
+.form-bagian-judul {
+  font-size: var(--teks-h4);
+  margin-bottom: var(--jarak-3);
+}
+
+/* ---- Kartu ringkasan paket (kolom kanan) ----
+   Markup:
+   <aside class="form-ringkasan">
+     <img class="form-ringkasan-gambar" src="..." alt="">
+     <span class="badge-label">Foto &amp; Video</span>
+     <h3>Wedding Signature</h3>
+     <p class="harga">Rp6.500.000 <small>/ acara</small></p>
+     <hr class="garis">
+     <ul class="daftar-centang"> ...fasilitas... </ul>
+   </aside>
+*/
+.form-ringkasan {
+  position: sticky;
+  top: var(--jarak-4);           /* [UBAH] jarak dari atas layar saat mengikuti scroll */
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+  padding: var(--jarak-3);
+}
+
+.form-ringkasan-gambar {
+  width: 100%;
+  height: 160px;                 /* [UKUR] tinggi gambar paket di ringkasan */
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--warna-tint);
+  margin-bottom: var(--jarak-2);
+}
+
+.form-ringkasan-ganti {
+  display: block;
+  margin-top: var(--jarak-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warna-aksen);
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   3. HALAMAN PEMBAYARAN
+   Markup ringkasan pesanan di atas form unggah bukti bayar:
+
+   <div class="bayar-ringkasan">
+     <div class="bayar-ringkasan-kepala">
+       <span>Kode Pesanan</span>
+       <strong>FV-0012</strong>
+     </div>
+     <div class="bayar-rincian-baris">
+       <span>Paket</span><span>Wedding Signature</span>
+     </div>
+     ...ulangi bayar-rincian-baris untuk Tanggal Acara, Lokasi, Total Harga...
+   </div>
+   ========================================================================== */
+.bayar-ringkasan {
+  background: var(--warna-tint);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+  padding: var(--jarak-4);
+  margin-bottom: var(--jarak-5);
+}
+
+.bayar-ringkasan-kepala {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--jarak-2);
+  margin-bottom: var(--jarak-2);
+  border-bottom: 1px solid var(--warna-garis-kuat);
+  font-size: 13px;
+  color: var(--warna-teks-redup);
+}
+.bayar-ringkasan-kepala strong {
+  font-family: var(--font-judul);
+  font-size: 18px;
+  color: var(--warna-gelap);
+  letter-spacing: 0.02em;
+}
+
+.bayar-rincian-baris {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--jarak-2);
+  font-size: 14px;
+  color: var(--warna-teks-sekunder);
+}
+.bayar-rincian-baris + .bayar-rincian-baris {
+  margin-top: var(--jarak-1);
+}
+.bayar-rincian-baris span:first-child {
+  color: var(--warna-teks-redup);
+}
+
+/* Baris total harga, dibuat lebih menonjol dari rincian lain */
+.bayar-rincian-baris.total {
+  margin-top: var(--jarak-2);
+  padding-top: var(--jarak-2);
+  border-top: 1px dashed var(--warna-garis-kuat);
+  font-weight: 700;
+  color: var(--warna-gelap);
+}
+
+/* Dua pilihan jenis bayar (DP / Lunas), ditampilkan sebagai kartu yang bisa dipilih */
+.bayar-pilihan {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--jarak-2);
+  margin-bottom: var(--jarak-4);
+}
+
+.bayar-pilihan-kartu {
+  display: block;
+  padding: var(--jarak-3);
+  text-align: center;
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis-kuat);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.bayar-pilihan-kartu.aktif {
+  border-color: var(--warna-aksen);
+  background: var(--warna-tint);
+}
+.bayar-pilihan-kartu strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--warna-gelap);
+}
+.bayar-pilihan-kartu span {
+  font-size: 13px;
+  color: var(--warna-teks-redup);
+}
+
+
+/* ==========================================================================
+   4. KOTAK UNGGAH BUKTI BAYAR
+   Markup:
+   <label class="upload-dropzone" for="inputBukti">
+     <span class="upload-dropzone-ikon" aria-hidden="true">&#8593;</span>
+     <strong>Klik untuk unggah bukti bayar</strong>
+     <span class="teks-redup teks-kecil">JPG, PNG, atau PDF. Maksimal 2 MB.</span>
+   </label>
+   <input type="file" id="inputBukti" name="bukti" accept=".jpg,.jpeg,.png,.pdf" hidden>
+
+   Setelah file dipilih, JS (bayar.js, belum dibuat) akan mengganti isi
+   .upload-dropzone dengan markup .upload-pratinjau di bawah.
+   ========================================================================== */
+.upload-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 160px;             /* [UBAH] tinggi kotak unggah */
+  padding: var(--jarak-4);
+  text-align: center;
+  background: var(--warna-tint);
+  border: 1.5px dashed var(--warna-garis-kuat);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.upload-dropzone:hover {
+  border-color: var(--warna-aksen);
+}
+.upload-dropzone-ikon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+  font-size: 18px;
+  color: var(--warna-aksen);
+  background: var(--warna-permukaan);
+  border-radius: var(--radius-pill);
+}
+
+/* [TAMBAH] tampilan setelah file dipilih (diisi oleh bayar.js nanti) */
+.upload-pratinjau {
+  display: flex;
+  align-items: center;
+  gap: var(--jarak-2);
+  padding: var(--jarak-2) var(--jarak-3);
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis-kuat);
+  border-radius: var(--radius);
+}
+.upload-pratinjau-nama {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--warna-gelap);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.upload-pratinjau-hapus {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warna-error);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+/* ==========================================================================
+   5. HALAMAN KONFIRMASI
+   Markup:
+   <div class="selesai-kartu">
+     <div class="selesai-ikon" aria-hidden="true">&#10003;</div>
+     <p class="eyebrow">Pesanan Berhasil Dibuat</p>
+     <p class="selesai-kode">FV-0012</p>
+     <p class="lead">Simpan kode pesanan ini. Admin kami akan menghubungi
+       kamu lewat WhatsApp untuk langkah selanjutnya.</p>
+     <a href="#" class="btn btn-aksen btn-block" id="tombolWhatsApp">
+       Hubungi Admin via WhatsApp
+     </a>
+     <a href="index.html" class="btn-teks">Kembali ke Beranda</a>
+   </div>
+   ========================================================================== */
+.selesai-kartu {
+  max-width: 560px;              /* [UBAH] lebar kartu konfirmasi */
+  margin-inline: auto;
+  padding: var(--jarak-6);
+  text-align: center;
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+}
+
+.selesai-ikon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--jarak-3);
+  font-size: 28px;
+  color: #FFFFFF;
+  background: var(--warna-aksen);
+  border-radius: 50%;
+}
+
+.selesai-kode {
+  font-family: var(--font-judul);
+  font-size: 40px;               /* [UKUR] ukuran kode pesanan, cocokkan dengan Figma */
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--warna-gelap);
+  margin-block: var(--jarak-1) var(--jarak-2);
+}
+
+.selesai-kartu .btn-aksen {
+  margin-top: var(--jarak-4);
+}
+
+.selesai-kartu .btn-teks {
+  display: inline-block;
+  margin-top: var(--jarak-2);
+}
+
+/* Rincian pesanan ringkas di bawah kode (opsional, boleh dipakai ulang
+   dari .bayar-rincian-baris supaya tidak ada gaya ganda) */
+.selesai-rincian {
+  margin-top: var(--jarak-4);
+  padding-top: var(--jarak-4);
+  border-top: 1px solid var(--warna-garis);
+  text-align: left;
+}
+
+
+/* ==========================================================================
+   6. RESPONSIF
+   ========================================================================== */
+@media (max-width: 960px) {
+  .form-tata-letak {
+    grid-template-columns: 1fr;
+  }
+  .form-ringkasan {
+    position: static;
+    order: -1;   /* [UBAH] tampilkan ringkasan paket di atas form saat mobile */
+  }
+}
+
+@media (max-width: 640px) {
+  .form-baris-2 {
+    grid-template-columns: 1fr;
+  }
+  .bayar-pilihan {
+    grid-template-columns: 1fr;
+  }
+  .form-kolom {
+    padding: var(--jarak-3);
+  }
+  .selesai-kartu {
+    padding: var(--jarak-4);
+  }
+}

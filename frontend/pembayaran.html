@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pembayaran | For Us Picture.</title>
+  <meta name="description" content="Kirim bukti pembayaran untuk pesanan For Us Picture.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/form.css">
+</head>
+
+<body data-halaman="pembayaran">
+
+  <div data-muat="komponen/navbar.html"></div>
+
+  <main>
+    <section class="section">
+      <div class="container" style="max-width: 760px;">
+        <!-- [UBAH] halaman Pembayaran dibuat satu kolom saja (lebih sempit
+             dari Pemesanan), karena isinya ringkasan + form unggah bukti. -->
+
+        <span class="eyebrow">Langkah 2 dari 3</span>
+        <h1 class="judul-halaman" style="margin-top:16px; font-size: 40px;">Kirim bukti pembayaran.</h1>
+        <p class="lead">Transfer sesuai jumlah di bawah, lalu unggah bukti bayarnya.</p>
+
+        <ol class="form-langkah" style="margin-top: var(--jarak-4);">
+          <li class="selesai">1. Pemesanan</li>
+          <li class="aktif">2. Pembayaran</li>
+          <li>3. Konfirmasi</li>
+        </ol>
+
+        <!-- ================================================================
+             RINGKASAN PESANAN (CONTOH)
+             NANTI (js/bayar.js, BELUM dibuat): data ini diambil dari
+             sessionStorage yang disimpan oleh pemesanan.js setelah
+             api/pesanan/buat.php berhasil. Kalau sessionStorage kosong
+             (pelanggan membuka halaman ini langsung tanpa memesan dulu),
+             bayar.js mengarahkan kembali ke katalog.html.
+             ================================================================ -->
+        <div class="bayar-ringkasan" style="margin-top: var(--jarak-5);" id="ringkasanPesanan">
+          <div class="bayar-ringkasan-kepala">
+            <span>Kode Pesanan</span>
+            <strong id="kodePesanan">FV-0012</strong>
+          </div>
+          <div class="bayar-rincian-baris">
+            <span>Paket</span><span id="namaPaket">Wedding Signature</span>
+          </div>
+          <div class="bayar-rincian-baris">
+            <span>Tanggal Acara</span><span id="tanggalAcara">20 Desember 2026</span>
+          </div>
+          <div class="bayar-rincian-baris">
+            <span>Lokasi</span><span id="lokasiAcara">Gedung Serbaguna, Banjarbaru</span>
+          </div>
+          <div class="bayar-rincian-baris total">
+            <span>Total Harga</span><span id="totalHarga">Rp6.500.000</span>
+          </div>
+        </div>
+
+        <!-- Rekening / QRIS studio. [UBAH] isi dengan info rekening asli -->
+        <div class="alert" style="margin-top: var(--jarak-3);">
+          Transfer ke <strong>BCA 1234567890 a.n. For Us Picture Studio</strong>
+          atau scan QRIS yang tersedia di tempat.
+        </div>
+
+        <!-- ================================================================
+             FORM PEMBAYARAN
+             NANTI: submit form ini memanggil api/pembayaran/upload.php
+             memakai FormData (karena mengirim file), bukan JSON biasa.
+             Field "kode_pesanan" diisi otomatis dari ringkasan di atas.
+             ================================================================ -->
+        <form class="form-kolom" id="formPembayaran" style="margin-top: var(--jarak-5);" novalidate>
+
+          <input type="hidden" name="kode_pesanan" id="kodePesananInput" value="FV-0012">
+
+          <div class="form-bagian">
+            <h3 class="form-bagian-judul">Jenis Pembayaran</h3>
+
+            <!-- Dua pilihan: DP atau Lunas. [UBAH] input radio disembunyikan,
+                 kartu .bayar-pilihan-kartu yang tampil ke pengguna. -->
+            <div class="bayar-pilihan">
+              <label class="bayar-pilihan-kartu aktif">
+                <input type="radio" name="jenis" value="dp" checked hidden>
+                <strong>DP (Uang Muka)</strong>
+                <span>Minimal 30% dari total</span>
+              </label>
+              <label class="bayar-pilihan-kartu">
+                <input type="radio" name="jenis" value="lunas" hidden>
+                <strong>Lunas</strong>
+                <span>Bayar penuh sekarang</span>
+              </label>
+            </div>
+
+            <div class="form-baris-2">
+              <div class="form-field">
+                <label class="label" for="metode">Metode Pembayaran</label>
+                <select class="select" id="metode" name="metode" required>
+                  <option value="">Pilih metode</option>
+                  <option value="transfer_bank">Transfer Bank</option>
+                  <option value="ewallet">E-Wallet</option>
+                  <option value="qris">QRIS</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="label" for="jumlah">Jumlah Dibayar</label>
+                <input class="input" type="number" id="jumlah" name="jumlah" placeholder="Contoh: 2000000" min="1" required>
+                <p class="bantuan">Tidak boleh melebihi total harga pesanan.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-bagian">
+            <h3 class="form-bagian-judul">Bukti Pembayaran</h3>
+
+            <!-- Kotak unggah. NANTI: bayar.js mengganti isi kotak ini dengan
+                 .upload-pratinjau begitu pengguna memilih file. -->
+            <label class="upload-dropzone" for="inputBukti" id="dropzoneBukti">
+              <span class="upload-dropzone-ikon" aria-hidden="true">&#8593;</span>
+              <strong>Klik untuk unggah bukti bayar</strong>
+              <span class="teks-redup teks-kecil">JPG, PNG, atau PDF. Maksimal 2 MB.</span>
+            </label>
+            <input type="file" id="inputBukti" name="bukti" accept=".jpg,.jpeg,.png,.pdf" hidden required>
+          </div>
+
+          <div class="alert alert-error" id="pesanErrorBayar" style="display:none; margin-bottom: var(--jarak-3);">
+            Jumlah pembayaran tidak valid.
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="tombolKirimBukti">
+            Kirim Bukti Pembayaran <span class="ikon ikon-panah" aria-hidden="true"></span>
+          </button>
+        </form>
+
+      </div>
+    </section>
+  </main>
+
+  <div data-muat="komponen/footer.html"></div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <!-- Belum dibuat di tahap ini (hanya kerangka HTML+CSS dulu). -->
+  <!-- <script src="js/config.js" defer></script> -->
+  <!-- <script src="js/util.js" defer></script> -->
+  <!-- <script src="js/api.js" defer></script> -->
+  <!-- <script src="js/ui.js" defer></script> -->
+  <script src="js/komponen.js" defer></script>
+  <!-- <script src="js/bayar.js" defer></script> -->
+
+</body>
+</html>
+
