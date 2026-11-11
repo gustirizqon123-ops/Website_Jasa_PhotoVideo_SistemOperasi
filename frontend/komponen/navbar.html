@@ -1,0 +1,37 @@
+<!--
+  komponen/navbar.html
+  Navbar dipakai semua halaman pelanggan. File ini TIDAK dibuka langsung,
+  tetapi dimuat oleh js/komponen.js ke dalam: <div data-muat="komponen/navbar.html"></div>
+
+  [UBAH] Teks logo, tagline, dan daftar menu bisa diubah di sini (cukup di satu file).
+  Penanda menu aktif memakai atribut data-menu, dicocokkan dengan <body data-halaman="...">.
+  Menu "Cek Pesanan" sengaja tidak ada (keputusan kelompok: tidak ada halaman cek status).
+-->
+<header class="navbar">
+  <div class="container navbar-isi">
+
+    <!-- Logo -->
+    <a href="index.html" class="navbar-logo" aria-label="For Us Picture., ke Beranda">
+      <!-- Ikon diafragma kamera. [UBAH] ganti dengan logo asli dari Figma (export SVG) -->
+      <svg class="navbar-ikon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="14" cy="14" r="12"/>
+        <path d="M14 2l5 9M25 9l-10 .5M23 21l-5-8.5M14 26l-5-9M3 19l10-1M5 7l5 8.5"/>
+      </svg>
+      <span>
+        <span class="navbar-nama">For Us Picture.</span>
+        <span class="navbar-tagline">Visual yang Bercerita.</span>
+      </span>
+    </a>
+
+    <!-- Tombol menu (hanya tampil di mobile) -->
+    <button class="navbar-toggle" id="navbarToggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navbarMenu">&#9776;</button>
+
+    <!-- Menu. [TAMBAH] menu baru di sini, beri atribut data-menu="nama-halaman" -->
+    <nav class="navbar-menu" id="navbarMenu" aria-label="Menu utama">
+      <a href="index.html" data-menu="beranda">Beranda</a>
+      <a href="katalog.html" data-menu="katalog">Katalog</a>
+      <a href="katalog.html" class="btn btn-primary">Pesan Sekarang <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+    </nav>
+
+  </div>
+</header>
