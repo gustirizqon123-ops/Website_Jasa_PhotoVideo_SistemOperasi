@@ -29,19 +29,14 @@
         <h1 class="judul-halaman" style="margin-top:16px;">Pilih cara mengenang.</h1>
         <p class="lead">Paket yang jelas, hasil yang personal. Temukan yang paling pas untuk ceritamu.</p>
 
-        <!-- Tab kategori.
-             NANTI: js/katalog.js membuat tombol ini dari api/kategori/list.php.
-             Untuk sekarang ditulis langsung. Tab yang dipilih diberi kelas "aktif". -->
-        <div class="tabs" id="tab-kategori" style="margin-top:40px;">
-          <button type="button" class="tab aktif" data-kategori="1">Wedding</button>
-          <button type="button" class="tab" data-kategori="2">Wisuda</button>
-          <button type="button" class="tab" data-kategori="3">Produk</button>
-          <button type="button" class="tab" data-kategori="4">Event</button>
-        </div>
+        <!-- Tab kategori diisi oleh js/katalog.js (muatKategori()), dari
+             api/kategori/list.php. Dibiarkan kosong di sini. -->
+        <div class="tabs" id="tab-kategori" style="margin-top:40px;"></div>
 
-        <!-- Baris info: jumlah paket dan urutan -->
+        <!-- Baris info: jumlah paket dan urutan.
+             Teks di #jumlah-paket diisi otomatis oleh katalog.js. -->
         <div class="info-baris">
-          <span id="jumlah-paket">3 paket Wedding</span>
+          <span id="jumlah-paket">Memuat...</span>
           <span>Harga terendah <span class="ikon ikon-bawah" style="width:12px;height:12px;" aria-hidden="true"></span></span>
         </div>
 
@@ -51,26 +46,16 @@
 
     <!-- ==================================================================
          DAFTAR PAKET
-         NANTI: js/katalog.js mengisi #daftar-paket dari api/paket/list.php.
-         Tiga kartu di bawah adalah CONTOH TETAP agar tampilan bisa dicek dulu.
-         Setelah katalog.js jadi, hapus tiga kartu ini (biarkan #daftar-paket kosong).
+         Diisi oleh js/katalog.js (muatPaket()) dari api/paket/list.php.
+         Dibiarkan kosong di sini -- JANGAN taruh kartu contoh lagi di sini,
+         supaya tidak sempat terlihat sebelum data asli masuk.
 
-         Gambar paket nantinya dari folder uploads/paket/ (alamat: ../uploads/paket/NAMA-FILE).
+         Gambar paket dari folder uploads/paket/ (alamat: ../uploads/paket/NAMA-FILE).
          ================================================================== -->
     <section style="padding-bottom: var(--jarak-14);">
       <div class="container">
 
-        <div class="grid grid-3" id="daftar-paket">
-
-          <!-- Kartu 1 -->
-          <article class="card card-paket" data-id="1">
-            <img class="card-paket-gambar" src="../uploads/paket/wedding-essential.jpg" alt="Wedding Essential">
-            <div class="card-paket-isi">
-              <span class="badge-label">Foto &amp; Video</span>
-              <div>
-                <h3>Wedding Essential</h3>
-                <p class="teks-redup teks-kecil" style="margin-top:4px;">6 jam dokumentasi</p>
-              </div>
+        <div class="grid grid-3" id="daftar-paket"></div>
               <p class="harga">Rp4.500.000 <small>/ acara</small></p>
               <hr class="garis">
               <ul class="daftar-centang">
@@ -189,30 +174,6 @@
   <script src="js/api.js" defer></script>
   <script src="js/ui.js" defer></script>
   <script src="js/komponen.js" defer></script>
-  <!-- <script src="js/katalog.js" defer></script> -->
-
-  <!-- SEMENTARA: perilaku tab dan modal agar tampilan bisa dicoba.
-       HAPUS blok ini setelah js/katalog.js dan js/ui.js dibuat. -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Tab: pindahkan kelas "aktif"
-      var tab = document.querySelectorAll('#tab-kategori .tab');
-      tab.forEach(function (t) {
-        t.addEventListener('click', function () {
-          tab.forEach(function (x) { x.classList.remove('aktif'); });
-          t.classList.add('aktif');
-        });
-      });
-
-      // Modal: buka dan tutup
-      var modal = document.getElementById('modal-detail');
-      document.querySelectorAll('[data-detail]').forEach(function (tombol) {
-        tombol.addEventListener('click', function () { modal.classList.add('tampil'); });
-      });
-      document.getElementById('tutup-modal').addEventListener('click', function () { modal.classList.remove('tampil'); });
-      modal.addEventListener('click', function (e) { if (e.target === modal) { modal.classList.remove('tampil'); } });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { modal.classList.remove('tampil'); } });
-    });
-  </script>
+  <script src="js/katalog.js" defer></script>
 </body>
 </html>
