@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar Pesanan | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body data-halaman="admin-pesanan">
+
+  <div class="admin-tata-letak">
+
+    <div data-muat="../komponen/admin-sidebar.html"></div>
+
+    <main class="admin-konten">
+
+      <header class="admin-header">
+        <div>
+          <p class="admin-header-eyebrow">Panel Administrasi</p>
+          <h1 class="admin-header-judul">Daftar Pesanan</h1>
+        </div>
+        <div class="admin-header-admin">
+          <div class="admin-avatar">A</div>
+          <span>Administrator</span>
+        </div>
+      </header>
+
+      <div class="admin-container">
+
+        <!-- ================================================================
+             FILTER STATUS
+             Diisi manual (bukan dari API, karena pilihannya tetap: Semua +
+             4 status baku). Klik tab -> js/admin/pesanan.js memuat ulang
+             tabel dengan filter ?status=... ke api/admin/pesanan.php.
+             ================================================================ -->
+        <div class="tabs" id="filterStatus" style="margin-bottom: var(--jarak-4);">
+          <button type="button" class="tab aktif" data-status="">Semua</button>
+          <button type="button" class="tab" data-status="menunggu">Menunggu</button>
+          <button type="button" class="tab" data-status="dikonfirmasi">Dikonfirmasi</button>
+          <button type="button" class="tab" data-status="selesai">Selesai</button>
+          <button type="button" class="tab" data-status="batal">Batal</button>
+        </div>
+
+        <div class="admin-tabel-bungkus">
+          <table class="admin-tabel">
+            <thead>
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Paket</th>
+                <th>Tanggal Acara</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabelPesanan">
+              <tr><td colspan="7" class="teks-redup">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-kosong" id="kosongPesanan" style="display:none;">
+          <p class="admin-kosong-judul">Tidak ada pesanan</p>
+          <p class="admin-kosong-teks">Tidak ada pesanan untuk status ini.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script src="../js/config.js" defer></script>
+  <script src="../js/util.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/admin/layout.js" defer></script>
+  <script src="../js/admin/pesanan.js" defer></script>
+
+</body>
+</html>
