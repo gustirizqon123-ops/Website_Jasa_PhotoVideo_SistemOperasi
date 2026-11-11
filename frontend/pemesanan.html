@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pemesanan | For Us Picture.</title>
+  <meta name="description" content="Isi data pemesanan paket foto dan video For Us Picture.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/form.css">
+</head>
+
+<body data-halaman="pemesanan">
+
+  <div data-muat="komponen/navbar.html"></div>
+
+  <main>
+    <section class="section">
+      <div class="container">
+
+        <span class="eyebrow">Langkah 1 dari 3</span>
+        <h1 class="judul-halaman" style="margin-top:16px;">Lengkapi data pemesanan.</h1>
+        <p class="lead">Isi data di bawah ini, lalu lanjut ke pembayaran.</p>
+
+        <!-- Indikator langkah -->
+        <ol class="form-langkah" style="margin-top: var(--jarak-4);">
+          <li class="aktif">1. Pemesanan</li>
+          <li>2. Pembayaran</li>
+          <li>3. Konfirmasi</li>
+        </ol>
+
+        <!-- ================================================================
+             TATA LETAK DUA KOLOM: form di kiri, ringkasan paket di kanan.
+
+             NANTI (js/pemesanan.js, BELUM dibuat):
+             - paket_id diambil dari parameter URL ?paket=ID (contoh:
+               pemesanan.html?paket=2, tautan dari katalog.html)
+             - data paket (nama, harga, gambar, fasilitas) diambil dari
+               api/paket/detail.php lalu mengisi kartu .form-ringkasan di
+               bawah, menggantikan isi CONTOH yang sekarang ditulis manual
+             - submit form memanggil api/pesanan/buat.php, lalu hasilnya
+               (kode_pesanan dkk) disimpan ke sessionStorage sebelum
+               pindah ke pembayaran.html
+             - validasi tiap field (format WhatsApp, tanggal tidak boleh
+               lewat, dll) memakai kelas .input-error + .pesan-error yang
+               sudah ada di style.css
+             ================================================================ -->
+        <div class="form-tata-letak" style="margin-top: var(--jarak-5);">
+
+          <!-- ============ KOLOM KIRI: FORM ============ -->
+          <form class="form-kolom" id="formPemesanan" novalidate>
+
+            <!-- paket_id dikirim tersembunyi, diisi otomatis oleh pemesanan.js
+                 dari parameter URL. CONTOH nilai "2" ditulis manual dulu. -->
+            <input type="hidden" name="paket_id" id="paketId" value="2">
+
+            <div class="form-bagian">
+              <h3 class="form-bagian-judul">Data Pemesan</h3>
+
+              <div class="form-baris-2">
+                <div class="form-field">
+                  <label class="label" for="nama">Nama Lengkap</label>
+                  <input class="input" type="text" id="nama" name="nama" placeholder="Nama sesuai KTP" maxlength="100" required>
+                </div>
+                <div class="form-field">
+                  <label class="label" for="noWa">Nomor WhatsApp</label>
+                  <input class="input" type="tel" id="noWa" name="no_wa" placeholder="08xxxxxxxxxx" required>
+                  <p class="bantuan">Nomor aktif, admin akan menghubungi lewat WhatsApp.</p>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="label" for="email">Email <span class="teks-redup">(opsional)</span></label>
+                <input class="input" type="email" id="email" name="email" placeholder="nama@email.com">
+              </div>
+            </div>
+
+            <div class="form-bagian">
+              <h3 class="form-bagian-judul">Detail Acara</h3>
+
+              <div class="form-baris-2">
+                <div class="form-field">
+                  <label class="label" for="tanggalAcara">Tanggal Acara</label>
+                  <input class="input" type="date" id="tanggalAcara" name="tanggal_acara" required>
+                </div>
+                <div class="form-field">
+                  <label class="label" for="jam">Jam <span class="teks-redup">(opsional)</span></label>
+                  <input class="input" type="time" id="jam" name="jam">
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="label" for="lokasi">Lokasi Acara</label>
+                <input class="input" type="text" id="lokasi" name="lokasi" placeholder="Nama gedung / alamat lengkap" maxlength="255" required>
+              </div>
+
+              <div class="form-field">
+                <label class="label" for="catatan">Catatan <span class="teks-redup">(opsional)</span></label>
+                <textarea class="textarea" id="catatan" name="catatan" placeholder="Permintaan khusus, tema acara, dll."></textarea>
+              </div>
+            </div>
+
+            <!-- Kotak pesan error umum, disembunyikan secara default.
+                 NANTI: pemesanan.js menampilkan ini kalau ada error dari API
+                 (contoh pesan error 409 "Tanggal tersebut sudah dipesan"). -->
+            <div class="alert alert-error" id="pesanErrorUmum" style="display:none; margin-bottom: var(--jarak-3);">
+              Tanggal tersebut sudah dipesan, silakan pilih tanggal lain.
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="tombolLanjutBayar">
+              Lanjut ke Pembayaran <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </button>
+          </form>
+
+          <!-- ============ KOLOM KANAN: RINGKASAN PAKET (CONTOH) ============
+               CONTOH TETAP memakai data paket "Wedding Signature" supaya
+               tampilan bisa dicek dulu. Setelah pemesanan.js dibuat, isi
+               kartu ini diambil dari api/paket/detail.php sesuai paket_id. -->
+          <aside class="form-ringkasan" id="ringkasanPaket">
+            <img class="form-ringkasan-gambar" src="../uploads/paket/contoh-wedding-signature.jpg" alt="">
+            <span class="badge-label">Foto &amp; Video</span>
+            <h3 style="margin-top:12px;">Wedding Signature</h3>
+            <p class="teks-redup teks-kecil">8 jam dokumentasi, 2 fotografer</p>
+            <p class="harga" style="margin-top:8px;">Rp6.500.000 <small>/ acara</small></p>
+            <hr class="garis" style="margin-block:16px;">
+            <ul class="daftar-centang">
+              <li>2 fotografer profesional</li>
+              <li>300 foto edit terpilih</li>
+              <li>Video highlight 3-5 menit</li>
+              <li>Album cetak premium</li>
+            </ul>
+            <a href="katalog.html" class="form-ringkasan-ganti">Ganti paket</a>
+          </aside>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div data-muat="komponen/footer.html"></div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <!-- Belum dibuat di tahap ini (hanya kerangka HTML+CSS dulu).
+       Urutan nanti: config.js, util.js, api.js, ui.js (milik A), baru
+       pemesanan.js (milik B) yang mengisi ringkasan paket dan menangani
+       submit form di atas. -->
+  <script src="js/config.js" defer></script>
+  <script src="js/util.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/komponen.js" defer></script>
+  <script src="js/pemesanan.js" defer></script>
+
+</body>
+</html>
