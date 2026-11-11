@@ -1,0 +1,510 @@
+/* ==========================================================================
+   FOR US PICTURE. - CSS HALAMAN ADMIN   (milik C)
+   Letak file : frontend/css/admin.css
+   Dimuat di  : SEMUA halaman admin (dashboard, pesanan, paket, login),
+                SETELAH style.css
+
+   ATURAN: semua kelas di file ini diawali "admin-" supaya tidak bertabrakan
+   dengan kelas B (form-/bayar-/upload-) atau kelas umum di style.css.
+   Warna, font, jarak TIDAK ditulis angka baru di sini -> selalu pakai
+   var(--...) yang sudah ada di style.css. Kalau butuh warna baru khusus
+   admin, tambahkan dulu ke :root di style.css (tanya A), bukan di sini.
+
+   CARA MEMBACA FILE INI
+   - Cari tulisan  [UBAH]   untuk nilai yang sering kamu sesuaikan dengan Figma.
+   - Cari tulisan  [UKUR]   untuk nilai yang masih tebakan awal -> WAJIB kamu
+                             cocokkan lagi dengan file Figma admin (belum
+                             diukur presisi seperti style.css, karena frame
+                             admin belum ikut diukur piksel per piksel).
+   - Cari tulisan  [TAMBAH] untuk tempat menambah gaya baru.
+
+   DAFTAR ISI
+    1. Variabel tambahan khusus admin
+    2. Kerangka halaman (sidebar + area konten)
+    3. Sidebar
+    4. Header panel (judul halaman + info admin)
+    5. Kartu ringkasan (4 kartu status)
+    6. Tabel data
+    7. State kosong
+    8. Halaman login admin
+    9. Responsif
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. VARIABEL TAMBAHAN KHUSUS ADMIN
+   Hanya ukuran yang murni dipakai di area admin. Warna tetap dari style.css.
+   ========================================================================== */
+:root {
+  --admin-lebar-sidebar: 248px;      /* [UKUR] lebar sidebar di desain dashboard admin */
+  --admin-tinggi-header: 88px;       /* [UKUR] tinggi panel header di atas konten admin */
+}
+
+
+/* ==========================================================================
+   2. KERANGKA HALAMAN
+   Setiap halaman admin punya markup seperti ini:
+
+   <body data-halaman="admin-dashboard">
+     <div class="admin-tata-letak">
+       <div data-muat="komponen/admin-sidebar.html"></div>   <!-- diisi layout.js -->
+       <main class="admin-konten">
+         <div class="admin-container"> ... isi halaman ... </div>
+       </main>
+     </div>
+   </body>
+   ========================================================================== */
+.admin-tata-letak {
+  display: flex;
+  min-height: 100vh;
+  background: var(--warna-latar);
+}
+
+.admin-konten {
+  flex: 1;
+  min-width: 0; /* supaya tabel/isi tidak mendorong lebar layar */
+  /* [UBAH] jarak sidebar tetap (fixed) di desktop, konten diberi margin kiri */
+  margin-left: var(--admin-lebar-sidebar);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 1120px;    /* [UKUR] lebar isi konten admin, lebih sempit dari halaman publik */
+  margin: 0 auto;
+  padding: var(--jarak-6) var(--jarak-6) var(--jarak-10);
+}
+
+
+/* ==========================================================================
+   3. SIDEBAR
+   Markup partial (lihat admin-sidebar.html):
+   <aside class="admin-sidebar">
+     <div class="admin-sidebar-atas"> logo </div>
+     <nav class="admin-menu"> ...tautan... </nav>
+     <button class="admin-keluar"> Keluar </button>
+   </aside>
+   ========================================================================== */
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--admin-lebar-sidebar);
+  height: 100vh;
+  background: var(--warna-gelap);         /* [UKUR] hijau tua #183B30 seperti desain */
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  padding: var(--jarak-4) var(--jarak-3);
+  z-index: 20;
+}
+
+.admin-sidebar-atas {
+  display: flex;
+  align-items: center;
+  gap: var(--jarak-2);
+  padding: var(--jarak-2) var(--jarak-1) var(--jarak-5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: var(--jarak-3);
+}
+
+.admin-sidebar-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--warna-primer);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--warna-gelap);
+  font-family: var(--font-judul);
+  font-weight: 600;
+}
+
+.admin-sidebar-nama {
+  font-family: var(--font-judul);
+  font-size: var(--teks-kecil);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  color: #FFFFFF;
+}
+
+/* Menu navigasi sidebar */
+.admin-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jarak-1);
+  flex: 1; /* mendorong tombol Keluar ke bawah */
+}
+
+.admin-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--jarak-2);
+  padding: var(--jarak-2) var(--jarak-2);
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: var(--teks-isi);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+}
+
+/* Ditandai aktif oleh layout.js lewat data-menu, sesuai data-halaman di <body> */
+.admin-menu-item.aktif {
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+/* Tombol Keluar, dipisah dari menu dengan garis */
+.admin-keluar {
+  display: flex;
+  align-items: center;
+  gap: var(--jarak-2);
+  padding: var(--jarak-2) var(--jarak-2);
+  margin-top: var(--jarak-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-isi);
+  font-size: var(--teks-isi);
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-keluar:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+}
+
+
+/* ==========================================================================
+   4. HEADER PANEL
+   Bagian atas tiap halaman admin: eyebrow "PANEL ADMINISTRASI" + judul
+   halaman di kiri, nama admin + avatar di kanan.
+   Markup (ada di tiap halaman, BUKAN di partial sidebar, karena judulnya
+   beda-beda per halaman):
+
+   <header class="admin-header">
+     <div>
+       <p class="admin-header-eyebrow">Panel Administrasi</p>
+       <h1 class="admin-header-judul">Dashboard</h1>
+     </div>
+     <div class="admin-header-admin">
+       <div class="admin-avatar">A</div>
+       <span>Administrator</span>
+     </div>
+   </header>
+   ========================================================================== */
+.admin-header {
+  min-height: var(--admin-tinggi-header);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jarak-3);
+  padding: var(--jarak-3) var(--jarak-6);
+  background: var(--warna-permukaan);
+  border-bottom: 1px solid var(--warna-garis);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-header-eyebrow {
+  font-family: var(--font-isi);
+  font-size: var(--teks-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--warna-aksen);
+  margin-bottom: 4px;
+}
+
+.admin-header-judul {
+  font-family: var(--font-judul);
+  font-size: var(--teks-h4);
+  font-weight: 600;
+  color: var(--warna-teks);
+}
+
+.admin-header-admin {
+  display: flex;
+  align-items: center;
+  gap: var(--jarak-2);
+  font-size: var(--teks-kecil);
+  color: var(--warna-teks-sekunder);
+  font-weight: 500;
+}
+
+.admin-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--warna-tint);
+  color: var(--warna-gelap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-judul);
+  font-weight: 600;
+  font-size: var(--teks-kecil);
+}
+
+
+/* ==========================================================================
+   5. KARTU RINGKASAN (4 kartu status di Dashboard)
+   Markup:
+   <div class="admin-ringkasan">
+     <div class="admin-kartu-ringkasan">
+       <p class="admin-kartu-label">Menunggu</p>
+       <p class="admin-kartu-angka">12</p>
+     </div>
+     ...ulangi untuk Dikonfirmasi, Selesai, Batal...
+   </div>
+   [TAMBAH] kelas warna per status: tambahkan admin-kartu-ringkasan--menunggu
+   dkk kalau desain menunjukkan tiap kartu punya warna aksen berbeda.
+   ========================================================================== */
+.admin-ringkasan {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--jarak-3);
+  margin-bottom: var(--jarak-6);
+}
+
+.admin-kartu-ringkasan {
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+  padding: var(--jarak-3);
+}
+
+.admin-kartu-label {
+  font-size: var(--teks-kecil);
+  color: var(--warna-teks-redup);
+  font-weight: 500;
+  margin-bottom: var(--jarak-1);
+}
+
+.admin-kartu-angka {
+  font-family: var(--font-judul);
+  font-size: 32px;             /* [UKUR] ukuran angka besar di kartu ringkasan */
+  font-weight: 600;
+  color: var(--warna-teks);
+}
+
+/* [TAMBAH] varian warna, isi hex dari var(--...) yang sudah ada */
+.admin-kartu-ringkasan--menunggu .admin-kartu-angka { color: var(--warna-menunggu); }
+.admin-kartu-ringkasan--selesai .admin-kartu-angka  { color: var(--warna-sukses); }
+.admin-kartu-ringkasan--batal .admin-kartu-angka    { color: var(--warna-error); }
+
+
+/* ==========================================================================
+   6. TABEL DATA
+   Dipakai di Dashboard (pesanan terbaru) dan halaman Daftar Pesanan / Paket.
+   Markup:
+   <div class="admin-tabel-bungkus">
+     <table class="admin-tabel">
+       <thead><tr><th>Kode</th>...</tr></thead>
+       <tbody><tr><td>...</td></tr></tbody>
+     </table>
+   </div>
+   ========================================================================== */
+.admin-tabel-bungkus {
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+  overflow-x: auto; /* [UBAH] supaya tabel tidak merusak layout di layar sempit */
+}
+
+.admin-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--teks-kecil);
+}
+
+.admin-tabel th,
+.admin-tabel td {
+  padding: var(--jarak-2) var(--jarak-3);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-tabel th {
+  color: var(--warna-teks-redup);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--teks-eyebrow);
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--warna-garis);
+}
+
+.admin-tabel td {
+  border-bottom: 1px solid var(--warna-garis);
+  color: var(--warna-teks-sekunder);
+}
+
+.admin-tabel tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-tabel tbody tr:hover {
+  background: var(--warna-tint);
+}
+
+/* Tombol kecil aksi di dalam baris tabel (lihat/detail, ubah status) */
+.admin-tabel-aksi {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--jarak-1);
+  font-size: var(--teks-kecil);
+  font-weight: 600;
+  color: var(--warna-aksen);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-tabel-aksi:hover {
+  text-decoration: underline;
+}
+
+
+/* ==========================================================================
+   7. STATE KOSONG
+   Dipakai saat tabel/daftar belum ada datanya (misal belum ada pesanan).
+   Markup:
+   <div class="admin-kosong">
+     <p class="admin-kosong-judul">Belum ada pesanan</p>
+     <p class="admin-kosong-teks">Pesanan baru akan muncul di sini.</p>
+   </div>
+   ========================================================================== */
+.admin-kosong {
+  text-align: center;
+  padding: var(--jarak-10) var(--jarak-4);
+  color: var(--warna-teks-redup);
+}
+
+.admin-kosong-judul {
+  font-family: var(--font-judul);
+  font-size: var(--teks-h4);
+  font-weight: 600;
+  color: var(--warna-teks);
+  margin-bottom: var(--jarak-1);
+}
+
+.admin-kosong-teks {
+  font-size: var(--teks-kecil);
+}
+
+
+/* ==========================================================================
+   8. HALAMAN LOGIN ADMIN
+   Halaman login TIDAK memakai .admin-tata-letak (tidak ada sidebar).
+   Markup:
+   <body data-halaman="admin-login">
+     <div class="admin-login-bungkus">
+       <form class="admin-login-kartu"> ... pakai kelas form- milik B ... </form>
+     </div>
+   </body>
+   ========================================================================== */
+.admin-login-bungkus {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--warna-gelap);     /* [UKUR] latar hijau tua penuh di belakang kartu login */
+  padding: var(--jarak-4);
+}
+
+.admin-login-kartu {
+  width: 100%;
+  max-width: 400px;    /* [UKUR] lebar kartu form login */
+  background: var(--warna-permukaan);
+  border-radius: var(--radius-lg);
+  padding: var(--jarak-6);
+  box-shadow: var(--bayangan-kuat);
+}
+
+.admin-login-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--jarak-3);
+}
+
+.admin-login-judul {
+  font-family: var(--font-judul);
+  font-size: var(--teks-h4);
+  font-weight: 600;
+  text-align: center;
+  color: var(--warna-teks);
+  margin-bottom: var(--jarak-1);
+}
+
+.admin-login-subjudul {
+  font-size: var(--teks-kecil);
+  text-align: center;
+  color: var(--warna-teks-redup);
+  margin-bottom: var(--jarak-5);
+}
+
+
+/* ==========================================================================
+   9. RESPONSIF
+   [UBAH] Pola sederhana dulu: di bawah 1024px sidebar disembunyikan dan
+   diganti tombol hamburger (ditangani JS: kelas "admin-sidebar-terbuka"
+   pada <body>, ditambahkan/dihapus oleh layout.js).
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .admin-ringkasan {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  /* layout.js menambahkan kelas ini ke <body> saat tombol hamburger ditekan */
+  body.admin-sidebar-terbuka .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  .admin-konten {
+    margin-left: 0;
+  }
+
+  .admin-header {
+    padding: var(--jarak-2) var(--jarak-3);
+  }
+
+  .admin-container {
+    padding: var(--jarak-3) var(--jarak-3) var(--jarak-8);
+  }
+
+  .admin-ringkasan {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--jarak-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-ringkasan {
+    grid-template-columns: 1fr;
+  }
+}
