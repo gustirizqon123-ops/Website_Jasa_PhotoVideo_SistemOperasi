@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Konfirmasi Pesanan | For Us Picture.</title>
+  <meta name="description" content="Pesanan berhasil dibuat, hubungi admin For Us Picture via WhatsApp.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/form.css">
+</head>
+
+<body data-halaman="konfirmasi">
+
+  <div data-muat="komponen/navbar.html"></div>
+
+  <main>
+    <section class="section">
+      <div class="container" style="max-width: 760px;">
+
+        <ol class="form-langkah">
+          <li class="selesai">1. Pemesanan</li>
+          <li class="selesai">2. Pembayaran</li>
+          <li class="aktif">3. Konfirmasi</li>
+        </ol>
+
+        <!-- ================================================================
+             KARTU KONFIRMASI (CONTOH)
+             NANTI (js/konfirmasi.js, BELUM dibuat): kode pesanan dan rincian
+             diambil dari sessionStorage (hasil pemesanan.js + bayar.js).
+             Tautan tombol WhatsApp disusun dari no_wa pelanggan + nomor
+             admin, berisi ringkasan pesanan -> wa.me/<nomor-admin>?text=...
+             Tidak ada endpoint "cek status" untuk pelanggan (keputusan
+             kelompok): pelanggan menunggu dihubungi admin via WhatsApp.
+             ================================================================ -->
+        <div class="selesai-kartu" style="margin-top: var(--jarak-5);">
+          <div class="selesai-ikon" aria-hidden="true">&#10003;</div>
+
+          <p class="eyebrow">Pesanan Berhasil Dibuat</p>
+          <p class="selesai-kode" id="kodePesanan">FV-0012</p>
+
+          <p class="lead">
+            Simpan kode pesanan ini sebagai bukti. Admin kami akan menghubungi
+            kamu lewat WhatsApp untuk konfirmasi lebih lanjut.
+          </p>
+
+          <!-- [UBAH] nomor WhatsApp admin, dan isi pesan otomatis -->
+          <a href="https://wa.me/6281234567890?text=Halo%2C%20saya%20sudah%20memesan%20dengan%20kode%20FV-0012"
+             class="btn btn-aksen btn-block"
+             id="tombolWhatsApp"
+             target="_blank" rel="noopener">
+            Hubungi Admin via WhatsApp <span class="ikon ikon-panah" aria-hidden="true"></span>
+          </a>
+
+          <a href="index.html" class="btn-teks">Kembali ke Beranda</a>
+
+          <!-- Rincian ringkas pesanan, CONTOH -->
+          <div class="selesai-rincian">
+            <div class="bayar-rincian-baris">
+              <span>Nama</span><span id="namaPemesan">Budi Santoso</span>
+            </div>
+            <div class="bayar-rincian-baris">
+              <span>Paket</span><span id="namaPaket">Wedding Signature</span>
+            </div>
+            <div class="bayar-rincian-baris">
+              <span>Tanggal Acara</span><span id="tanggalAcara">20 Desember 2026</span>
+            </div>
+            <div class="bayar-rincian-baris">
+              <span>Status Pembayaran</span>
+              <span class="badge badge-menunggu" id="statusBayar">Menunggu Verifikasi</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div data-muat="komponen/footer.html"></div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <!-- Belum dibuat di tahap ini (hanya kerangka HTML+CSS dulu). -->
+  <script src="js/config.js" defer></script>
+  <script src="js/util.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/komponen.js" defer></script>
+  <script src="js/konfirmasi.js" defer></script>
+
+</body>
+</html>
