@@ -1,0 +1,65 @@
+<!-- ==========================================================================
+     admin-sidebar.html   (milik C)
+     Letak file : frontend/komponen/admin-sidebar.html
+
+     INI ADALAH PARTIAL, bukan halaman lengkap. Jangan dibuka langsung di
+     browser (tidak akan tampil bagus karena tidak ada <html>/<head>/style.css).
+     File ini dimuat otomatis oleh frontend/js/admin/layout.js ke dalam setiap
+     halaman admin, lewat elemen seperti ini di tiap halaman admin:
+
+       <div data-muat="komponen/admin-sidebar.html"></div>
+
+     (pola data-muat ini sama seperti yang dipakai navbar.html/footer.html
+     lewat js/komponen.js milik A — bedanya, loader untuk sidebar ada di
+     js/admin/layout.js sendiri, supaya logika admin terpisah dari logika
+     halaman publik)
+
+     CATATAN PENTING soal data-menu:
+     Setiap <a> di bawah punya atribut data-menu="dashboard" / "pesanan" / "paket".
+     layout.js akan membaca data-halaman di <body> halaman yang memuat partial
+     ini (misal data-halaman="admin-dashboard"), lalu menambahkan kelas "aktif"
+     ke <a> yang data-menu-nya cocok. Jadi kamu HARUS memberi data-halaman yang
+     benar di <body> setiap halaman admin:
+       dashboard -> data-halaman="admin-dashboard"
+       pesanan   -> data-halaman="admin-pesanan"
+       paket     -> data-halaman="admin-paket"
+
+     [UBAH] Tautan "Paket" mengarah ke halaman yang sekarang dikerjakan A
+     (bukan C) sesuai pembagian terbaru di ROADMAP.md. Biarkan tautannya di
+     sini (sidebar tetap menampilkan menu Paket untuk semua admin), link-nya
+     saja yang dikerjakan A.
+     ========================================================================== -->
+
+<aside class="admin-sidebar">
+
+  <!-- Logo + nama, bagian paling atas sidebar -->
+  <div class="admin-sidebar-atas">
+    <div class="admin-sidebar-logo">FP</div> <!-- [UBAH] ganti dengan logo asli kalau sudah ada -->
+    <span class="admin-sidebar-nama">FOR US<br>PICTURE.</span>
+  </div>
+
+  <!-- Menu navigasi utama -->
+  <nav class="admin-menu">
+    <a href="dashboard.html" class="admin-menu-item" data-menu="dashboard">
+      <span class="ikon ikon-panah" aria-hidden="true"></span>
+      <!-- [UBAH] ikon sementara pakai yang sudah ada di style.css,
+           ganti dengan ikon dashboard/kotak/grafik kalau sudah siap -->
+      Dashboard
+    </a>
+    <a href="pesanan.html" class="admin-menu-item" data-menu="pesanan">
+      <span class="ikon ikon-bawah" aria-hidden="true"></span>
+      Pesanan
+    </a>
+    <a href="paket.html" class="admin-menu-item" data-menu="paket">
+      <span class="ikon ikon-centang" aria-hidden="true"></span>
+      Paket
+    </a>
+  </nav>
+
+  <!-- Tombol keluar, ditangani oleh layout.js -->
+  <button type="button" class="admin-keluar" id="tombolKeluarAdmin">
+    <span aria-hidden="true">&#8594;</span>
+    Keluar
+  </button>
+
+</aside>
