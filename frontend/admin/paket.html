@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kelola Paket | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-paket.css">
+</head>
+
+<body data-halaman="admin-paket">
+
+  <div class="admin-tata-letak">
+
+    <div data-muat="../komponen/admin-sidebar.html"></div>
+
+    <main class="admin-konten">
+
+      <header class="admin-header">
+        <div>
+          <p class="admin-header-eyebrow">Panel Administrasi</p>
+          <h1 class="admin-header-judul">Kelola Paket</h1>
+        </div>
+        <div class="admin-header-admin">
+          <div class="admin-avatar">A</div>
+          <span>Administrator</span>
+        </div>
+      </header>
+
+      <div class="admin-container">
+
+        <!-- ================================================================
+             TOOLBAR: cari (filter di sisi klien, lihat paket.js) + tombol
+             tambah paket -> pindah ke paket-form.html (mode tambah, tidak
+             ada ?id= di url)
+             ================================================================ -->
+        <div class="paket-toolbar">
+          <input class="input" type="search" id="cariPaket" placeholder="Cari nama paket...">
+          <a href="paket-form.html" class="btn btn-primary">+ Tambah Paket</a>
+        </div>
+
+        <div class="admin-tabel-bungkus">
+          <table class="admin-tabel">
+            <thead>
+              <tr>
+                <th>Gambar</th>
+                <th>Nama Paket</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabelPaket">
+              <tr><td colspan="5" class="teks-redup">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-kosong" id="kosongPaket" style="display:none;">
+          <p class="admin-kosong-judul">Tidak ada paket</p>
+          <p class="admin-kosong-teks">Belum ada paket yang cocok, atau belum ada paket sama sekali.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODAL KONFIRMASI HAPUS
+       Dibuka oleh paket.js saat tombol "Hapus" di salah satu baris diklik.
+       Nama paket & id yang akan dihapus diisi JS ke #namaPaketDihapus dan
+       disimpan di data-id pada tombol konfirmasi.
+       ==================================================================== -->
+  <div class="modal-lapisan" id="modal-hapus-paket" role="dialog" aria-modal="true" aria-labelledby="judulHapusPaket">
+    <div class="modal">
+      <button type="button" class="modal-tutup" data-tutup-modal="modal-hapus-paket" aria-label="Tutup">&times;</button>
+      <div class="modal-isi">
+        <h3 class="paket-hapus-judul" id="judulHapusPaket">Hapus paket ini?</h3>
+        <p class="paket-hapus-teks">
+          Paket <strong id="namaPaketDihapus">-</strong> akan dihapus permanen.
+          Aksi ini tidak bisa dibatalkan.
+        </p>
+        <div class="paket-hapus-aksi">
+          <button type="button" class="btn btn-sekunder" data-tutup-modal="modal-hapus-paket">Batal</button>
+          <button type="button" class="btn btn-error" id="tombolKonfirmasiHapus">Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script src="../js/config.js" defer></script>
+  <script src="../js/util.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/admin/layout.js" defer></script>
+  <script src="../js/admin/paket.js" defer></script>
+
+</body>
+</html>
