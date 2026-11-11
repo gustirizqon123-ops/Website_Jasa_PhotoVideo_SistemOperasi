@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Katalog Paket | For Us Picture.</title>
+  <meta name="description" content="Pilih paket foto dan video untuk pernikahan, wisuda, produk, dan acara.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body data-halaman="katalog">
+
+  <div data-muat="komponen/navbar.html"></div>
+
+  <main>
+
+    <!-- ==================================================================
+         KEPALA HALAMAN + TAB KATEGORI
+         ================================================================== -->
+    <section class="section" style="padding-bottom: 0;">
+      <div class="container">
+
+        <span class="eyebrow">Paket &amp; Layanan</span>
+        <h1 class="judul-halaman" style="margin-top:16px;">Pilih cara mengenang.</h1>
+        <p class="lead">Paket yang jelas, hasil yang personal. Temukan yang paling pas untuk ceritamu.</p>
+
+        <!-- Tab kategori diisi oleh js/katalog.js (muatKategori()), dari
+             api/kategori/list.php. Dibiarkan kosong di sini. -->
+        <div class="tabs" id="tab-kategori" style="margin-top:40px;"></div>
+
+        <!-- Baris info: jumlah paket dan urutan.
+             Teks di #jumlah-paket diisi otomatis oleh katalog.js. -->
+        <div class="info-baris">
+          <span id="jumlah-paket">Memuat...</span>
+          <span>Harga terendah <span class="ikon ikon-bawah" style="width:12px;height:12px;" aria-hidden="true"></span></span>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================================================================
+         DAFTAR PAKET
+         Diisi oleh js/katalog.js (muatPaket()) dari api/paket/list.php.
+         Dibiarkan kosong di sini -- JANGAN taruh kartu contoh lagi di sini,
+         supaya tidak sempat terlihat sebelum data asli masuk.
+
+         Gambar paket dari folder uploads/paket/ (alamat: ../uploads/paket/NAMA-FILE).
+         ================================================================== -->
+    <section style="padding-bottom: var(--jarak-14);">
+      <div class="container">
+
+        <div class="grid grid-3" id="daftar-paket"></div>
+
+        <!-- Kotak informasi. [UBAH] isi teks sesuai Figma -->
+        <div class="alert" style="margin-top:32px;">
+          <span class="ikon ikon-centang" aria-hidden="true" style="margin-top:3px;"></span>
+          <span>Semua paket bisa disesuaikan dengan kebutuhan acaramu. Biaya transport di luar Banjarmasin dihitung terpisah.</span>
+        </div>
+
+        <!-- Ajakan konsultasi -->
+        <div class="teks-tengah" style="margin-top:72px;">
+          <h3>Punya rencana yang berbeda?</h3>
+          <p style="margin-block:8px 24px;">Ceritakan kebutuhanmu, kami bantu susun paket yang pas.</p>
+          <!-- [UBAH] ganti 6281234567890 dengan nomor WhatsApp admin (awalan 62, tanpa + dan 0). Nanti diambil dari js/config.js -->
+          <a href="https://wa.me/6281234567890?text=Halo%20For%20Us%20Picture%2C%20saya%20ingin%20konsultasi%20paket." class="btn btn-secondary" target="_blank" rel="noopener">Konsultasi via WhatsApp</a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ====================================================================
+       MODAL DETAIL PAKET
+       Dibuka saat tombol "Lihat detail" diklik. Isinya nanti diisi dari
+       api/paket/detail.php?id=... oleh js/katalog.js.
+       ==================================================================== -->
+  <div class="modal-lapisan" id="modal-detail" role="dialog" aria-modal="true" aria-labelledby="modal-judul">
+    <div class="modal">
+      <button type="button" class="modal-tutup" id="tutup-modal" aria-label="Tutup">&times;</button>
+      <img class="modal-gambar" id="modal-gambar" src="../uploads/paket/wedding-signature.jpg" alt="">
+      <div class="modal-isi">
+        <span class="eyebrow">Detail paket · Wedding</span>
+        <h2 id="modal-judul" style="margin-top:8px; font-size:36px;">Wedding Signature</h2>
+        <p class="harga" style="margin-block:16px;">Rp6.500.000 <small>/ acara</small></p>
+        <p>Dokumentasi lengkap dari persiapan hingga resepsi, dengan hasil yang dikerjakan dengan rasa.</p>
+        <ul class="daftar-centang" style="margin-block:24px;">
+          <li>2 fotografer + 1 videografer</li>
+          <li>500+ foto edit + album cetak</li>
+          <li>Video highlight 3 menit</li>
+          <li>Hasil dikirim dalam 10 hari kerja</li>
+        </ul>
+        <a href="pemesanan.html?paket=2" class="btn btn-primary btn-block" id="modal-pesan">Pesan Wedding Signature <span class="ikon ikon-panah" aria-hidden="true"></span></a>
+      </div>
+    </div>
+  </div>
+
+  <div data-muat="komponen/footer.html"></div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script src="js/config.js" defer></script>
+  <script src="js/util.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/komponen.js" defer></script>
+  <script src="js/katalog.js" defer></script>
+</body>
+</html>

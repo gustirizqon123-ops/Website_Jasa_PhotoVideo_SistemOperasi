@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Paket | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/form.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-paket.css">
+</head>
+
+<!-- data-halaman="admin-paket" (SAMA dengan paket.html) supaya menu
+     "Paket" di sidebar tetap tertandai aktif -->
+<body data-halaman="admin-paket">
+
+  <div class="admin-tata-letak">
+
+    <div data-muat="../komponen/admin-sidebar.html"></div>
+
+    <main class="admin-konten">
+
+      <header class="admin-header">
+        <div>
+          <p class="admin-header-eyebrow">Panel Administrasi</p>
+          <!-- Judulnya diganti JS ("Tambah Paket" / "Ubah Paket") sesuai
+               ada tidaknya ?id= di URL, lihat paket-form.js -->
+          <h1 class="admin-header-judul" id="judulHalamanForm">Tambah Paket</h1>
+        </div>
+        <div class="admin-header-admin">
+          <div class="admin-avatar">A</div>
+          <span>Administrator</span>
+        </div>
+      </header>
+
+      <div class="admin-container">
+
+        <a href="paket.html" class="btn-teks" style="margin-bottom: var(--jarak-3); display:inline-block;">
+          &larr; Kembali ke Kelola Paket
+        </a>
+
+        <div class="paket-form-tata-letak">
+
+          <!-- ============ FORM ============ -->
+          <form class="form-kolom paket-form" id="formPaket" novalidate>
+
+            <!-- Diisi JS kalau mode "ubah" (ada ?id= di url). Kosong berarti
+                 mode "tambah". Dibaca ulang saat submit untuk menentukan
+                 aksi mana yang dikirim ke api/admin/paket.php. -->
+            <input type="hidden" id="idPaket" value="">
+
+            <div class="form-bagian">
+              <h3 class="form-bagian-judul">Informasi Paket</h3>
+
+              <div class="form-field">
+                <label class="label" for="nama">Nama Paket</label>
+                <input class="input" type="text" id="nama" name="nama" placeholder="Contoh: Wedding Signature" maxlength="100" required>
+              </div>
+
+              <div class="form-field">
+                <label class="label" for="kategoriId">Kategori</label>
+                <!-- Pilihan diisi JS dari api/kategori/list.php, lihat
+                     muatPilihanKategori() di paket-form.js -->
+                <select class="select" id="kategoriId" name="kategori_id" required>
+                  <option value="">Memuat kategori...</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="label" for="harga">Harga</label>
+                <input class="input" type="number" id="harga" name="harga" placeholder="Contoh: 6500000" min="1" required>
+              </div>
+
+              <div class="form-field">
+                <label class="label" for="deskripsi">Fasilitas / Deskripsi</label>
+                <textarea class="textarea" id="deskripsi" name="deskripsi" placeholder="Pisahkan tiap fasilitas dengan koma, contoh: 2 fotografer, 500 foto edit, Video highlight 3 menit" required></textarea>
+                <p class="bantuan">Tiap fasilitas dipisah tanda koma (,) -- akan tampil sebagai daftar centang di katalog.</p>
+              </div>
+            </div>
+
+            <div class="alert alert-error" id="pesanErrorForm" style="display:none; margin-bottom: var(--jarak-3);">
+              Mohon lengkapi semua field yang wajib diisi.
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="tombolSimpanPaket">
+              Simpan Paket
+            </button>
+          </form>
+
+          <!-- ============ PRATINJAU GAMBAR ============ -->
+          <aside class="paket-form-pratinjau">
+            <p class="paket-form-pratinjau-label">Gambar Paket</p>
+
+            <label class="paket-unggah-gambar" for="inputGambarPaket" id="dropzoneGambarPaket">
+              <img id="pratinjauGambarPaket" src="" alt="" hidden>
+              <span class="paket-unggah-placeholder" id="placeholderGambarPaket">
+                <span class="upload-dropzone-ikon" aria-hidden="true">&#8593;</span>
+                Klik untuk unggah gambar paket
+              </span>
+            </label>
+            <input type="file" id="inputGambarPaket" name="gambar" accept=".jpg,.jpeg,.png" hidden>
+
+            <p class="bantuan" style="margin-top: var(--jarak-2);">JPG atau PNG, maksimal 2 MB.</p>
+          </aside>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script src="../js/config.js" defer></script>
+  <script src="../js/util.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/admin/layout.js" defer></script>
+  <script src="../js/admin/paket-form.js" defer></script>
+
+</body>
+</html>
