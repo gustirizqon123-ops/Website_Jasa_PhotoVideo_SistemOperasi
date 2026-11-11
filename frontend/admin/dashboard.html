@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Admin | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- [UBAH] path naik satu folder (../) karena file ini ada di frontend/admin/ -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<!-- data-halaman="admin-dashboard" dibaca oleh js/admin/layout.js untuk
+     menandai menu "Dashboard" aktif di sidebar (lihat tandaiMenuAktif()) -->
+<body data-halaman="admin-dashboard">
+
+  <div class="admin-tata-letak">
+
+    <!-- Sidebar dimuat otomatis oleh js/admin/layout.js, isinya ada di
+         frontend/komponen/admin-sidebar.html -->
+    <div data-muat="../komponen/admin-sidebar.html"></div>
+
+    <main class="admin-konten">
+
+      <header class="admin-header">
+        <div>
+          <p class="admin-header-eyebrow">Panel Administrasi</p>
+          <h1 class="admin-header-judul">Dashboard</h1>
+        </div>
+        <div class="admin-header-admin">
+          <div class="admin-avatar" id="avatarAdmin">A</div>
+          <span id="namaAdmin">Administrator</span>
+        </div>
+      </header>
+
+      <div class="admin-container">
+
+        <!-- ================================================================
+             KARTU RINGKASAN
+             Angka di sini diisi oleh js/admin/dashboard.js dari
+             api/admin/pesanan.php (field "ringkasan"), BUKAN ditulis
+             manual -- "0" di bawah cuma nilai awal sebelum data dimuat.
+             ================================================================ -->
+        <div class="admin-ringkasan">
+          <div class="admin-kartu-ringkasan admin-kartu-ringkasan--menunggu">
+            <p class="admin-kartu-label">Menunggu</p>
+            <p class="admin-kartu-angka" id="jumlahMenunggu">0</p>
+          </div>
+          <div class="admin-kartu-ringkasan">
+            <p class="admin-kartu-label">Dikonfirmasi</p>
+            <p class="admin-kartu-angka" id="jumlahDikonfirmasi">0</p>
+          </div>
+          <div class="admin-kartu-ringkasan admin-kartu-ringkasan--selesai">
+            <p class="admin-kartu-label">Selesai</p>
+            <p class="admin-kartu-angka" id="jumlahSelesai">0</p>
+          </div>
+          <div class="admin-kartu-ringkasan admin-kartu-ringkasan--batal">
+            <p class="admin-kartu-label">Batal</p>
+            <p class="admin-kartu-angka" id="jumlahBatal">0</p>
+          </div>
+        </div>
+
+        <!-- ================================================================
+             PESANAN TERBARU (5 teratas)
+             ================================================================ -->
+        <div class="flex-antar" style="margin-bottom: var(--jarak-3);">
+          <h3 style="font-size: var(--teks-h4);">Pesanan Terbaru</h3>
+          <a href="pesanan.html" class="btn-teks">Lihat semua pesanan</a>
+        </div>
+
+        <div class="admin-tabel-bungkus">
+          <table class="admin-tabel">
+            <thead>
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Paket</th>
+                <th>Tanggal Acara</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabelPesananTerbaru">
+              <!-- Diisi oleh dashboard.js. Sementara: -->
+              <tr><td colspan="7" class="teks-redup">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- State kosong, disembunyikan secara default. Ditampilkan oleh
+             dashboard.js kalau memang belum ada pesanan sama sekali. -->
+        <div class="admin-kosong" id="kosongPesanan" style="display:none;">
+          <p class="admin-kosong-judul">Belum ada pesanan</p>
+          <p class="admin-kosong-teks">Pesanan baru dari pelanggan akan muncul di sini.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script src="../js/config.js" defer></script>
+  <script src="../js/util.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/admin/layout.js" defer></script>
+  <script src="../js/admin/dashboard.js" defer></script>
+
+</body>
+</html>
