@@ -2,3 +2,4 @@ uploads/bukti-bayar/*
 !uploads/bukti-bayar/.gitkeep
 .vscode/
 *.log
+ROADMAP.md
