@@ -113,7 +113,7 @@ CREATE TABLE `pembayaran` (
 
 CREATE TABLE `pesanan` (
   `id` int(11) NOT NULL,
-  `kode_pesanan` varchar(20) NOT NULL,
+  `kode_pesanan` varchar(20) DEFAULT NULL,
   `paket_id` int(11) NOT NULL,
   `nama` varchar(100) NOT NULL,
   `no_wa` varchar(20) NOT NULL,
