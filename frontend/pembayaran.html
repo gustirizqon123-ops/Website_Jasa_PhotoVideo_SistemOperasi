@@ -35,12 +35,12 @@
         </ol>
 
         <!-- ================================================================
-             RINGKASAN PESANAN (CONTOH)
-             NANTI (js/bayar.js, BELUM dibuat): data ini diambil dari
-             sessionStorage yang disimpan oleh pemesanan.js setelah
-             api/pesanan/buat.php berhasil. Kalau sessionStorage kosong
-             (pelanggan membuka halaman ini langsung tanpa memesan dulu),
-             bayar.js mengarahkan kembali ke katalog.html.
+             RINGKASAN PESANAN
+             Teks di bawah hanya pengisi awal. js/bayar.js menggantinya
+             dengan data dari sessionStorage yang disimpan pemesanan.js
+             setelah api/pesanan/buat.php berhasil. Kalau sessionStorage
+             kosong (pelanggan membuka halaman ini langsung tanpa memesan
+             dulu), bayar.js mengarahkan kembali ke katalog.html.
              ================================================================ -->
         <div class="bayar-ringkasan" style="margin-top: var(--jarak-5);" id="ringkasanPesanan">
           <div class="bayar-ringkasan-kepala">
@@ -69,9 +69,9 @@
 
         <!-- ================================================================
              FORM PEMBAYARAN
-             NANTI: submit form ini memanggil api/pembayaran/upload.php
+             bayar.js mengirim form ini ke api/pembayaran/upload.php
              memakai FormData (karena mengirim file), bukan JSON biasa.
-             Field "kode_pesanan" diisi otomatis dari ringkasan di atas.
+             Field "kode_pesanan" diisi otomatis dari sessionStorage.
              ================================================================ -->
         <form class="form-kolom" id="formPembayaran" style="margin-top: var(--jarak-5);" novalidate>
 
@@ -116,7 +116,7 @@
           <div class="form-bagian">
             <h3 class="form-bagian-judul">Bukti Pembayaran</h3>
 
-            <!-- Kotak unggah. NANTI: bayar.js mengganti isi kotak ini dengan
+            <!-- Kotak unggah. bayar.js mengganti isi kotak ini dengan
                  .upload-pratinjau begitu pengguna memilih file. -->
             <label class="upload-dropzone" for="inputBukti" id="dropzoneBukti">
               <span class="upload-dropzone-ikon" aria-hidden="true">&#8593;</span>
@@ -142,7 +142,6 @@
   <div data-muat="komponen/footer.html"></div>
 
   <!-- ===================== JAVASCRIPT ===================== -->
-  <!-- Belum dibuat di tahap ini (hanya kerangka HTML+CSS dulu). -->
   <script src="js/config.js" defer></script>
   <script src="js/util.js" defer></script>
   <script src="js/api.js" defer></script>

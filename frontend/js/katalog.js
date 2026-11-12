@@ -15,19 +15,25 @@
    4. Baca parameter URL ?kategori=ID (dipakai tautan dari index.html,
       kartu "Wedding/Wisuda/Produk/Event") supaya tab yang sesuai
       langsung aktif saat halaman dibuka dari Beranda
-
-   SETELAH FILE INI SELESAI:
-   - Hapus 3 kartu paket CONTOH di katalog.html (biarkan #daftar-paket kosong,
-     diisi JS ini)
-   - Hapus blok <script> "SEMENTARA" di bagian bawah katalog.html (tab dan
-     modal sekarang ditangani di sini)
-   - Buka komentar <script src="js/katalog.js" defer></script>
+   5. Isi tautan tombol "Konsultasi via WhatsApp" dari KONFIG.NOMOR_WA_ADMIN
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', function () {
   siapkanSemuaModal();   // dari ui.js: tombol tutup, klik di luar, tombol Escape
+  siapkanTombolKonsultasi();
   muatKategori();
 });
+
+/* Nomor diambil dari js/config.js, supaya nomor WhatsApp admin cukup
+   diubah di satu tempat (sama seperti tombol WhatsApp di konfirmasi.js). */
+function siapkanTombolKonsultasi() {
+  var tombol = document.getElementById('tombolKonsultasiWa');
+  if (!tombol) { return; }
+  // Titik di akhir nama merek ("For Us Picture.") dibuang supaya tidak jadi "Picture.,"
+  var namaStudio = KONFIG.NAMA_STUDIO.replace(/\.$/, '');
+  tombol.href = linkWhatsApp(KONFIG.NOMOR_WA_ADMIN,
+    'Halo ' + namaStudio + ', saya ingin konsultasi paket.');
+}
 
 
 /* ==========================================================================

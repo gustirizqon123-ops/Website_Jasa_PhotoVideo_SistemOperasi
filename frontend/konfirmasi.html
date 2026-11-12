@@ -29,11 +29,11 @@
         </ol>
 
         <!-- ================================================================
-             KARTU KONFIRMASI (CONTOH)
-             NANTI (js/konfirmasi.js, BELUM dibuat): kode pesanan dan rincian
-             diambil dari sessionStorage (hasil pemesanan.js + bayar.js).
-             Tautan tombol WhatsApp disusun dari no_wa pelanggan + nomor
-             admin, berisi ringkasan pesanan -> wa.me/<nomor-admin>?text=...
+             KARTU KONFIRMASI
+             Teks di bawah hanya pengisi awal. js/konfirmasi.js menggantinya
+             dengan kode pesanan dan rincian dari sessionStorage (hasil
+             pemesanan.js + bayar.js), dan menyusun tautan tombol WhatsApp
+             dari KONFIG.NOMOR_WA_ADMIN + ringkasan pesanan.
              Tidak ada endpoint "cek status" untuk pelanggan (keputusan
              kelompok): pelanggan menunggu dihubungi admin via WhatsApp.
              ================================================================ -->
@@ -48,8 +48,9 @@
             kamu lewat WhatsApp untuk konfirmasi lebih lanjut.
           </p>
 
-          <!-- [UBAH] nomor WhatsApp admin, dan isi pesan otomatis -->
-          <a href="https://wa.me/6281234567890?text=Halo%2C%20saya%20sudah%20memesan%20dengan%20kode%20FV-0012"
+          <!-- href diisi konfirmasi.js (siapkanTombolWhatsApp). Nomor admin
+               diubah di js/config.js, isi pesan otomatis di konfirmasi.js. -->
+          <a href="#"
              class="btn btn-aksen btn-block"
              id="tombolWhatsApp"
              target="_blank" rel="noopener">
@@ -58,7 +59,7 @@
 
           <a href="index.html" class="btn-teks">Kembali ke Beranda</a>
 
-          <!-- Rincian ringkas pesanan, CONTOH -->
+          <!-- Rincian ringkas pesanan, diisi konfirmasi.js -->
           <div class="selesai-rincian">
             <div class="bayar-rincian-baris">
               <span>Nama</span><span id="namaPemesan">Budi Santoso</span>
@@ -83,7 +84,6 @@
   <div data-muat="komponen/footer.html"></div>
 
   <!-- ===================== JAVASCRIPT ===================== -->
-  <!-- Belum dibuat di tahap ini (hanya kerangka HTML+CSS dulu). -->
   <script src="js/config.js" defer></script>
   <script src="js/util.js" defer></script>
   <script src="js/api.js" defer></script>

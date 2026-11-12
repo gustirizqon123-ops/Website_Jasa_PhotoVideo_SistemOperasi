@@ -26,7 +26,9 @@ var KONFIG = {
      [UBAH] nomor WhatsApp admin, format internasional TANPA tanda "+"
      dan tanpa angka 0 di depan. Contoh nomor 0812-3456-7890 ditulis
      "6281234567890". Dipakai oleh util.js (linkWhatsApp()) untuk membuat
-     tautan wa.me di halaman Konfirmasi. */
+     tautan wa.me di halaman Konfirmasi (konfirmasi.js) dan tombol
+     "Konsultasi via WhatsApp" di Katalog (katalog.js).
+     Nomor di teks footer (komponen/footer.html) ditulis terpisah, ubah juga. */
   NOMOR_WA_ADMIN: '6281234567890',
 
   /* ---- NAMA STUDIO ----

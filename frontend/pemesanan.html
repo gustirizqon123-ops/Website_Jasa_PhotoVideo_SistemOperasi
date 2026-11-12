@@ -36,18 +36,16 @@
         <!-- ================================================================
              TATA LETAK DUA KOLOM: form di kiri, ringkasan paket di kanan.
 
-             NANTI (js/pemesanan.js, BELUM dibuat):
+             Ditangani js/pemesanan.js:
              - paket_id diambil dari parameter URL ?paket=ID (contoh:
                pemesanan.html?paket=2, tautan dari katalog.html)
              - data paket (nama, harga, gambar, fasilitas) diambil dari
                api/paket/detail.php lalu mengisi kartu .form-ringkasan di
-               bawah, menggantikan isi CONTOH yang sekarang ditulis manual
+               bawah, menggantikan teks pengisi awal
              - submit form memanggil api/pesanan/buat.php, lalu hasilnya
                (kode_pesanan dkk) disimpan ke sessionStorage sebelum
                pindah ke pembayaran.html
-             - validasi tiap field (format WhatsApp, tanggal tidak boleh
-               lewat, dll) memakai kelas .input-error + .pesan-error yang
-               sudah ada di style.css
+             - validasi dasar di sisi pengguna; validasi lengkap di server
              ================================================================ -->
         <div class="form-tata-letak" style="margin-top: var(--jarak-5);">
 
@@ -55,7 +53,8 @@
           <form class="form-kolom" id="formPemesanan" novalidate>
 
             <!-- paket_id dikirim tersembunyi, diisi otomatis oleh pemesanan.js
-                 dari parameter URL. CONTOH nilai "2" ditulis manual dulu. -->
+                 dari parameter URL. Nilai "2" hanya cadangan kalau halaman
+                 dibuka tanpa ?paket= (lihat siapkanPaketDariUrl()). -->
             <input type="hidden" name="paket_id" id="paketId" value="2">
 
             <div class="form-bagian">
@@ -105,7 +104,7 @@
             </div>
 
             <!-- Kotak pesan error umum, disembunyikan secara default.
-                 NANTI: pemesanan.js menampilkan ini kalau ada error dari API
+                 pemesanan.js menampilkan ini kalau ada error dari API
                  (contoh pesan error 409 "Tanggal tersebut sudah dipesan"). -->
             <div class="alert alert-error" id="pesanErrorUmum" style="display:none; margin-bottom: var(--jarak-3);">
               Tanggal tersebut sudah dipesan, silakan pilih tanggal lain.
@@ -116,10 +115,10 @@
             </button>
           </form>
 
-          <!-- ============ KOLOM KANAN: RINGKASAN PAKET (CONTOH) ============
-               CONTOH TETAP memakai data paket "Wedding Signature" supaya
-               tampilan bisa dicek dulu. Setelah pemesanan.js dibuat, isi
-               kartu ini diambil dari api/paket/detail.php sesuai paket_id. -->
+          <!-- ============ KOLOM KANAN: RINGKASAN PAKET ============
+               Teks di bawah hanya pengisi awal. pemesanan.js
+               (gambarRingkasanPaket) menggantinya dengan data dari
+               api/paket/detail.php sesuai paket_id. -->
           <aside class="form-ringkasan" id="ringkasanPaket">
             <!-- src sengaja kosong: diisi pemesanan.js (gambarRingkasanPaket) dari api/paket/detail.php -->
             <img class="form-ringkasan-gambar" alt="">
@@ -146,10 +145,8 @@
   <div data-muat="komponen/footer.html"></div>
 
   <!-- ===================== JAVASCRIPT ===================== -->
-  <!-- Belum dibuat di tahap ini (hanya kerangka HTML+CSS dulu).
-       Urutan nanti: config.js, util.js, api.js, ui.js (milik A), baru
-       pemesanan.js (milik B) yang mengisi ringkasan paket dan menangani
-       submit form di atas. -->
+  <!-- File bersama milik A dulu, baru pemesanan.js (milik B) yang mengisi
+       ringkasan paket dan menangani submit form di atas. -->
   <script src="js/config.js" defer></script>
   <script src="js/util.js" defer></script>
   <script src="js/api.js" defer></script>

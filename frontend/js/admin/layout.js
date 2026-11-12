@@ -2,7 +2,7 @@
    js/admin/layout.js   (milik C)
    Letak file : frontend/js/admin/layout.js
    Dimuat di  : SEMUA halaman admin KECUALI login.html (dashboard, pesanan,
-                paket, dan detail pesanan nanti di tahap berikutnya)
+                pesanan-detail, paket, paket-form)
 
    TUGAS FILE INI (meniru pola js/komponen.js milik A, tapi khusus admin):
    1. Memuat komponen/admin-sidebar.html ke dalam halaman
@@ -24,11 +24,6 @@
      admin-dashboard, admin-pesanan, admin-paket
    supaya fungsi di bawah bisa mencocokkannya dengan data-menu="dashboard"
    dkk di admin-sidebar.html (awalan "admin-" dibuang sebelum dicocokkan).
-
-   CATATAN: logout.php BELUM dibuat (baru dibuat di Tahap 2: Login Admin).
-   Tombol Keluar di bawah sudah disiapkan sekarang supaya C tidak perlu
-   menulis ulang layout.js nanti; kalau endpoint-nya belum ada, tombol akan
-   gagal diam-diam dan tetap mengarahkan ke login.html (lihat catch di bawah).
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -96,22 +91,21 @@ function siapkanTombolHamburger() {
   });
 }
 
-/* Tombol Keluar di bawah sidebar. Memanggil api/admin/logout.php (dibuat di
-   Tahap 2), lalu mengarahkan ke halaman login apa pun hasilnya -- supaya
-   admin tidak pernah "terjebak" kalau sesi di server sudah habis duluan. */
+/* Tombol Keluar di bawah sidebar. Memanggil api/admin/logout.php, lalu
+   mengarahkan ke halaman login apa pun hasilnya -- supaya admin tidak
+   pernah "terjebak" kalau sesi di server sudah habis duluan. */
 function siapkanTombolKeluar() {
   var tombol = document.getElementById('tombolKeluarAdmin');
   if (!tombol) { return; }
 
   tombol.addEventListener('click', function () {
-    /* [TAMBAH] path "../../api/admin/logout.php" disesuaikan nanti dengan
-       letak pasti file halaman admin di folder frontend/admin/. Cocokkan
-       dengan path yang dipakai fetch lain di halaman admin. */
+    /* Halaman admin ada di frontend/admin/, jadi API dipanggil dengan
+       "../../api/..." (sama seperti panggilApi() di file admin lain). */
     fetch('../../api/admin/logout.php', { method: 'POST' })
       .catch(function (error) {
-        /* Tidak masalah kalau gagal (misal logout.php belum ada / sesi sudah
-           habis) -- tetap lanjut ke login.html di bawah supaya admin tidak
-           tersangkut di halaman yang butuh login. */
+        /* Tidak masalah kalau gagal (misal sesi sudah habis) -- tetap lanjut
+           ke login.html di bawah supaya admin tidak tersangkut di halaman
+           yang butuh login. */
         console.error(error);
       })
       .finally(function () {
