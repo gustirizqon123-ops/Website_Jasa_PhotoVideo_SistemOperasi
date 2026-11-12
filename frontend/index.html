@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>For Us Picture. | Foto &amp; Video untuk Cerita yang Ingin Kamu Kenang</title>
-  <meta name="description" content="Jasa foto dan video untuk pernikahan, wisuda, produk, dan acara.">
+  <meta name="description" content="Jasa foto dan video untuk pernikahan, wisuda, dan acara.">
 
   <!-- Font (Outfit untuk judul, Plus Jakarta Sans untuk teks isi) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,8 +67,11 @@
 
     <!-- ==================================================================
          2. KATEGORI
-         Nanti isi kartu bisa dibuat dari api/kategori/list.php.
-         Untuk sekarang ditulis langsung supaya tampilannya bisa dicek.
+         Ditulis langsung (belum dari api/kategori/list.php), jadi HARUS
+         disamakan manual dengan tabel kategori & paket di database:
+         - ?kategori=ID = id di tabel kategori (1 Wedding, 2 Wisuda, 3 Event)
+         - "Mulai Rp..." = harga paket termurah di kategori itu
+         Kalau kategori/paket di database berubah, ubah juga kartu di bawah.
          ================================================================== -->
     <section class="section" id="kategori">
       <div class="container">
@@ -81,7 +84,7 @@
           <a href="katalog.html" class="btn btn-secondary">Semua Paket <span class="ikon ikon-panah" aria-hidden="true"></span></a>
         </div>
 
-        <div class="grid grid-4">
+        <div class="grid grid-3">
 
           <!-- Kartu kategori. [UBAH] teks dan harga "Mulai Rp..." sesuai paket termurah -->
           <a href="katalog.html?kategori=1" class="kartu-kategori">
@@ -91,7 +94,7 @@
               <span class="ikon ikon-panah" aria-hidden="true"></span>
             </div>
             <p>Janji, tawa, dan segala rasa.</p>
-            <span class="mulai">Mulai Rp4.500.000</span>
+            <span class="mulai">Mulai Rp1.000.000</span>
           </a>
 
           <a href="katalog.html?kategori=2" class="kartu-kategori">
@@ -101,27 +104,17 @@
               <span class="ikon ikon-panah" aria-hidden="true"></span>
             </div>
             <p>Satu pencapaian. Banyak cerita.</p>
-            <span class="mulai">Mulai Rp750.000</span>
+            <span class="mulai">Mulai Rp500.000</span>
           </a>
 
           <a href="katalog.html?kategori=3" class="kartu-kategori">
-            <img src="assets/img/kategori-produk.jpg" alt="Produk">
-            <div class="kartu-kategori-judul">
-              <h3>Produk</h3>
-              <span class="ikon ikon-panah" aria-hidden="true"></span>
-            </div>
-            <p>Detail yang membuatnya berbeda.</p>
-            <span class="mulai">Mulai Rp1.200.000</span>
-          </a>
-
-          <a href="katalog.html?kategori=4" class="kartu-kategori">
             <img src="assets/img/kategori-event.jpg" alt="Event">
             <div class="kartu-kategori-judul">
               <h3>Event</h3>
               <span class="ikon ikon-panah" aria-hidden="true"></span>
             </div>
             <p>Energi acara, terasa kembali.</p>
-            <span class="mulai">Mulai Rp2.000.000</span>
+            <span class="mulai">Mulai Rp3.500.000</span>
           </a>
 
         </div>
@@ -160,7 +153,7 @@
           </article>
           <article class="galeri-item">
             <img src="assets/img/galeri-3.jpg" alt="Ruang untuk bertumbuh">
-            <span class="tag">Produk</span>
+            <span class="tag">Event</span>
             <h4>Ruang untuk bertumbuh</h4>
           </article>
           <article class="galeri-item">

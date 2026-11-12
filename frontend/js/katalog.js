@@ -13,7 +13,7 @@
       -> buat kartu paket di #daftar-paket
    3. Saat tombol "Lihat detail" diklik -> ambil api/paket/detail.php -> isi modal
    4. Baca parameter URL ?kategori=ID (dipakai tautan dari index.html,
-      kartu "Wedding/Wisuda/Produk/Event") supaya tab yang sesuai
+      kartu "Wedding/Wisuda/Event") supaya tab yang sesuai
       langsung aktif saat halaman dibuka dari Beranda
    5. Isi tautan tombol "Konsultasi via WhatsApp" dari KONFIG.NOMOR_WA_ADMIN
    ========================================================================== */
