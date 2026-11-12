@@ -1,0 +1,187 @@
+/* ==========================================================================
+   css/admin-paket.css   (milik A)
+   Letak file : frontend/css/admin-paket.css
+   Dimuat di  : admin/paket.html dan admin/paket-form.html, SETELAH
+                style.css, (form.css), dan admin.css
+
+   Semua kelas di sini berawalan "paket-" (aturan ROADMAP.md) supaya tidak
+   bentrok dengan kelas milik B (form-, bayar-, upload-) dan C (admin-).
+   Variabel warna/jarak/radius diambil dari style.css bagian 1.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. TOOLBAR (paket.html): kolom cari + tombol "Tambah Paket"
+   ========================================================================== */
+.paket-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jarak-2);
+  margin-bottom: var(--jarak-3);
+}
+
+.paket-toolbar .input {
+  max-width: 320px;               /* [UKUR] lebar kolom cari */
+}
+
+
+/* ==========================================================================
+   2. TABEL PAKET (paket.html)
+   ========================================================================== */
+
+/* Thumbnail kecil di kolom "Gambar". Ukuran DIKUNCI supaya foto asli yang
+   besar (ribuan piksel) tidak merusak tinggi baris tabel. */
+.paket-tabel-gambar {
+  display: block;
+  width: 72px;                    /* [UKUR] */
+  height: 48px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: var(--warna-tint);
+}
+
+/* Tombol "Hapus" di baris tabel: warna merah, sisanya ikut .admin-tabel-aksi */
+.paket-tabel-aksi-hapus {
+  color: var(--warna-error);
+}
+
+
+/* ==========================================================================
+   3. MODAL KONFIRMASI HAPUS (paket.html)
+   ========================================================================== */
+#modal-hapus-paket .modal {
+  max-width: 440px;               /* [UKUR] modal konfirmasi lebih kecil dari modal detail */
+}
+
+.paket-hapus-judul {
+  margin-bottom: var(--jarak-2);
+  padding-right: 48px;            /* beri ruang untuk tombol X di pojok */
+}
+
+.paket-hapus-teks {
+  color: var(--warna-teks-sekunder);
+  margin-bottom: var(--jarak-4);
+}
+
+.paket-hapus-aksi {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--jarak-2);
+}
+
+/* paket.html memakai kelas .btn-sekunder dan .btn-error yang TIDAK ada di
+   style.css. Didefinisikan di sini, dibatasi hanya di dalam modal hapus,
+   supaya tidak mengubah file bersama. */
+.paket-hapus-aksi .btn-sekunder {
+  background: var(--warna-permukaan);
+  color: var(--warna-teks);
+  border: 1px solid var(--warna-garis-kuat);
+}
+.paket-hapus-aksi .btn-sekunder:hover {
+  border-color: var(--warna-aksen);
+  background: var(--warna-tint);
+}
+
+.paket-hapus-aksi .btn-error {
+  background: var(--warna-error);
+  color: #FFFFFF;
+  border: 1px solid var(--warna-error);
+}
+.paket-hapus-aksi .btn-error:hover {
+  background: #A93737;            /* [UBAH] merah lebih gelap saat kursor di atas */
+}
+.paket-hapus-aksi .btn-error:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================================
+   4. FORM TAMBAH/UBAH PAKET (paket-form.html)
+   Dua kolom: form di kiri, pratinjau gambar di kanan.
+   ========================================================================== */
+.paket-form-tata-letak {
+  display: grid;
+  grid-template-columns: 1fr 340px; /* [UKUR] lebar kolom pratinjau */
+  gap: var(--jarak-5);
+  align-items: start;
+}
+
+.paket-form .textarea {
+  min-height: 120px;
+}
+
+.paket-form-pratinjau {
+  background: var(--warna-permukaan);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+  padding: var(--jarak-3);
+}
+
+.paket-form-pratinjau-label {
+  font-weight: 600;
+  color: var(--warna-teks);
+  margin-bottom: var(--jarak-2);
+}
+
+/* Kotak unggah (label for="inputGambarPaket"): klik di mana saja membuka
+   pemilih file. Isinya placeholder ATAU gambar pratinjau (diatur JS). */
+.paket-unggah-gambar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--warna-tint);
+  border: 1.5px dashed var(--warna-garis-kuat);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.paket-unggah-gambar:hover {
+  border-color: var(--warna-aksen);
+}
+
+.paket-unggah-gambar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Atribut hidden harus tetap menang atas display di atas */
+.paket-unggah-gambar img[hidden],
+.paket-unggah-placeholder[hidden] {
+  display: none;
+}
+
+.paket-unggah-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--jarak-3);
+  text-align: center;
+  font-size: var(--teks-kecil);
+  color: var(--warna-teks-redup);
+}
+
+
+/* ==========================================================================
+   5. RESPONSIF
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .paket-form-tata-letak {
+    grid-template-columns: 1fr;   /* pratinjau pindah ke bawah form */
+  }
+}
+
+@media (max-width: 640px) {
+  .paket-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .paket-toolbar .input {
+    max-width: none;
+  }
+}

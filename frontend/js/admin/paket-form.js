@@ -51,12 +51,12 @@ function ambilIdDariUrl() {
    bisa menunggu dropdown siap SEBELUM mengisi nilai terpilih di mode ubah.
    ========================================================================== */
 function muatPilihanKategori() {
-  return panggilApi('../api/kategori/list.php')
+  return panggilApi('../../api/kategori/list.php')
     .then(function (daftarKategori) {
       var select = document.getElementById('kategoriId');
       var html = '<option value="">Pilih kategori</option>';
       daftarKategori.forEach(function (kategori) {
-        html += '<option value="' + kategori.id + '">' + escapeHtml(kategori.nama) + '</option>';
+        html += '<option value="' + kategori.id + '">' + escapeHtml(kategori.nama_kategori) + '</option>';
       });
       select.innerHTML = html;
     })
@@ -77,14 +77,14 @@ function siapkanModeUbah() {
   // Mode ubah: gambar baru OPSIONAL, bukan wajib seperti mode tambah.
   document.getElementById('inputGambarPaket').required = false;
 
-  panggilApi('../api/paket/detail.php?id=' + MODE_ID_PAKET)
+  panggilApi('../../api/paket/detail.php?id=' + MODE_ID_PAKET)
     .then(function (paket) {
       document.getElementById('nama').value = paket.nama;
       document.getElementById('kategoriId').value = paket.kategori_id;
       document.getElementById('harga').value = paket.harga;
       document.getElementById('deskripsi').value = paket.deskripsi;
 
-      tampilkanGambar('../uploads/paket/' + paket.gambar);
+      tampilkanGambar('../../uploads/paket/' + paket.gambar);
     })
     .catch(function (error) {
       tampilToast('Gagal memuat data paket: ' + error.message, 'error');
@@ -174,7 +174,7 @@ function siapkanFormPaket() {
     var tombol = document.getElementById('tombolSimpanPaket');
     setMemuat(tombol, true, 'Menyimpan...');
 
-    panggilApi('../api/admin/paket.php', { method: 'POST', body: formData })
+    panggilApi('../../api/admin/paket.php', { method: 'POST', body: formData })
       .then(function () {
         tampilToast(MODE_ID_PAKET ? 'Paket berhasil diubah' : 'Paket berhasil ditambahkan', 'sukses');
         window.location.href = 'paket.html';

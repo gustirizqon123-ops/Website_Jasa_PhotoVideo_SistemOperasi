@@ -44,7 +44,8 @@ if (!in_array($aksi, $aksiSah, true)) {
   kirim_error('Aksi tidak valid', 400);
 }
 
-$FOLDER_GAMBAR = __DIR__ . '/../../frontend/uploads/paket/';
+// Folder yang sama dengan yang dibaca katalog.js/pemesanan.js (uploads/paket/ di akar proyek)
+$FOLDER_GAMBAR = __DIR__ . '/../../uploads/paket/';
 $TIPE_GAMBAR_DIIZINKAN = [
   'image/jpeg' => 'jpg',
   'image/png' => 'png',

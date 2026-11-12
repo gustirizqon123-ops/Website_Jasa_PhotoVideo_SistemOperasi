@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
    1 & 2. AMBIL DAN TAMPILKAN DAFTAR PAKET
    ========================================================================== */
 function muatDaftarPaket() {
-  panggilApi('../api/paket/list.php')
+  panggilApi('../../api/paket/list.php')
     .then(function (daftar) {
       DAFTAR_PAKET_SEMUA = daftar;
       gambarTabelPaket(daftar);
@@ -119,7 +119,7 @@ function siapkanModalHapus() {
 
     setMemuat(tombolKonfirmasi, true, 'Menghapus...');
 
-    panggilApi('../api/admin/paket.php', { method: 'POST', body: formData })
+    panggilApi('../../api/admin/paket.php', { method: 'POST', body: formData })
       .then(function () {
         tampilToast('Paket berhasil dihapus', 'sukses');
         tutupModal('modal-hapus-paket');

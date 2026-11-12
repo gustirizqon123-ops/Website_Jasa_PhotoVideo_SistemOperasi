@@ -39,7 +39,7 @@ function muatDetailPesanan() {
   var wadah = document.getElementById('isiDetailPesanan');
   wadah.innerHTML = '<p class="teks-redup">Memuat detail pesanan...</p>';
 
-  panggilApi('../api/admin/pesanan.php?id=' + ID_PESANAN)
+  panggilApi('../../api/admin/pesanan.php?id=' + ID_PESANAN)
     .then(function (pesanan) {
       gambarDetailPesanan(pesanan);
     })
@@ -204,7 +204,7 @@ function simpanStatusPesanan() {
 
   setMemuat(tombol, true, 'Menyimpan...');
 
-  panggilApi('../api/admin/ubah-status.php', {
+  panggilApi('../../api/admin/ubah-status.php', {
     method: 'POST',
     body: { target: 'pesanan', id: ID_PESANAN, status: statusBaru }
   })
@@ -228,7 +228,7 @@ function simpanStatusPesanan() {
  * lebih sederhana, dan sekalian memastikan data lain tetap sinkron.
  */
 function simpanStatusPembayaran(idPembayaran, statusBaru) {
-  panggilApi('../api/admin/ubah-status.php', {
+  panggilApi('../../api/admin/ubah-status.php', {
     method: 'POST',
     body: { target: 'pembayaran', id: idPembayaran, status: statusBaru }
   })

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function muatRingkasanDashboard() {
-  panggilApi('../api/admin/pesanan.php')
+  panggilApi('../../api/admin/pesanan.php')
     .then(function (data) {
       isiKartuRingkasan(data.ringkasan);
       isiTabelPesananTerbaru(data.pesanan.slice(0, 5)); // 5 teratas saja

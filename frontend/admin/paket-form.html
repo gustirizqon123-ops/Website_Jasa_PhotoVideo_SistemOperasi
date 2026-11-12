@@ -103,7 +103,9 @@
                 Klik untuk unggah gambar paket
               </span>
             </label>
-            <input type="file" id="inputGambarPaket" name="gambar" accept=".jpg,.jpeg,.png" hidden>
+            <!-- form="formPaket": input ini ada di luar <form>, atribut ini
+                 membuatnya tetap ikut terkirim lewat new FormData(form) -->
+            <input type="file" id="inputGambarPaket" name="gambar" form="formPaket" accept=".jpg,.jpeg,.png" hidden>
 
             <p class="bantuan" style="margin-top: var(--jarak-2);">JPG atau PNG, maksimal 2 MB.</p>
           </aside>

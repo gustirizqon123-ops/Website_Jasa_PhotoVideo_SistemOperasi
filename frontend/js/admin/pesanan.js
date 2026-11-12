@@ -47,7 +47,7 @@ function muatDaftarPesanan(status) {
   kosong.style.display = 'none';
   tbody.innerHTML = '<tr><td colspan="7" class="teks-redup">Memuat data...</td></tr>';
 
-  var alamat = status ? ('../api/admin/pesanan.php?status=' + status) : '../api/admin/pesanan.php';
+  var alamat = status ? ('../../api/admin/pesanan.php?status=' + status) : '../../api/admin/pesanan.php';
 
   panggilApi(alamat)
     .then(function (data) {
