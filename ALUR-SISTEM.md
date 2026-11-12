@@ -1,8 +1,9 @@
 # Alur Sistem — Website Pemesanan Jasa Foto & Video
 
-> **Status: DRAF.** Disusun dari kode yang ada di repository (2026-11-12).
-> Bagian "Celah alur yang ditemukan" di bawah perlu dibahas kelompok sebelum
-> dokumen ini dianggap final.
+> **Status: final (2026-11-12).** Disusun dari kode yang ada di repository.
+> Dua keputusan kelompok sudah dimasukkan: pelunasan / bukti ulang dicatat
+> admin (bagian 3), dan verifikasi pembayaran otomatis mengonfirmasi pesanan
+> (bagian 5). Lihat bagian 6 untuk ringkasan keputusan dan batasan sistem.
 
 Pelengkap `SITEMAP.md` (halaman apa saja) dan `ERD.md` (data apa saja).
 Dokumen ini menjelaskan **urutan kejadian**: siapa melakukan apa, halaman
@@ -31,8 +32,9 @@ flowchart LR
         a1["Login"]
         a2["Cek pesanan baru<br/>di Dashboard"]
         a3["Lihat bukti bayar<br/>verifikasi / tolak"]
-        a4["Ubah status pesanan<br/>dikonfirmasi / selesai / batal"]
+        a4["Ubah status pesanan<br/>selesai / batal"]
         a5["Kabari pelanggan<br/>via WhatsApp"]
+        a6["Catat pelunasan /<br/>bukti ulang"]
     end
 
     p1 --> p2 --> p3 --> p4
@@ -42,13 +44,17 @@ flowchart LR
     s1 -.-> a2
     s2 -.-> a3
     a3 -->|ubah-status.php| s2
+    a3 -.->|"verifikasi: pesanan otomatis<br/>menjadi dikonfirmasi"| s1
     a4 -->|ubah-status.php| s1
     a5 -.->|pelanggan menunggu kabar| p4
+    p4 -->|"kirim bukti pelunasan<br/>lewat WhatsApp"| a6
+    a6 -->|catat-pembayaran.php| s2
 ```
 
 Inti alurnya: **pelanggan membuat data, admin memeriksa dan mengubah
 statusnya, dan komunikasi selanjutnya lewat WhatsApp** (tidak ada halaman
-cek status untuk pelanggan).
+cek status untuk pelanggan). Pembayaran berikutnya (pelunasan, bukti ulang)
+dikirim pelanggan lewat WhatsApp dan **dicatat admin** di Detail Pesanan.
 
 ---
 
@@ -162,15 +168,33 @@ sequenceDiagram
         T->>API: POST admin/ubah-status.php (target pembayaran, ditolak)
     end
     API->>DB: UPDATE pembayaran SET status
+    opt Diverifikasi dan pesanan masih menunggu
+        API->>DB: UPDATE pesanan SET status dikonfirmasi (transaksi yang sama)
+    end
     API-->>T: 200, detail dimuat ulang
 
-    A->>T: Pilih status pesanan baru, klik "Simpan"
+    A->>T: Pilih status pesanan baru (misalnya selesai), klik "Simpan"
     T->>API: POST admin/ubah-status.php (target pesanan)
     API->>DB: UPDATE pesanan SET status
     API-->>T: 200, badge status diperbarui
 
     A->>P: Klik "Hubungi", kabari hasil lewat WhatsApp
     Note over A,P: Pelanggan tidak bisa melihat status di website.<br/>Semua kabar disampaikan admin lewat WhatsApp.
+
+    rect rgba(149, 213, 178, 0.15)
+    Note over A,P: Pelunasan, atau bukti ulang setelah ditolak
+    P->>A: Kirim bukti transfer lewat WhatsApp
+    A->>T: Isi form "Catat Pembayaran" (jenis, metode, jumlah, bukti opsional)
+    T->>API: POST admin/catat-pembayaran.php (FormData)
+    API->>DB: Kunci baris pesanan, hitung sisa tagihan
+    alt Pesanan batal, sudah lunas, atau jumlah melebihi sisa
+        API-->>T: 409 / 400 dengan pesan yang jelas
+    else Sah
+        API->>DB: INSERT pembayaran (langsung terverifikasi)
+        API->>DB: Pesanan menunggu menjadi dikonfirmasi (kalau masih menunggu)
+        API-->>T: 201 + sisa tagihan, detail dimuat ulang
+    end
+    end
 
     opt Sesi habis atau belum login
         API-->>D: 401 dari cek_login()
@@ -180,9 +204,14 @@ sequenceDiagram
 
 Catatan:
 
-- **Status pembayaran dan status pesanan diubah terpisah.** Memverifikasi
-  pembayaran tidak otomatis mengubah pesanan menjadi "dikonfirmasi"; admin
-  harus mengubahnya sendiri lewat dropdown.
+- **Konfirmasi otomatis:** begitu ada pembayaran terverifikasi (lewat tombol
+  Verifikasi atau form Catat Pembayaran), pesanan yang masih "menunggu"
+  langsung menjadi "dikonfirmasi". Pesanan yang sudah dikonfirmasi, selesai,
+  atau batal tidak diubah. Status "selesai" dan "batal" tetap diatur admin
+  lewat dropdown.
+- **Pembayaran yang dicatat admin langsung terverifikasi**, karena admin sudah
+  memeriksa buktinya sendiri. Bukti boleh tidak dilampirkan (misalnya admin
+  sudah mengecek mutasi rekening). Jumlahnya dibatasi sisa tagihan.
 - Semua endpoint di `api/admin/` (kecuali `login.php`) memanggil `cek_login()`
   dulu. Tombol "Keluar" di sidebar memanggil `logout.php`, lalu kembali ke login.
 
@@ -250,7 +279,7 @@ stateDiagram-v2
 
     state "Status Pesanan" as SP {
         [*] --> menunggu : pelanggan memesan
-        menunggu --> dikonfirmasi : admin menerima
+        menunggu --> dikonfirmasi : otomatis saat pembayaran terverifikasi
         menunggu --> batal : admin / pelanggan membatalkan
         dikonfirmasi --> selesai : acara selesai, hasil dikirim
         dikonfirmasi --> batal : dibatalkan
@@ -261,6 +290,7 @@ stateDiagram-v2
     state "Status Pembayaran" as SB {
         state "menunggu" as tunggu
         [*] --> tunggu : pelanggan unggah bukti
+        [*] --> terverifikasi : admin mencatat pembayaran
         tunggu --> terverifikasi : admin klik Verifikasi
         tunggu --> ditolak : admin klik Tolak
         terverifikasi --> [*]
@@ -270,6 +300,9 @@ stateDiagram-v2
 
 Diagram di atas adalah **alur yang dimaksudkan**. Di kode sekarang:
 
+- Perpindahan **menunggu → dikonfirmasi terjadi otomatis** saat pembayaran
+  pertama terverifikasi (lewat tombol Verifikasi atau form Catat Pembayaran).
+  Admin tetap bisa mengubahnya manual kalau perlu.
 - `ubah-status.php` **tidak membatasi urutan**: admin bisa memilih status apa
   saja dari dropdown, termasuk mengembalikan "selesai" ke "menunggu".
 - Tombol Verifikasi/Tolak hanya muncul untuk pembayaran berstatus "menunggu",
@@ -279,32 +312,36 @@ Diagram di atas adalah **alur yang dimaksudkan**. Di kode sekarang:
 
 ---
 
-## 6. Celah Alur yang Ditemukan (perlu dibahas kelompok)
+## 6. Keputusan Alur dan Batasan Sistem
 
-1. **Pelanggan tidak bisa mengunggah bukti lagi setelah meninggalkan halaman
-   Pembayaran.** Halaman Pembayaran hanya bisa dipakai tepat setelah memesan
-   (datanya dari `sessionStorage`, dan dihapus di halaman Konfirmasi).
-   Akibatnya dua hal **tidak punya jalur di website**:
-   - **Pelunasan** setelah DP (misalnya mendekati hari acara).
-   - **Kirim ulang bukti** setelah bukti pertama ditolak admin.
+### Keputusan kelompok (2026-11-12)
 
-   Pilihan: (a) tetapkan bahwa pelunasan dan bukti ulang dikirim lewat
-   WhatsApp lalu dicatat manual, (b) beri admin tombol untuk mencatat
-   pembayaran sendiri di Detail Pesanan, atau (c) buat halaman "Bayar
-   Pelunasan" yang meminta kode pesanan + no. WA (bisa memakai
-   `api/pesanan/status.php` yang sudah ada untuk verifikasinya).
+1. **Pelunasan dan bukti ulang dicatat admin.** Halaman Pembayaran pelanggan
+   hanya bisa dipakai tepat setelah memesan (datanya dari `sessionStorage`,
+   dan dihapus di halaman Konfirmasi). Karena itu pelunasan setelah DP, dan
+   bukti ulang setelah bukti pertama ditolak, dikirim pelanggan **lewat
+   WhatsApp**, lalu admin mencatatnya lewat form **"Catat Pembayaran"** di
+   Detail Pesanan (`api/admin/catat-pembayaran.php`). Pilihan lain yang
+   dipertimbangkan: hanya lewat WhatsApp tanpa dicatat di sistem, atau
+   halaman "Bayar Pelunasan" untuk pelanggan.
 
-2. **Status pesanan tidak otomatis mengikuti pembayaran.** Kalau ini memang
-   disengaja (admin memutuskan sendiri), cukup dijelaskan saat presentasi.
-   Kalau tidak, `ubah-status.php` bisa diubah agar verifikasi DP/lunas
-   sekaligus mengubah pesanan menjadi "dikonfirmasi".
+2. **Verifikasi pembayaran otomatis mengonfirmasi pesanan.** Pesanan
+   "menunggu" langsung menjadi "dikonfirmasi" begitu ada pembayaran
+   terverifikasi, dalam satu transaksi database.
 
-3. **Urutan status tidak dibatasi** (lihat bagian 5). Aman untuk tugas ini,
-   tapi layak disebut sebagai batasan sistem.
+3. **Tidak ada halaman Cek Status untuk pelanggan.** Endpoint
+   `api/pesanan/status.php` yang sempat dibuat sudah dihapus.
 
-4. **Total pembayaran tidak dicek terhadap total harga.** `upload.php` hanya
-   memastikan *satu* kiriman tidak melebihi `total_harga`; DP + pelunasan
-   bisa saja melebihinya (sudah tercatat di ROADMAP Tahap 5, opsional).
+### Batasan sistem (disadari, tidak diperbaiki dalam lingkup tugas ini)
+
+1. **Urutan status tidak dibatasi** (lihat bagian 5). Admin bisa memilih
+   status apa saja dari dropdown.
+2. **Pembayaran dari pelanggan tidak dicek terhadap sisa tagihan.**
+   `upload.php` hanya memastikan *satu* kiriman tidak melebihi `total_harga`.
+   Pembayaran yang dicatat admin sudah dibatasi sisa tagihan.
+3. **Pelanggan tidak bisa mengunggah sendiri setelah meninggalkan halaman
+   Pembayaran**, sehingga bergantung pada admin untuk mencatat pembayaran
+   berikutnya (lihat keputusan 1).
 
 ---
 

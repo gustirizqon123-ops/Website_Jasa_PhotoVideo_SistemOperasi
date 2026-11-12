@@ -463,6 +463,48 @@
 
 
 /* ==========================================================================
+   8b. FORM CATAT PEMBAYARAN (Detail Pesanan)
+   Diisi oleh pesanan-detail.js di bawah tabel pembayaran.
+   ========================================================================== */
+.admin-catat-bayar {
+  margin-top: var(--jarak-4);
+  padding: var(--jarak-4);
+}
+
+.admin-catat-bayar h3 {
+  margin-bottom: var(--jarak-1);
+}
+
+.admin-catat-ringkasan {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--jarak-1) var(--jarak-4);
+  margin-block: var(--jarak-2) var(--jarak-3);
+  padding: var(--jarak-2);
+  font-size: var(--teks-kecil);
+  color: var(--warna-teks-redup);
+  background: var(--warna-tint);
+  border-radius: var(--radius);
+}
+
+.admin-catat-ringkasan strong {
+  color: var(--warna-teks);
+}
+
+.admin-catat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--jarak-2);
+  margin-bottom: var(--jarak-3);
+}
+
+/* Input file bawaan browser lebih tinggi dari .input biasa */
+.admin-catat-grid input[type="file"] {
+  padding-block: 10px;
+}
+
+
+/* ==========================================================================
    9. RESPONSIF
    [UBAH] Pola sederhana dulu: di bawah 1024px sidebar disembunyikan dan
    diganti tombol hamburger (ditangani JS: kelas "admin-sidebar-terbuka"
@@ -503,8 +545,18 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .admin-catat-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 480px) {
   .admin-ringkasan {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-catat-grid {
     grid-template-columns: 1fr;
   }
 }

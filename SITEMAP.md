@@ -27,7 +27,7 @@ flowchart TD
         sidebar[["Sidebar admin<br/>ada di semua halaman admin"]]
         dashboard["admin/dashboard.html<br/><b>Dashboard</b><br/>4 kartu ringkasan + 5 pesanan terbaru"]
         daftar["admin/pesanan.html<br/><b>Daftar Pesanan</b><br/>filter per status"]
-        detail["admin/pesanan-detail.html?id=ID<br/><b>Detail Pesanan</b><br/>ubah status + verifikasi bayar"]
+        detail["admin/pesanan-detail.html?id=ID<br/><b>Detail Pesanan</b><br/>ubah status + verifikasi bayar<br/>+ catat pelunasan"]
         paket["admin/paket.html<br/><b>Kelola Paket</b><br/>tabel + cari + hapus"]
         paketform["admin/paket-form.html<br/><b>Form Paket</b><br/>tambah (tanpa ?id=) / ubah (?id=ID)"]
     end
@@ -76,9 +76,11 @@ Keterangan:
 - **Tidak ada halaman "Cek Status Pesanan" untuk pelanggan.** Ini keputusan
   kelompok sejak awal: setelah mengirim bukti bayar, pelanggan diarahkan
   menghubungi admin lewat WhatsApp, dan admin yang mengabari perkembangan
-  pesanannya. *(Catatan: file `api/pesanan/status.php` masih ada di
-  repository walau tidak dipakai halaman mana pun. Kalau kelompok memutuskan
-  menghapusnya atau membuat halamannya, perbarui diagram ini.)*
+  pesanannya. Endpoint `api/pesanan/status.php` yang sempat dibuat sudah
+  dihapus (2026-11-12).
+- **Tidak ada halaman pelunasan untuk pelanggan.** Pelunasan dan bukti ulang
+  dikirim lewat WhatsApp, lalu admin mencatatnya lewat form "Catat
+  Pembayaran" di Detail Pesanan (lihat `ALUR-SISTEM.md` bagian 3).
 - `frontend/komponen.html` sengaja tidak dimasukkan: itu halaman uji tampilan
   komponen untuk pengembang, bukan bagian dari website.
 
@@ -114,6 +116,7 @@ flowchart LR
         e8["admin/pesanan.php"]
         e9["admin/ubah-status.php"]
         e10["admin/paket.php"]
+        e11["admin/catat-pembayaran.php"]
     end
 
     h0 -.->|tidak memanggil API<br/>isi ditulis langsung di HTML| api
@@ -129,6 +132,7 @@ flowchart LR
     h7 --> e8
     h8 --> e8
     h8 --> e9
+    h8 --> e11
     h9 --> e2
     h9 --> e10
     h10 --> e1

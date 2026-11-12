@@ -9,11 +9,16 @@
 
    Mengubah status PESANAN atau PEMBAYARAN -- dibedakan field "target"
    di body, BUKAN dua endpoint terpisah (lihat API.md bagian 5.4).
+
+   KONFIRMASI OTOMATIS: kalau pembayaran diubah menjadi "terverifikasi",
+   pesanan pemiliknya yang masih "menunggu" ikut menjadi "dikonfirmasi"
+   (lihat konfirmasi_otomatis() di config/pesanan.php).
    ========================================================================== */
 
 require_once __DIR__ . '/../config/response.php';
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../config/auth.php';
+require_once __DIR__ . '/../config/pesanan.php';
 
 cek_login();
 
@@ -51,12 +56,20 @@ try {
   // dari input mentah -- supaya aman dari SQL injection lewat nama tabel.
   $tabel = $target;
 
-  $cek = $pdo->prepare("SELECT id FROM {$tabel} WHERE id = :id");
+  // Kolom pesanan_id hanya ada di tabel pembayaran -- dipakai untuk
+  // konfirmasi otomatis di bawah.
+  $kolom = ($tabel === 'pembayaran') ? 'id, pesanan_id' : 'id';
+  $cek = $pdo->prepare("SELECT {$kolom} FROM {$tabel} WHERE id = :id");
   $cek->execute(['id' => (int) $id]);
+  $baris = $cek->fetch();
 
-  if (!$cek->fetch()) {
+  if (!$baris) {
     kirim_error('Data tidak ditemukan', 404);
   }
+
+  // Satu transaksi: status pembayaran dan (kalau perlu) status pesanan
+  // berubah bersama, atau tidak sama sekali.
+  $pdo->beginTransaction();
 
   $update = $pdo->prepare("UPDATE {$tabel} SET status = :status WHERE id = :id");
   $update->execute([
@@ -64,12 +77,28 @@ try {
     'id' => (int) $id,
   ]);
 
-  kirim_sukses([
+  $pesananIkutBerubah = false;
+  if ($target === 'pembayaran' && $status === 'terverifikasi') {
+    $pesananIkutBerubah = konfirmasi_otomatis($pdo, (int) $baris['pesanan_id']);
+  }
+
+  $pdo->commit();
+
+  $data = [
     'target' => $target,
     'id' => (int) $id,
     'status' => $status,
-  ], 'Status berhasil diperbarui');
+  ];
+  if ($target === 'pembayaran') {
+    // true kalau pesanan "menunggu" barusan otomatis menjadi "dikonfirmasi"
+    $data['status_pesanan_berubah'] = $pesananIkutBerubah;
+  }
+
+  kirim_sukses($data, 'Status berhasil diperbarui');
 } catch (PDOException $e) {
+  if ($pdo->inTransaction()) {
+    $pdo->rollBack();
+  }
   error_log('admin/ubah-status.php: ' . $e->getMessage());
   kirim_error('Gagal memperbarui status', 500);
 }

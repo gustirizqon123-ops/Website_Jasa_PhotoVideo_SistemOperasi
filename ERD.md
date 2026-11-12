@@ -58,7 +58,7 @@ erDiagram
         varchar  metode          "maks. 50; nilai sah dibatasi API: transfer_bank, ewallet, qris"
         enum     jenis           "dp, lunas"
         decimal  jumlah
-        varchar  bukti_bayar     "nama file di uploads/bukti-bayar/"
+        varchar  bukti_bayar     "nama file di uploads/bukti-bayar/; NULL kalau dicatat admin tanpa lampiran"
         enum     status          "menunggu, terverifikasi, ditolak"
         datetime dibayar_pada
     }
@@ -106,7 +106,15 @@ tidak termasuk lingkup tugas ini.
    dan `upload.php` yang membatasi nilainya ke `transfer_bank`, `ewallet`,
    atau `qris`.
 
-6. **Foreign key memakai aturan bawaan MySQL (`RESTRICT`).** Akibatnya paket
+6. **Pembayaran bisa berasal dari dua sumber.** Dari pelanggan lewat
+   `api/pembayaran/upload.php` (status awal `menunggu`, bukti wajib), atau
+   dicatat admin lewat `api/admin/catat-pembayaran.php` untuk pelunasan /
+   bukti ulang yang dikirim via WhatsApp (langsung `terverifikasi`, bukti
+   opsional sehingga `bukti_bayar` bisa `NULL`). Struktur tabel tidak berubah.
+   Begitu ada pembayaran `terverifikasi`, pesanan `menunggu` otomatis menjadi
+   `dikonfirmasi`.
+
+7. **Foreign key memakai aturan bawaan MySQL (`RESTRICT`).** Akibatnya paket
    yang sudah punya pesanan tidak bisa dihapus, dan pesanan yang sudah punya
    pembayaran juga tidak bisa dihapus. `api/admin/paket.php` mengecek hal ini
    lebih dulu dan membalas error 409 dengan pesan yang jelas.

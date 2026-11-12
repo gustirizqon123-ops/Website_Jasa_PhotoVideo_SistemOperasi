@@ -111,7 +111,7 @@ Tampilan teks untuk pengguna (misalnya `transfer_bank` menjadi "Transfer Bank") 
 |---|---|---|---|---|---|
 | 1 | `api/paket/list.php` | GET | Daftar paket | Tidak | A |
 | 2 | `api/paket/detail.php` | GET | Detail satu paket | Tidak | A |
-| 3 | `api/pesanan/status.php` | GET | Cek status pesanan | Tidak | A |
+| ~~3~~ | ~~`api/pesanan/status.php`~~ | ~~GET~~ | **Dihapus 2026-11-12** (tidak ada halaman Cek Status, lihat 4.3) | | |
 | 4 | `api/pesanan/buat.php` | POST | Simpan pesanan baru | Tidak | B |
 | 5 | `api/pembayaran/upload.php` | POST | Kirim bukti pembayaran | Tidak | B |
 | 6 | `api/admin/login.php` | POST | Login admin | Tidak | C |
@@ -120,6 +120,7 @@ Tampilan teks untuk pengguna (misalnya `transfer_bank` menjadi "Transfer Bank") 
 | 9 | `api/admin/ubah-status.php` | POST | Ubah status pesanan atau pembayaran | Ya | C |
 | 10 | `api/admin/paket.php` | POST | Tambah, ubah, hapus paket | Ya | C |
 | 11 | `api/kategori/list.php` | GET | Daftar kategori | Tidak | A |
+| 12 | `api/admin/catat-pembayaran.php` | POST | Admin mencatat pembayaran (pelunasan / bukti ulang via WhatsApp) | Ya | C |
 
 ---
 
@@ -204,56 +205,13 @@ Jika tidak ada paket, `data` berupa array kosong `[]` (tetap `success`).
 
 ---
 
-### 4.3 GET `api/pesanan/status.php`
+### 4.3 ~~GET `api/pesanan/status.php`~~ (dihapus)
 
-> **Status: backend sudah diimplementasi** (`api/pesanan/status.php`). Halaman frontend Cek Status belum ada.
-
-**Catatan implementasi:** `no_wa` dicocokkan dalam dua bentuk, jadi `0812...` dan `62812...` dianggap nomor yang sama. `kode` tidak membedakan huruf besar/kecil. `jam` dikembalikan dalam format `HH:MM`.
-
-**Pemilik:** A | **Dipakai oleh:** halaman Cek Status Pesanan
-
-Pelanggan mengecek status pesanan dengan kode pesanan. Nomor WhatsApp dipakai sebagai verifikasi agar orang lain tidak bisa menebak kode pesanan (lihat bagian 8, poin 2).
-
-**Parameter (query):**
-
-| Nama | Wajib | Tipe | Keterangan |
-|---|---|---|---|
-| `kode` | Ya | teks | Kode pesanan, contoh `FV-0012` |
-| `no_wa` | Ya | teks | Nomor WhatsApp yang dipakai saat memesan |
-
-**Contoh permintaan:** `api/pesanan/status.php?kode=FV-0012&no_wa=081234567890`
-
-**Respons sukses (200):**
-
-```json
-{
-  "status": "success",
-  "message": "OK",
-  "data": {
-    "kode_pesanan": "FV-0012",
-    "nama": "Budi Santoso",
-    "nama_paket": "Wedding Silver",
-    "tanggal_acara": "2026-12-20",
-    "jam": "09:30",
-    "lokasi": "Gedung Serbaguna, Banjarbaru",
-    "total_harga": 3500000,
-    "status": "dikonfirmasi",
-    "dibuat_pada": "2026-11-09 14:30:00",
-    "pembayaran": [
-      { "jenis": "dp", "jumlah": 1000000, "status": "terverifikasi" }
-    ]
-  }
-}
-```
-
-Respons **tidak** memuat `email`, `no_wa`, `catatan`, dan nama file bukti bayar.
-
-**Kemungkinan error:**
-
-| Kode | Pesan |
-|---|---|
-| 400 | `Kode pesanan dan nomor WhatsApp wajib diisi` |
-| 404 | `Pesanan tidak ditemukan` (pesan yang sama untuk kode salah **maupun** nomor tidak cocok) |
+> **Dihapus 2026-11-12.** Kelompok memutuskan tidak ada halaman Cek Status
+> untuk pelanggan: perkembangan pesanan dikabarkan admin lewat WhatsApp, dan
+> pelunasan / bukti ulang dicatat admin lewat `api/admin/catat-pembayaran.php`
+> (5.6). Endpoint ini tidak pernah dipakai halaman mana pun. Kodenya masih
+> bisa dilihat di riwayat Git kalau suatu saat dibutuhkan lagi.
 
 ---
 
@@ -579,6 +537,11 @@ Mengubah status **pesanan** atau **pembayaran** (lewat field `target`).
 { "target": "pembayaran", "id": 7, "status": "terverifikasi" }
 ```
 
+**Konfirmasi otomatis (sejak 2026-11-12):** kalau `target` = `pembayaran` dan
+`status` = `terverifikasi`, pesanan pemilik pembayaran itu yang masih
+`menunggu` otomatis menjadi `dikonfirmasi` (dalam satu transaksi). Pesanan
+yang sudah `dikonfirmasi`, `selesai`, atau `batal` tidak diubah.
+
 **Respons sukses (200):**
 
 ```json
@@ -588,6 +551,10 @@ Mengubah status **pesanan** atau **pembayaran** (lewat field `target`).
   "data": { "target": "pesanan", "id": 12, "status": "dikonfirmasi" }
 }
 ```
+
+Untuk `target` = `pembayaran`, `data` juga memuat
+`"status_pesanan_berubah": true|false` (true kalau pesanan barusan otomatis
+dikonfirmasi), dipakai frontend untuk menampilkan pesan yang sesuai.
 
 **Kemungkinan error:**
 
@@ -635,6 +602,66 @@ Pada `ubah`, jika `gambar` tidak dikirim, gambar lama dipertahankan.
 | 401 | `Silakan login terlebih dahulu` |
 | 404 | `Paket tidak ditemukan` |
 | 409 | `Paket tidak dapat dihapus karena sudah dipakai pesanan` |
+
+---
+
+### 5.6 POST `api/admin/catat-pembayaran.php`
+
+**Pemilik:** C | **Dipakai oleh:** form "Catat Pembayaran" di halaman Detail Pesanan
+
+Admin mencatat pembayaran yang dikirim pelanggan **lewat WhatsApp**: pelunasan
+setelah DP, atau bukti ulang setelah bukti pertama ditolak. Halaman
+Pembayaran pelanggan hanya bisa dipakai tepat setelah memesan, jadi kedua
+kasus ini dicatat admin (keputusan kelompok 2026-11-12).
+
+Pembayaran yang dicatat di sini **langsung berstatus `terverifikasi`** (admin
+sudah memeriksa buktinya sendiri), dan konfirmasi otomatis berlaku seperti
+di 5.4.
+
+**Body (`multipart/form-data`):**
+
+| Field | Wajib | Keterangan |
+|---|---|---|
+| `pesanan_id` | Ya | `id` pesanan |
+| `metode` | Ya | Lihat bagian 2 |
+| `jenis` | Ya | `dp` atau `lunas` |
+| `jumlah` | Ya | Bilangan bulat > 0, **tidak boleh melebihi sisa tagihan** |
+| `bukti` | Tidak | File JPG, PNG, atau PDF, maks. 2 MB (aturan sama dengan 4.5). Boleh kosong, misalnya kalau admin sudah mengecek mutasi rekening langsung |
+
+**Sisa tagihan** = `total_harga` dikurangi jumlah semua pembayaran
+`terverifikasi` pesanan itu. Pembayaran `menunggu` dan `ditolak` tidak dihitung.
+
+**Respons sukses (201):**
+
+```json
+{
+  "status": "success",
+  "message": "Pembayaran berhasil dicatat",
+  "data": {
+    "pembayaran_id": 15,
+    "pesanan_id": 2,
+    "kode_pesanan": "FV-0002",
+    "jenis": "lunas",
+    "jumlah": 1750000,
+    "status": "terverifikasi",
+    "bukti_bayar": "bukti_9f2c1a7b3e.jpg",
+    "sisa_tagihan": 0,
+    "status_pesanan": "dikonfirmasi",
+    "status_pesanan_berubah": false
+  }
+}
+```
+
+`bukti_bayar` bernilai `null` kalau tidak ada file yang dilampirkan.
+
+**Kemungkinan error:**
+
+| Kode | Pesan |
+|---|---|
+| 400 | `Field wajib belum lengkap` / `Metode atau jenis pembayaran tidak valid` / `Jumlah pembayaran tidak valid` / `Jumlah melebihi sisa tagihan (RpX)` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
+| 401 | `Silakan login terlebih dahulu` |
+| 404 | `Pesanan tidak ditemukan` |
+| 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dicatat` / `Pesanan ini sudah lunas` |
 
 ---
 
@@ -738,7 +765,9 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | No | Pertanyaan | Usulan |
 |---|---|---|
 | 1 | **Daftar kategori untuk tab Katalog.** Tab kategori butuh daftar kategori, padahal belum ada endpoint-nya | Tambah endpoint ke-11: `GET api/kategori/list.php` (pemilik A), mengembalikan `[{ "id": 1, "nama_kategori": "Wedding" }]` |
-| 2 | **Cek Status memakai nomor WhatsApp.** Kode seperti `FV-0012` berurutan sehingga mudah ditebak orang | Wajibkan `no_wa` sebagai verifikasi (sudah ditulis di 4.3). Konsekuensi: desain halaman Cek Status di Figma perlu satu input tambahan |
+| 2 | ~~**Cek Status memakai nomor WhatsApp.**~~ | **Selesai (2026-11-12):** tidak ada halaman Cek Status; `pesanan/status.php` dihapus. Pelunasan dan bukti ulang dicatat admin lewat 5.6 |
+| 9 | **Pelunasan dan bukti ulang** tidak punya jalur di website (halaman Pembayaran hanya bisa dipakai tepat setelah memesan) | **Selesai (2026-11-12):** pelanggan mengirim lewat WhatsApp, admin mencatat lewat `api/admin/catat-pembayaran.php` (5.6) |
+| 10 | **Status pesanan ikut verifikasi pembayaran?** | **Selesai (2026-11-12):** ya, verifikasi pembayaran otomatis mengubah pesanan `menunggu` menjadi `dikonfirmasi` (5.4, 5.6) |
 | 3 | **Error per field.** Desain Figma punya state error pada form, sedangkan `kirim_error()` hanya mengirim satu pesan | Tambah parameter ketiga `$data` pada `kirim_error()` agar bisa mengirim `{ "nama": "Nama wajib diisi" }`. Diubah oleh A di `response.php` |
 | 4 | **Nomor WhatsApp admin** untuk tombol konfirmasi | Simpan sebagai satu konstanta di `frontend/js/config.js`, format `62812xxxxxxx` (tanpa `+` dan `0` di depan) |
 | 5 | **Alamat gambar paket di frontend** | `../uploads/paket/<gambar>` dari `frontend/`, dan `../../uploads/paket/<gambar>` dari `frontend/admin/` |
@@ -755,3 +784,6 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | | Draf awal | |
 | 2026-11-11 | `api/pesanan/status.php` (4.3) ditandai belum diimplementasi; spesifikasi tidak diubah | |
 | 2026-11-11 | `api/pesanan/status.php` (4.3) selesai diimplementasi; ditambah catatan pencocokan `no_wa` (08/62), `kode` tidak peka huruf besar/kecil, dan format `jam` | |
+| 2026-11-12 | `api/pesanan/status.php` (4.3) **dihapus**: tidak ada halaman Cek Status | |
+| 2026-11-12 | Endpoint baru `api/admin/catat-pembayaran.php` (5.6): admin mencatat pelunasan / bukti ulang yang dikirim via WhatsApp | |
+| 2026-11-12 | `api/admin/ubah-status.php` (5.4): verifikasi pembayaran otomatis mengubah pesanan `menunggu` menjadi `dikonfirmasi`; respons target `pembayaran` ditambah `status_pesanan_berubah` | |

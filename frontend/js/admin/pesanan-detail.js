@@ -10,7 +10,11 @@
    3. Tombol "Simpan" pada dropdown status -> api/admin/ubah-status.php
       (target: "pesanan")
    4. Tombol "Verifikasi"/"Tolak" per baris pembayaran -> endpoint yang
-      sama (target: "pembayaran")
+      sama (target: "pembayaran"). Verifikasi otomatis mengubah pesanan
+      "menunggu" menjadi "dikonfirmasi" (diatur di server).
+   5. Form "Catat Pembayaran" -> api/admin/catat-pembayaran.php, untuk
+      pelunasan / bukti ulang yang dikirim pelanggan lewat WhatsApp
+      (keputusan kelompok, lihat ALUR-SISTEM.md)
 
    Status enum HARUS SAMA dengan API.md bagian 2 ("Nilai yang Disepakati").
    ========================================================================== */
@@ -110,9 +114,12 @@ function gambarDetailPesanan(pesanan) {
     '<div class="admin-kosong" id="kosongPembayaran" style="display:none;">' +
       '<p class="admin-kosong-judul">Belum ada pembayaran</p>' +
       '<p class="admin-kosong-teks">Pelanggan belum mengirim bukti pembayaran.</p>' +
-    '</div>';
+    '</div>' +
+
+    '<div id="wadahCatatBayar"></div>';
 
   gambarTabelPembayaran(pesanan.pembayaran);
+  gambarFormCatatBayar(pesanan);
 
   document.getElementById('tombolSimpanStatus').addEventListener('click', simpanStatusPesanan);
 }
@@ -166,7 +173,10 @@ function gambarTabelPembayaran(daftarBayar) {
       '<td>' + (bayar.jenis === 'dp' ? 'DP' : 'Lunas') + '</td>' +
       '<td>' + formatRupiah(bayar.jumlah) + '</td>' +
       '<td><span class="badge badge-' + bayar.status + '">' + labelStatus(bayar.status) + '</span></td>' +
-      '<td><a href="../../uploads/bukti-bayar/' + encodeURIComponent(bayar.bukti_bayar) + '" target="_blank" rel="noopener">Lihat bukti</a></td>' +
+      // bukti_bayar boleh kosong untuk pembayaran yang dicatat admin tanpa lampiran
+      '<td>' + (bayar.bukti_bayar
+        ? '<a href="../../uploads/bukti-bayar/' + encodeURIComponent(bayar.bukti_bayar) + '" target="_blank" rel="noopener">Lihat bukti</a>'
+        : '<span class="teks-redup">-</span>') + '</td>' +
       '<td>' + tombolAksi + '</td>' +
     '</tr>';
   });
@@ -232,11 +242,140 @@ function simpanStatusPembayaran(idPembayaran, statusBaru) {
     method: 'POST',
     body: { target: 'pembayaran', id: idPembayaran, status: statusBaru }
   })
-    .then(function () {
-      tampilToast('Status pembayaran diperbarui', 'sukses');
+    .then(function (hasil) {
+      tampilToast(hasil.status_pesanan_berubah
+        ? 'Pembayaran diverifikasi. Status pesanan otomatis menjadi Dikonfirmasi.'
+        : 'Status pembayaran diperbarui', 'sukses');
       muatDetailPesanan();
     })
     .catch(function (error) {
       tampilToast(error.message, 'error');
+    });
+}
+
+
+/* ==========================================================================
+   CATAT PEMBAYARAN (pelunasan / bukti ulang yang dikirim lewat WhatsApp)
+   Keputusan kelompok 2026-11-12: pelanggan tidak bisa mengunggah bukti lagi
+   setelah meninggalkan halaman Pembayaran, jadi admin yang mencatatnya di
+   sini. Pembayaran yang dicatat admin langsung "terverifikasi".
+   ========================================================================== */
+
+/** Sisa tagihan untuk TAMPILAN saja. Angka yang sah dihitung ulang di server. */
+function hitungSisaTagihan(pesanan) {
+  var sudahMasuk = pesanan.pembayaran
+    .filter(function (b) { return b.status === 'terverifikasi'; })
+    .reduce(function (total, b) { return total + b.jumlah; }, 0);
+  return {
+    sudahMasuk: sudahMasuk,
+    sisa: Math.max(0, pesanan.total_harga - sudahMasuk),
+  };
+}
+
+function gambarFormCatatBayar(pesanan) {
+  var wadah = document.getElementById('wadahCatatBayar');
+  var hitungan = hitungSisaTagihan(pesanan);
+
+  var ringkasan =
+    '<div class="admin-catat-ringkasan">' +
+      '<span>Total <strong>' + formatRupiah(pesanan.total_harga) + '</strong></span>' +
+      '<span>Terverifikasi <strong>' + formatRupiah(hitungan.sudahMasuk) + '</strong></span>' +
+      '<span>Sisa tagihan <strong>' + formatRupiah(hitungan.sisa) + '</strong></span>' +
+    '</div>';
+
+  // Tidak perlu form kalau pesanan batal atau sudah lunas
+  if (pesanan.status === 'batal' || hitungan.sisa === 0) {
+    wadah.innerHTML =
+      '<div class="card admin-catat-bayar">' +
+        '<h3>Catat Pembayaran</h3>' + ringkasan +
+        '<p class="teks-redup teks-kecil">' +
+          (pesanan.status === 'batal'
+            ? 'Pesanan sudah dibatalkan, pembayaran tidak bisa dicatat.'
+            : 'Pesanan ini sudah lunas.') +
+        '</p>' +
+      '</div>';
+    return;
+  }
+
+  // Kalau sudah ada pembayaran terverifikasi, kemungkinan besar ini pelunasan
+  var jenisAwal = hitungan.sudahMasuk > 0 ? 'lunas' : 'dp';
+
+  wadah.innerHTML =
+    '<form class="card admin-catat-bayar" id="formCatatBayar" novalidate>' +
+      '<h3>Catat Pembayaran</h3>' +
+      '<p class="teks-redup teks-kecil">Untuk pelunasan atau bukti ulang yang dikirim pelanggan lewat WhatsApp. ' +
+        'Pembayaran yang dicatat di sini langsung berstatus <strong>Terverifikasi</strong>.</p>' +
+      ringkasan +
+      '<div class="admin-catat-grid">' +
+        '<div>' +
+          '<label class="label" for="catatJenis">Jenis</label>' +
+          '<select class="select" id="catatJenis" name="jenis">' +
+            '<option value="dp"' + (jenisAwal === 'dp' ? ' selected' : '') + '>DP</option>' +
+            '<option value="lunas"' + (jenisAwal === 'lunas' ? ' selected' : '') + '>Lunas / Pelunasan</option>' +
+          '</select>' +
+        '</div>' +
+        '<div>' +
+          '<label class="label" for="catatMetode">Metode</label>' +
+          '<select class="select" id="catatMetode" name="metode">' +
+            '<option value="transfer_bank">Transfer Bank</option>' +
+            '<option value="ewallet">E-Wallet</option>' +
+            '<option value="qris">QRIS</option>' +
+          '</select>' +
+        '</div>' +
+        '<div>' +
+          '<label class="label" for="catatJumlah">Jumlah (Rp)</label>' +
+          '<input class="input" type="number" id="catatJumlah" name="jumlah" min="1" max="' + hitungan.sisa + '" value="' + hitungan.sisa + '">' +
+        '</div>' +
+        '<div>' +
+          '<label class="label" for="catatBukti">Bukti <span class="teks-redup">(opsional)</span></label>' +
+          '<input class="input" type="file" id="catatBukti" name="bukti" accept=".jpg,.jpeg,.png,.pdf">' +
+        '</div>' +
+      '</div>' +
+      '<input type="hidden" name="pesanan_id" value="' + pesanan.id + '">' +
+      '<button type="submit" class="btn btn-primary" id="tombolCatatBayar">Simpan Pembayaran</button>' +
+    '</form>';
+
+  document.getElementById('formCatatBayar').addEventListener('submit', function (e) {
+    e.preventDefault();
+    kirimCatatBayar(e.target, hitungan.sisa);
+  });
+}
+
+function kirimCatatBayar(form, sisa) {
+  var jumlah = parseInt(document.getElementById('catatJumlah').value, 10);
+  if (!jumlah || jumlah <= 0) {
+    tampilToast('Jumlah pembayaran wajib diisi.', 'error');
+    return;
+  }
+  if (jumlah > sisa) {
+    tampilToast('Jumlah melebihi sisa tagihan (' + formatRupiah(sisa) + ').', 'error');
+    return;
+  }
+
+  var file = document.getElementById('catatBukti').files[0];
+  if (file) {
+    if (KONFIG.TIPE_FILE_DIIZINKAN.indexOf(file.type) === -1) {
+      tampilToast('Tipe file tidak diizinkan. Gunakan JPG, PNG, atau PDF.', 'error');
+      return;
+    }
+    if (file.size > KONFIG.UKURAN_FILE_MAKS) {
+      tampilToast('Ukuran file maksimal 2 MB.', 'error');
+      return;
+    }
+  }
+
+  var tombol = document.getElementById('tombolCatatBayar');
+  setMemuat(tombol, true, 'Menyimpan...');
+
+  panggilApi('../../api/admin/catat-pembayaran.php', { method: 'POST', body: new FormData(form) })
+    .then(function (hasil) {
+      tampilToast(hasil.status_pesanan_berubah
+        ? 'Pembayaran dicatat. Status pesanan otomatis menjadi Dikonfirmasi.'
+        : 'Pembayaran berhasil dicatat', 'sukses');
+      muatDetailPesanan();
+    })
+    .catch(function (error) {
+      tampilToast(error.message, 'error');
+      setMemuat(tombol, false);
     });
 }
