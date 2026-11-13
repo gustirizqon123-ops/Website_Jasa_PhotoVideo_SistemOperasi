@@ -4,7 +4,8 @@
    1. Memuat navbar dan footer dari folder komponen/ ke setiap halaman
    2. Menandai menu yang sedang aktif
    3. Mengatur tombol menu di mobile
-   4. Menyembunyikan gambar yang gagal dimuat (supaya tidak tampil ikon rusak)
+   4. Mengganti gambar yang filenya belum ada dengan kotak PENANDA bertuliskan
+      nama file yang harus diisi (pengingat, lihat tandaiGambarKosong())
 
    CARA PAKAI di halaman HTML:
    <body data-halaman="beranda">          <- nama halaman, cocok dengan data-menu di navbar.html
@@ -19,7 +20,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   muatSemuaKomponen();
-  sembunyikanGambarRusak();
+  tandaiGambarKosong();
 });
 
 /* Mencari semua elemen yang punya atribut data-muat, lalu mengisinya */
@@ -67,11 +68,55 @@ function siapkanNavbar() {
   }
 }
 
-/* Gambar yang belum ada filenya disembunyikan, jadi yang terlihat hanya warna latar kartu */
-function sembunyikanGambarRusak() {
+/* PENANDA GAMBAR YANG BELUM DIISI
+   Gambar yang filenya belum ada (contoh: 12 foto Beranda di assets/img/)
+   diganti kotak bergaris bertuliskan nama file yang harus disimpan, supaya
+   mudah tahu foto mana yang masih kurang dan di mana letaknya. Kotak ini
+   otomatis hilang sendiri begitu filenya disimpan dengan nama yang sama.
+
+   <img> yang SENGAJA belum punya src (gambar paket di modal Katalog dan
+   ringkasan Pemesanan, src-nya baru diisi JS setelah data API datang)
+   TIDAK disentuh. Dulu gambar seperti ini ikut disembunyikan permanen
+   sehingga foto paket tidak pernah tampil di modal dan di Pemesanan.
+
+   [UBAH] Kalau semua foto sudah diisi, fungsi ini boleh tetap dibiarkan:
+   ia hanya bekerja untuk gambar yang gagal dimuat. */
+function tandaiGambarKosong() {
   document.querySelectorAll('img').forEach(function (gambar) {
-    function sembunyikan() { gambar.style.visibility = 'hidden'; }
-    if (gambar.complete && gambar.naturalWidth === 0) { sembunyikan(); }
-    gambar.addEventListener('error', sembunyikan);
+    gambar.addEventListener('error', function () { pasangPenandaGambar(gambar); });
+
+    // Sudah selesai dimuat TAPI gagal (error terjadi sebelum listener di atas terpasang)
+    if (gambar.getAttribute('src') && gambar.complete && gambar.naturalWidth === 0) {
+      pasangPenandaGambar(gambar);
+    }
   });
+}
+
+function pasangPenandaGambar(gambar) {
+  var alamat = gambar.getAttribute('src') || '';
+  if (!alamat || gambar.hasAttribute('data-gambar-kosong')) { return; } // cegah dobel
+
+  // Alamat relatif dari halaman di frontend/, contoh "assets/img/hero.jpg"
+  // -> ditulis lengkap "frontend/assets/img/hero.jpg" supaya jelas letak foldernya
+  var lokasi = alamat.indexOf('../') === 0 ? alamat.replace(/^(\.\.\/)+/, '') : 'frontend/' + alamat;
+
+  // Escape sendiri (bukan escapeHtml dari util.js) karena komponen.js juga
+  // dipakai halaman yang tidak memuat util.js, contoh komponen.html
+  var lokasiAman = lokasi.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // SVG tanpa width/height: ikut melebar mengisi ukuran <img> dari CSS halaman.
+  // Garis tepi setebal 4: setengahnya terpotong tepi gambar, jadi tampak 2px.
+  var svg =
+    '<svg xmlns="http://www.w3.org/2000/svg">' +
+      '<rect width="100%" height="100%" fill="#EDF5EF" stroke="#7FA890" stroke-width="4" stroke-dasharray="10 7"/>' +
+      '<text x="50%" y="50%" text-anchor="middle" font-family="sans-serif" fill="#2F5D4A">' +
+        '<tspan x="50%" dy="-0.4em" font-size="15" font-weight="700">Gambar belum diisi</tspan>' +
+        '<tspan x="50%" dy="1.6em" font-size="13">' + lokasiAman + '</tspan>' +
+      '</text>' +
+    '</svg>';
+
+  gambar.setAttribute('data-gambar-kosong', lokasi);
+  gambar.title = 'Simpan foto di ' + lokasi;
+  gambar.style.objectFit = 'fill';
+  gambar.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }

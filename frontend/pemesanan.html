@@ -100,6 +100,8 @@
               <div class="form-field">
                 <label class="label" for="catatan">Catatan <span class="teks-redup">(opsional)</span></label>
                 <textarea class="textarea" id="catatan" name="catatan" placeholder="Permintaan khusus, tema acara, dll."></textarea>
+                <!-- Hanya tampil untuk kategori yang boleh tambah jam (Event), diisi pemesanan.js -->
+                <p class="bantuan" id="bantuanTambahJam" hidden></p>
               </div>
             </div>
 
@@ -124,7 +126,8 @@
             <img class="form-ringkasan-gambar" alt="">
             <span class="badge-label">Foto &amp; Video</span>
             <h3 style="margin-top:12px;">Wedding Signature</h3>
-            <p class="teks-redup teks-kecil">8 jam dokumentasi, 2 fotografer</p>
+            <!-- Durasi per kategori, diisi pemesanan.js dari teksDurasiPaket() (util.js) -->
+            <p class="teks-redup teks-kecil" id="durasiPaket"></p>
             <p class="harga" style="margin-top:8px;">Rp6.500.000 <small>/ acara</small></p>
             <hr class="garis" style="margin-block:16px;">
             <ul class="daftar-centang">

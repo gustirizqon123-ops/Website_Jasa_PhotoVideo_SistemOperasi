@@ -227,9 +227,16 @@ function isiModalDetail(paket) {
   var elJudul = document.getElementById('modal-judul');
   var elEyebrow = document.querySelector('#modal-detail .eyebrow');
   var elHarga = document.querySelector('#modal-detail .harga');
-  var elDeskripsi = document.querySelector('#modal-detail .modal-isi p:not(.harga)');
+  var elDurasi = document.getElementById('modal-durasi');
+  var elDeskripsi = document.getElementById('modal-deskripsi');
   var elDaftar = document.querySelector('#modal-detail .daftar-centang');
   var elTombolPesan = document.getElementById('modal-pesan');
+
+  if (elDurasi) {
+    // Durasi sesuai kategori, aturannya di config.js -> teksDurasiPaket() di util.js
+    elDurasi.textContent = teksDurasiPaket(paket.kategori_id);
+    elDurasi.hidden = (elDurasi.textContent === '');
+  }
 
   if (elGambar) {
     elGambar.src = '../uploads/paket/' + paket.gambar;

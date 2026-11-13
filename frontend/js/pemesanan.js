@@ -68,6 +68,25 @@ function gambarRingkasanPaket(paket) {
   judul.textContent = paket.nama;
   harga.innerHTML = formatRupiah(paket.harga) + ' <small>/ acara</small>';
 
+  // Durasi sesuai kategori (Wedding 8 jam, Wisuda 1 jam, Event maks. 8 jam
+  // + tambah jam), aturannya di config.js -> teksDurasiPaket() di util.js
+  var durasi = teksDurasiPaket(paket.kategori_id);
+  var elDurasi = document.getElementById('durasiPaket');
+  elDurasi.textContent = durasi;
+  elDurasi.hidden = (durasi === '');
+
+  // Paket Event: beri tahu cara meminta jam tambahan. HANYA informasi --
+  // total harga di sistem tidak berubah (keputusan kelompok), admin yang
+  // mengonfirmasi biaya tambahannya lewat WhatsApp.
+  var bantuanJam = document.getElementById('bantuanTambahJam');
+  if (paket.kategori_id === KONFIG.TAMBAH_JAM.kategori_id) {
+    bantuanJam.textContent = 'Butuh jam tambahan? Tulis jumlah jam tambahan di catatan. Biaya ' +
+      formatRupiah(KONFIG.TAMBAH_JAM.harga) + '/jam, dikonfirmasi admin lewat WhatsApp dan dibayar terpisah.';
+    bantuanJam.hidden = false;
+  } else {
+    bantuanJam.hidden = true;
+  }
+
   // Pecah "deskripsi" jadi daftar centang, sama seperti di katalog.js
   // (lihat komentar lengkap di gambarDaftarFasilitas() pada katalog.js).
   var html = '';

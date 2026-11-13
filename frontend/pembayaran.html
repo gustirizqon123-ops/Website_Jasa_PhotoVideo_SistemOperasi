@@ -61,10 +61,14 @@
           </div>
         </div>
 
-        <!-- Rekening / QRIS studio. [UBAH] isi dengan info rekening asli -->
+        <!-- Rekening / QRIS studio. [UBAH] isi dengan info rekening asli.
+             Teks dibungkus satu <span>: .alert memakai display:flex, jadi tanpa
+             pembungkus setiap potongan teks menjadi kolom sendiri-sendiri. -->
         <div class="alert" style="margin-top: var(--jarak-3);">
-          Transfer ke <strong>BCA 1234567890 a.n. For Us Picture Studio</strong>
-          atau scan QRIS yang tersedia di tempat.
+          <span>
+            Transfer ke <strong>BCA 1234567890 a.n. For Us Picture Studio</strong>
+            atau scan QRIS yang tersedia di tempat.
+          </span>
         </div>
 
         <!-- ================================================================

@@ -141,5 +141,23 @@ function escapeHtml(teks) {
 }
 
 
+/**
+ * Teks durasi paket berdasarkan kategorinya, dari KONFIG.DURASI_PER_KATEGORI
+ * dan KONFIG.TAMBAH_JAM (config.js). Dipakai modal detail Katalog dan
+ * ringkasan paket di Pemesanan.
+ *
+ * teksDurasiPaket(1)  ->  "8 jam dokumentasi"
+ * teksDurasiPaket(3)  ->  "Maksimal 8 jam dokumentasi · tambah jam Rp250.000/jam"
+ * teksDurasiPaket(99) ->  ""   (kategori tanpa aturan -> tidak menampilkan apa-apa)
+ */
+function teksDurasiPaket(kategoriId) {
+  var teks = KONFIG.DURASI_PER_KATEGORI[kategoriId] || '';
+  if (teks && Number(kategoriId) === KONFIG.TAMBAH_JAM.kategori_id) {
+    teks += ' · tambah jam ' + formatRupiah(KONFIG.TAMBAH_JAM.harga) + '/jam';
+  }
+  return teks;
+}
+
+
 /* [TAMBAH] fungsi bantu lain yang dipakai lebih dari satu halaman,
    taruh di sini -- bukan disalin-tempel ke tiap file JS halaman. */

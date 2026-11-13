@@ -1178,6 +1178,12 @@ p {
 
   .modal-isi { padding: var(--jarak-3); }
 
+  /* Huruf kolom isian minimal 16px di HP: Safari iPhone otomatis memperbesar
+     (zoom) layar saat kolom di bawah 16px disentuh, dan tidak kembali sendiri. */
+  .input,
+  .select,
+  .textarea { font-size: 16px; }
+
   .toast-wadah { left: var(--jarak-2); right: var(--jarak-2); bottom: var(--jarak-2); }
   .toast { max-width: none; }
 }

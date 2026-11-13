@@ -52,6 +52,27 @@ var KONFIG = {
      mengisi otomatis kolom jumlah dan validasi sebelum dikirim. */
   DP_MINIMAL_PERSEN: 50,
 
+  /* ---- DURASI PAKET PER KATEGORI ----
+     Teks durasi di bawah nama paket (modal detail Katalog dan ringkasan
+     Pemesanan), ditentukan dari kategori_id paket (lihat tabel kategori:
+     1 Wedding, 2 Wisuda, 3 Event). Disusun oleh teksDurasiPaket() di util.js.
+     [UBAH] kalau aturan durasi studio berubah, cukup ubah di sini. */
+  DURASI_PER_KATEGORI: {
+    1: '8 jam dokumentasi',
+    2: '1 jam sesi foto',
+    3: 'Maksimal 8 jam dokumentasi',
+  },
+
+  /* ---- TAMBAH JAM (hanya informasi) ----
+     Kategori yang boleh menambah jam, dan harganya per jam. Keputusan
+     kelompok: ini HANYA informasi untuk pelanggan, total harga pesanan di
+     sistem TIDAK berubah. Pelanggan menulis kebutuhan jam tambahan di
+     Catatan / WhatsApp, lalu admin yang mengonfirmasi. */
+  TAMBAH_JAM: {
+    kategori_id: 3,   // Event
+    harga: 250000,    // per jam
+  },
+
   /* ---- DURASI TOAST ----
      [UBAH] berapa lama notifikasi kecil (lihat ui.js) tampil di layar,
      dalam milidetik, sebelum hilang otomatis. */
