@@ -176,7 +176,7 @@ function siapkanFormPaket() {
 
     panggilApi('../../api/admin/paket.php', { method: 'POST', body: formData })
       .then(function () {
-        tampilToast(MODE_ID_PAKET ? 'Paket berhasil diubah' : 'Paket berhasil ditambahkan', 'sukses');
+        tampilToastSetelahPindah(MODE_ID_PAKET ? 'Paket berhasil diubah' : 'Paket berhasil ditambahkan', 'sukses');
         window.location.href = 'paket.html';
       })
       .catch(function (error) {

@@ -57,6 +57,48 @@ function tampilToast(pesan, jenis) {
 
 
 /**
+ * Sama seperti tampilToast(), tapi untuk dipakai TEPAT SEBELUM pindah
+ * halaman. Kalau tampilToast() dipanggil lalu langsung pindah halaman,
+ * toast-nya ikut hilang sebelum sempat terbaca. Fungsi ini menitipkan
+ * pesan di sessionStorage, lalu toast ditampilkan di halaman TUJUAN
+ * (lihat tampilToastTertunda() di bawah, dijalankan otomatis).
+ *
+ * tampilToastSetelahPindah('Paket berhasil disimpan', 'sukses');
+ * window.location.href = 'paket.html';
+ */
+function tampilToastSetelahPindah(pesan, jenis) {
+  try {
+    sessionStorage.setItem('toastTertunda', JSON.stringify({ pesan: pesan, jenis: jenis }));
+  } catch (e) {
+    // sessionStorage tidak bisa dipakai (mode privat, dll) -> pesan dilewati saja
+  }
+}
+
+/* Menampilkan toast yang dititipkan halaman sebelumnya, lalu menghapusnya
+   supaya tidak muncul lagi saat halaman dimuat ulang. Berjalan otomatis
+   di semua halaman yang memuat ui.js. */
+function tampilToastTertunda() {
+  var mentah = null;
+  try {
+    mentah = sessionStorage.getItem('toastTertunda');
+    sessionStorage.removeItem('toastTertunda');
+  } catch (e) {
+    return;
+  }
+  if (!mentah) { return; }
+
+  try {
+    var data = JSON.parse(mentah);
+    if (data && data.pesan) { tampilToast(data.pesan, data.jenis); }
+  } catch (e) {
+    // data rusak, abaikan
+  }
+}
+
+document.addEventListener('DOMContentLoaded', tampilToastTertunda);
+
+
+/**
  * Membuka modal. Menambahkan kelas "tampil" ke .modal-lapisan sesuai id
  * yang diberikan (lihat struktur modal di css/style.css bagian 10).
  *

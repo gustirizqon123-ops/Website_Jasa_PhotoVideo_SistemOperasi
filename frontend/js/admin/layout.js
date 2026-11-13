@@ -28,7 +28,29 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   muatSidebarAdmin();
+  isiNamaAdmin();
 });
+
+/* Mengisi nama dan huruf avatar di header (.admin-header-admin) dari nama
+   yang disimpan login.js di sessionStorage saat login. Kalau tidak ada
+   (misal halaman admin dibuka di tab baru), tulisan bawaan "Administrator"
+   di HTML tetap dipakai. */
+function isiNamaAdmin() {
+  var nama = null;
+  try {
+    nama = sessionStorage.getItem('namaAdmin');
+  } catch (e) {
+    return;
+  }
+  if (!nama) { return; }
+
+  document.querySelectorAll('.admin-header-admin').forEach(function (wadah) {
+    var avatar = wadah.querySelector('.admin-avatar');
+    var teksNama = wadah.querySelector('span');
+    if (avatar) { avatar.textContent = nama.trim().charAt(0).toUpperCase(); }
+    if (teksNama) { teksNama.textContent = nama; } // textContent -> aman tanpa escapeHtml
+  });
+}
 
 /* Mencari elemen data-muat yang menunjuk ke admin-sidebar.html, lalu mengisinya.
    Dipisah dari js/komponen.js milik A supaya logika admin tidak bercampur
@@ -139,6 +161,7 @@ function siapkanTombolKeluar() {
         console.error(error);
       })
       .finally(function () {
+        try { sessionStorage.removeItem('namaAdmin'); } catch (e) { /* abaikan */ }
         window.location.href = 'login.html'; // [UBAH] sesuaikan path kalau beda folder
       });
   });

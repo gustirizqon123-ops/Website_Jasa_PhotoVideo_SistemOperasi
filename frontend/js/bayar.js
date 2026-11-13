@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
   PESANAN_AKTIF = ambilPesananAktif();
 
   if (!PESANAN_AKTIF) {
-    tampilToast('Belum ada pesanan aktif, silakan pilih paket terlebih dahulu.', 'error');
+    tampilToastSetelahPindah('Belum ada pesanan aktif, silakan pilih paket terlebih dahulu.', 'error');
     window.location.href = 'katalog.html';
     return;
   }

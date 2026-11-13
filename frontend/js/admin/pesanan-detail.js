@@ -87,7 +87,7 @@ function gambarDetailPesanan(pesanan) {
       barisInfo('No. WhatsApp', escapeHtml(pesanan.no_wa) + (tautanWa ? ' &nbsp;<a class="btn-teks" href="' + tautanWa + '" target="_blank" rel="noopener">Hubungi</a>' : '')) +
       barisInfo('Email', pesanan.email ? escapeHtml(pesanan.email) : '<span class="teks-redup">-</span>') +
       barisInfo('Paket', escapeHtml(pesanan.nama_paket)) +
-      barisInfo('Tanggal Acara', formatTanggal(pesanan.tanggal_acara) + (pesanan.jam ? ', ' + escapeHtml(pesanan.jam) : '')) +
+      barisInfo('Tanggal Acara', formatTanggal(pesanan.tanggal_acara) + (pesanan.jam ? ', ' + escapeHtml(pesanan.jam.slice(0, 5)) : '')) +
       barisInfo('Lokasi', escapeHtml(pesanan.lokasi)) +
       barisInfo('Catatan', pesanan.catatan ? escapeHtml(pesanan.catatan) : '<span class="teks-redup">-</span>') +
       barisInfo('Total Harga', '<strong>' + formatRupiah(pesanan.total_harga) + '</strong>') +

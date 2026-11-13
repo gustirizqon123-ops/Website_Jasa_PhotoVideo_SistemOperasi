@@ -37,10 +37,16 @@ document.addEventListener('DOMContentLoaded', function () {
       method: 'POST',
       body: { username: username, password: password }
     })
-      .then(function () {
-        // Login berhasil -> langsung ke dashboard. Tidak perlu simpan apa-apa
-        // di JS: status login disimpan server lewat session (cookie),
-        // bukan di localStorage/sessionStorage.
+      .then(function (data) {
+        // Login berhasil -> langsung ke dashboard. Status login tetap disimpan
+        // server lewat session (cookie). Yang disimpan di sessionStorage HANYA
+        // nama admin, untuk ditampilkan di header oleh layout.js
+        // (isiNamaAdmin()) -- bukan penanda login.
+        try {
+          sessionStorage.setItem('namaAdmin', (data && data.nama) || 'Administrator');
+        } catch (e) {
+          // sessionStorage tidak bisa dipakai -> header memakai "Administrator"
+        }
         window.location.href = 'dashboard.html';
       })
       .catch(function (error) {
