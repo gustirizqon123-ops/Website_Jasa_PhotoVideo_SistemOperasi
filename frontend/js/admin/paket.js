@@ -55,7 +55,7 @@ function gambarTabelPaket(daftarPaket) {
   daftarPaket.forEach(function (paket) {
     html +=
       '<tr>' +
-        '<td><img class="paket-tabel-gambar" src="../uploads/paket/' + escapeHtml(paket.gambar) + '" alt=""></td>' +
+        '<td><img class="paket-tabel-gambar" src="../../uploads/paket/' + escapeHtml(paket.gambar) + '" alt=""></td>' +
         '<td>' + escapeHtml(paket.nama) + '</td>' +
         '<td>' + escapeHtml(paket.kategori) + '</td>' +
         '<td>' + formatRupiah(paket.harga) + '</td>' +

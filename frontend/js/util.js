@@ -124,13 +124,20 @@ function linkWhatsApp(nomor, pesan) {
  * lewat innerHTML/template string -- kalau hanya memakai .textContent,
  * fungsi ini tidak diperlukan karena .textContent sudah otomatis aman.
  *
+ * Tanda kutip (" dan ') juga di-escape, supaya hasilnya aman dipakai di
+ * dalam atribut HTML, contoh: alt="..." atau data-nama="...".
+ *
  * escapeHtml('<script>alert(1)</script>')
  * -> "&lt;script&gt;alert(1)&lt;/script&gt;"
+ * escapeHtml('Paket "Gold"')  ->  "Paket &quot;Gold&quot;"
  */
 function escapeHtml(teks) {
-  var wadah = document.createElement('div');
-  wadah.textContent = String(teks === undefined || teks === null ? '' : teks);
-  return wadah.innerHTML;
+  return String(teks === undefined || teks === null ? '' : teks)
+    .replace(/&/g, '&amp;')   // & HARUS paling pertama, supaya hasil escape lain tidak ikut berubah
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 

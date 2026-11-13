@@ -223,6 +223,28 @@
   z-index: 10;
 }
 
+/* Tombol hamburger, disisipkan layout.js ke awal .admin-header.
+   Disembunyikan di layar lebar, ditampilkan di bagian 9 (responsif). */
+.admin-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-sm);
+  background: var(--warna-permukaan);
+  color: var(--warna-teks);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.admin-hamburger:hover {
+  background: var(--warna-tint);
+}
+
 .admin-header-eyebrow {
   font-family: var(--font-isi);
   font-size: var(--teks-eyebrow);
@@ -525,6 +547,21 @@
   /* layout.js menambahkan kelas ini ke <body> saat tombol hamburger ditekan */
   body.admin-sidebar-terbuka .admin-sidebar {
     transform: translateX(0);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.35); /* gelapkan konten di belakang sidebar */
+  }
+
+  /* Tombol hamburger (dibuat layout.js) hanya tampil di layar sempit */
+  .admin-hamburger {
+    display: inline-flex;
+  }
+
+  /* Hamburger + judul di kiri, nama admin tetap di kanan */
+  .admin-header {
+    justify-content: flex-start;
+  }
+
+  .admin-header-admin {
+    margin-left: auto;
   }
 
   .admin-konten {

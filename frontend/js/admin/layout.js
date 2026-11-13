@@ -76,18 +76,48 @@ function tandaiMenuAktif() {
   });
 }
 
-/* [UBAH] Tombol hamburger belum ada markup-nya di admin-sidebar.html karena
-   desain Figma untuk tampilan sempit belum terlihat jelas. Kalau sudah ada
-   tombolnya (misal <button id="adminHamburger">), tambahkan id tersebut di
-   admin-sidebar.html atau di header tiap halaman, fungsi ini akan langsung
-   menyambungkannya. Selama tombolnya belum ada, fungsi ini tidak melakukan
-   apa-apa (aman, tidak error). */
-function siapkanTombolHamburger() {
-  var tombol = document.getElementById('adminHamburger');
-  if (!tombol) { return; }
+/* Tombol hamburger untuk layar sempit (<= 860px, lihat admin.css bagian 9),
+   saat sidebar disembunyikan ke kiri layar. Tombolnya DIBUAT OTOMATIS di sini
+   dan disisipkan ke awal .admin-header, supaya tidak perlu menulis markup yang
+   sama di setiap halaman admin. Di layar lebar tombol ini disembunyikan CSS.
 
-  tombol.addEventListener('click', function () {
-    document.body.classList.toggle('admin-sidebar-terbuka');
+   Sidebar tertutup lagi kalau: tombol ditekan lagi, klik di luar sidebar,
+   klik salah satu menu, atau tombol Escape. */
+function siapkanTombolHamburger() {
+  var header = document.querySelector('.admin-header');
+  if (!header || document.getElementById('adminHamburger')) { return; }
+
+  var tombol = document.createElement('button');
+  tombol.type = 'button';
+  tombol.id = 'adminHamburger';
+  tombol.className = 'admin-hamburger';
+  tombol.setAttribute('aria-label', 'Buka menu');
+  tombol.setAttribute('aria-expanded', 'false');
+  tombol.innerHTML = '&#9776;';
+  header.insertBefore(tombol, header.firstChild);
+
+  function aturSidebar(terbuka) {
+    document.body.classList.toggle('admin-sidebar-terbuka', terbuka);
+    tombol.setAttribute('aria-expanded', terbuka ? 'true' : 'false');
+    tombol.setAttribute('aria-label', terbuka ? 'Tutup menu' : 'Buka menu');
+  }
+
+  tombol.addEventListener('click', function (e) {
+    e.stopPropagation(); // supaya tidak dianggap "klik di luar sidebar" di bawah
+    aturSidebar(!document.body.classList.contains('admin-sidebar-terbuka'));
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!document.body.classList.contains('admin-sidebar-terbuka')) { return; }
+    var sidebar = document.querySelector('.admin-sidebar');
+    var klikDiMenu = e.target.closest('.admin-menu-item');
+    if (klikDiMenu || (sidebar && !sidebar.contains(e.target))) {
+      aturSidebar(false);
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { aturSidebar(false); }
   });
 }
 
