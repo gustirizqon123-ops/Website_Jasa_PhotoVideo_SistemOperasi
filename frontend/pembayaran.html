@@ -86,7 +86,7 @@
               <label class="bayar-pilihan-kartu aktif">
                 <input type="radio" name="jenis" value="dp" checked hidden>
                 <strong>DP (Uang Muka)</strong>
-                <span>Minimal 30% dari total</span>
+                <span id="keteranganDp">Minimal 50% dari total</span>
               </label>
               <label class="bayar-pilihan-kartu">
                 <input type="radio" name="jenis" value="lunas" hidden>
@@ -108,7 +108,8 @@
               <div class="form-field">
                 <label class="label" for="jumlah">Jumlah Dibayar</label>
                 <input class="input" type="number" id="jumlah" name="jumlah" placeholder="Contoh: 2000000" min="1" required>
-                <p class="bantuan">Tidak boleh melebihi total harga pesanan.</p>
+                <!-- Diisi otomatis bayar.js (aturJumlahSesuaiJenis) sesuai pilihan DP/Lunas -->
+                <p class="bantuan" id="bantuanJumlah">DP minimal 50% dari total. Lunas sebesar total harga.</p>
               </div>
             </div>
           </div>

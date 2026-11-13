@@ -336,9 +336,11 @@ Diagram di atas adalah **alur yang dimaksudkan**. Di kode sekarang:
 
 1. **Urutan status tidak dibatasi** (lihat bagian 5). Admin bisa memilih
    status apa saja dari dropdown.
-2. **Pembayaran dari pelanggan tidak dicek terhadap sisa tagihan.**
-   `upload.php` hanya memastikan *satu* kiriman tidak melebihi `total_harga`.
-   Pembayaran yang dicatat admin sudah dibatasi sisa tagihan.
+2. **Pembayaran "menunggu" belum dihitung ke sisa tagihan.** Sejak
+   2026-11-14, `upload.php` mengecek jumlah terhadap sisa tagihan: DP minimal
+   50% dan kurang dari sisa, Lunas sama dengan sisa. Tapi sisa tagihan hanya
+   memperhitungkan pembayaran yang sudah *terverifikasi*. Pembayaran
+   dicatat admin cukup dibatasi sisa tagihan, tanpa aturan 50%.
 3. **Pelanggan tidak bisa mengunggah sendiri setelah meninggalkan halaman
    Pembayaran**, sehingga bergantung pada admin untuk mencatat pembayaran
    berikutnya (lihat keputusan 1).

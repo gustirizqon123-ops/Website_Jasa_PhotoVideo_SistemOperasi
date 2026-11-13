@@ -46,6 +46,12 @@ var KONFIG = {
   UKURAN_FILE_MAKS: 2 * 1024 * 1024,              // 2 MB, dalam byte
   TIPE_FILE_DIIZINKAN: ['image/jpeg', 'image/png', 'application/pdf'],
 
+  /* ---- ATURAN DP ----
+     DP minimal sekian persen dari total harga. Harus SAMA dengan
+     DP_MINIMAL_PERSEN di api/config/pesanan.php. Dipakai bayar.js untuk
+     mengisi otomatis kolom jumlah dan validasi sebelum dikirim. */
+  DP_MINIMAL_PERSEN: 50,
+
   /* ---- DURASI TOAST ----
      [UBAH] berapa lama notifikasi kecil (lihat ui.js) tampil di layar,
      dalam milidetik, sebelum hilang otomatis. */

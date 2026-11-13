@@ -2,7 +2,8 @@
 /* ==========================================================================
    api/config/pesanan.php   (milik C)
    Letak file : api/config/pesanan.php
-   Dipakai di : api/admin/ubah-status.php, api/admin/catat-pembayaran.php
+   Dipakai di : api/admin/ubah-status.php, api/admin/catat-pembayaran.php,
+                api/pembayaran/upload.php (minimal_dp(), sisa_tagihan())
 
    Aturan bisnis pesanan yang dipakai lebih dari satu endpoint admin, supaya
    aturannya ditulis SATU KALI di sini dan tidak berbeda antar endpoint.
@@ -28,6 +29,22 @@ function konfirmasi_otomatis(PDO $pdo, int $pesananId): bool {
   );
   $stmt->execute(['id' => $pesananId]);
   return $stmt->rowCount() > 0;
+}
+
+/**
+ * ATURAN DP: minimal sekian persen dari total_harga.
+ * HARUS SAMA dengan KONFIG.DP_MINIMAL_PERSEN di frontend/js/config.js.
+ */
+const DP_MINIMAL_PERSEN = 50;
+
+/**
+ * Jumlah DP minimal untuk sebuah total harga, dibulatkan ke atas ke rupiah
+ * terdekat. Contoh: total 6.500.000 -> 3.250.000.
+ * Hanya dipakai untuk pembayaran dari pelanggan (upload.php). Pembayaran
+ * yang dicatat admin (catat-pembayaran.php) tidak dibatasi aturan ini.
+ */
+function minimal_dp(int $totalHarga): int {
+  return intdiv($totalHarga * DP_MINIMAL_PERSEN + 99, 100);
 }
 
 /**

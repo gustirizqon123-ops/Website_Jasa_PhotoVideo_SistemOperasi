@@ -300,30 +300,19 @@ Menyimpan data pembayaran beserta file bukti. Mengirim file, jadi memakai **`For
 | `kode_pesanan` | Ya | teks | Harus ada di tabel `pesanan` |
 | `metode` | Ya | teks | `transfer_bank`, `ewallet`, atau `qris` |
 | `jenis` | Ya | teks | `dp` atau `lunas` |
-| `jumlah` | Ya | angka | Lebih dari 0 dan tidak melebihi `total_harga` pesanan |
+| `jumlah` | Ya | angka | Lebih dari 0, lalu mengikuti aturan DP/Lunas di bawah |
 | `bukti` | Ya | file | JPG, PNG, atau PDF, maksimal 2 MB |
 
-### 4.6 GET `api/kategori/list.php`
+**Aturan jumlah DP / Lunas** (ditambahkan 2026-11-14):
 
-**Pemilik:** A | **Dipakai oleh:** tab kategori di Katalog, dropdown kategori di form Kelola Paket (admin)
+*Sisa tagihan* = `total_harga` dikurangi pembayaran yang sudah `terverifikasi`. Untuk pesanan baru, sisa tagihan sama dengan `total_harga`.
 
-Mengambil semua kategori, urut berdasarkan `id`.
+| Jenis | Aturan `jumlah` |
+|---|---|
+| `lunas` | Harus **sama dengan** sisa tagihan |
+| `dp` | Minimal **50%** dari `total_harga` (dibulatkan ke atas) dan **kurang dari** sisa tagihan |
 
-**Parameter:** tidak ada.
-
-**Respons sukses (200):**
-
-{
-  "status": "success",
-  "message": "OK",
-  "data": [
-    { "id": 1, "nama_kategori": "Wedding" },
-    { "id": 2, "nama_kategori": "Wisuda" },
-    { "id": 3, "nama_kategori": "Event" }
-  ]
-}
-
-**Kemungkinan error:** 405, 500.
+Persentase DP disimpan di `DP_MINIMAL_PERSEN` (`api/config/pesanan.php`) dan `KONFIG.DP_MINIMAL_PERSEN` (`frontend/js/config.js`). Kedua nilai itu harus sama. Aturan ini hanya berlaku untuk pembayaran dari pelanggan. Pembayaran yang dicatat admin (5.6) cukup tidak melebihi sisa tagihan.
 
 **Aturan penyimpanan file:**
 
@@ -352,9 +341,34 @@ Mengambil semua kategori, urut berdasarkan `id`.
 
 | Kode | Pesan |
 |---|---|
-| 400 | `Field wajib belum lengkap` / `Metode atau jenis pembayaran tidak valid` / `Jumlah pembayaran tidak valid` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
+| 400 | `Field wajib belum lengkap` / `Metode atau jenis pembayaran tidak valid` / `Jumlah pembayaran tidak valid` / `Pembayaran lunas harus sebesar Rp...` / `DP minimal 50% dari total (Rp...)` / `Jumlah DP harus kurang dari Rp.... Pilih Lunas untuk membayar penuh` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
 | 404 | `Pesanan tidak ditemukan` |
+| 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dikirim` / `Pesanan ini sudah lunas` |
 | 500 | `Gagal menyimpan file` |
+
+### 4.6 GET `api/kategori/list.php`
+
+**Pemilik:** A | **Dipakai oleh:** tab kategori di Katalog, dropdown kategori di form Kelola Paket (admin)
+
+Mengambil semua kategori, urut berdasarkan `id`.
+
+**Parameter:** tidak ada.
+
+**Respons sukses (200):**
+
+```json
+{
+  "status": "success",
+  "message": "OK",
+  "data": [
+    { "id": 1, "nama_kategori": "Wedding" },
+    { "id": 2, "nama_kategori": "Wisuda" },
+    { "id": 3, "nama_kategori": "Event" }
+  ]
+}
+```
+
+**Kemungkinan error:** 405, 500.
 
 ---
 
@@ -787,3 +801,4 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-12 | `api/pesanan/status.php` (4.3) **dihapus**: tidak ada halaman Cek Status | |
 | 2026-11-12 | Endpoint baru `api/admin/catat-pembayaran.php` (5.6): admin mencatat pelunasan / bukti ulang yang dikirim via WhatsApp | |
 | 2026-11-12 | `api/admin/ubah-status.php` (5.4): verifikasi pembayaran otomatis mengubah pesanan `menunggu` menjadi `dikonfirmasi`; respons target `pembayaran` ditambah `status_pesanan_berubah` | |
+| 2026-11-14 | `api/pembayaran/upload.php` (4.5): aturan jumlah DP (minimal 50%, kurang dari sisa tagihan) dan Lunas (sama dengan sisa tagihan); error 409 untuk pesanan batal / sudah lunas. Bagian 4.6 dipindah keluar dari tengah 4.5 | |

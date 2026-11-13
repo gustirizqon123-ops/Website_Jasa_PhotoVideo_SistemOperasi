@@ -78,8 +78,78 @@ function siapkanPilihanJenisBayar() {
       kartuSemua.forEach(function (k) { k.classList.remove('aktif'); });
       kartu.classList.add('aktif');
       kartu.querySelector('input[type="radio"]').checked = true;
+      aturJumlahSesuaiJenis();
     });
   });
+
+  aturJumlahSesuaiJenis(); // isi awal, sesuai pilihan yang ter-checked (DP)
+}
+
+/* Batas jumlah untuk TAMPILAN saja. Angka yang sah dicek ulang di server
+   (api/pembayaran/upload.php), dengan aturan yang sama:
+   - DP    : minimal KONFIG.DP_MINIMAL_PERSEN% dari total, kurang dari total
+   - Lunas : sama dengan total harga
+   Halaman ini hanya dipakai tepat setelah memesan, jadi belum ada
+   pembayaran lain dan sisa tagihan = total_harga. */
+function hitungBatasJumlah() {
+  var total = Number(PESANAN_AKTIF.total_harga) || 0;
+  return {
+    total: total,
+    dpMinimal: Math.ceil(total * KONFIG.DP_MINIMAL_PERSEN / 100),
+  };
+}
+
+function jenisTerpilih() {
+  var radio = document.querySelector('input[name="jenis"]:checked');
+  return radio ? radio.value : 'dp';
+}
+
+function aturJumlahSesuaiJenis() {
+  var input = document.getElementById('jumlah');
+  var bantuan = document.getElementById('bantuanJumlah');
+  var keteranganDp = document.getElementById('keteranganDp');
+  var batas = hitungBatasJumlah();
+
+  if (keteranganDp) {
+    keteranganDp.textContent = 'Minimal ' + KONFIG.DP_MINIMAL_PERSEN + '% (' + formatRupiah(batas.dpMinimal) + ')';
+  }
+
+  if (jenisTerpilih() === 'lunas') {
+    input.value = batas.total;
+    input.min = batas.total;
+    input.max = batas.total;
+    input.readOnly = true; // lunas selalu sebesar total, tidak perlu diketik
+    if (bantuan) { bantuan.textContent = 'Pembayaran lunas sebesar total harga ' + formatRupiah(batas.total) + '.'; }
+  } else {
+    input.value = batas.dpMinimal;
+    input.min = batas.dpMinimal;
+    input.max = batas.total - 1;
+    input.readOnly = false;
+    if (bantuan) {
+      bantuan.textContent = 'Minimal ' + formatRupiah(batas.dpMinimal) + ' (' + KONFIG.DP_MINIMAL_PERSEN +
+        '%) dan kurang dari ' + formatRupiah(batas.total) + '. Boleh diubah.';
+    }
+  }
+}
+
+/** Mengembalikan pesan error, atau null kalau jumlah sudah sesuai aturan. */
+function cekJumlahBayar() {
+  var jumlah = parseInt(document.getElementById('jumlah').value, 10);
+  var batas = hitungBatasJumlah();
+
+  if (!jumlah || jumlah <= 0) {
+    return 'Mohon isi jumlah yang dibayar.';
+  }
+  if (jenisTerpilih() === 'lunas') {
+    return jumlah === batas.total ? null : 'Pembayaran lunas harus sebesar ' + formatRupiah(batas.total) + '.';
+  }
+  if (jumlah >= batas.total) {
+    return 'Jumlah DP harus kurang dari ' + formatRupiah(batas.total) + '. Pilih Lunas untuk membayar penuh.';
+  }
+  if (jumlah < batas.dpMinimal) {
+    return 'DP minimal ' + KONFIG.DP_MINIMAL_PERSEN + '% dari total (' + formatRupiah(batas.dpMinimal) + ').';
+  }
+  return null;
 }
 
 
@@ -142,6 +212,13 @@ function siapkanFormPembayaran() {
 
     var kotakError = document.getElementById('pesanErrorBayar');
     kotakError.style.display = 'none';
+
+    var errorJumlah = cekJumlahBayar();
+    if (errorJumlah) {
+      kotakError.textContent = errorJumlah;
+      kotakError.style.display = 'flex';
+      return;
+    }
 
     var inputFile = document.getElementById('inputBukti');
     if (!inputFile.files[0]) {

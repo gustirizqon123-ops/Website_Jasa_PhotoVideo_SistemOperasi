@@ -12,6 +12,7 @@
 
 require_once __DIR__ . '/../config/response.php';
 require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../config/pesanan.php'; // minimal_dp(), sisa_tagihan()
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
@@ -49,16 +50,43 @@ $jumlah = (int) $jumlah;
 
 try {
   /* ========================= 4. PESANAN HARUS ADA ========================= */
-  $stmtPesanan = $pdo->prepare('SELECT id, total_harga FROM pesanan WHERE kode_pesanan = :kode');
+  $stmtPesanan = $pdo->prepare('SELECT id, total_harga, status FROM pesanan WHERE kode_pesanan = :kode');
   $stmtPesanan->execute(['kode' => $kodePesanan]);
   $pesanan = $stmtPesanan->fetch();
 
   if (!$pesanan) {
     kirim_error('Pesanan tidak ditemukan', 404);
   }
+  if ($pesanan['status'] === 'batal') {
+    kirim_error('Pesanan sudah dibatalkan, pembayaran tidak bisa dikirim', 409);
+  }
 
-  if ($jumlah > (int) $pesanan['total_harga']) {
-    kirim_error('Jumlah pembayaran tidak valid', 400); // tidak boleh melebihi total_harga (API.md 4.5)
+  /* ========================= 4b. ATURAN JUMLAH DP / LUNAS =========================
+     Sisa tagihan = total dikurangi pembayaran yang sudah TERVERIFIKASI
+     (lihat config/pesanan.php). Untuk pesanan baru, sisa = total_harga.
+     - lunas : jumlah HARUS sama dengan sisa tagihan
+     - dp    : minimal DP_MINIMAL_PERSEN% dari total, dan kurang dari sisa
+               (kalau sama dengan sisa, itu namanya lunas) */
+  $totalHarga = (int) $pesanan['total_harga'];
+  $sisa = sisa_tagihan($pdo, (int) $pesanan['id'], $totalHarga);
+
+  if ($sisa === 0) {
+    kirim_error('Pesanan ini sudah lunas', 409);
+  }
+
+  $formatRp = function ($angka) { return 'Rp' . number_format($angka, 0, ',', '.'); };
+
+  if ($jenis === 'lunas' && $jumlah !== $sisa) {
+    kirim_error('Pembayaran lunas harus sebesar ' . $formatRp($sisa), 400);
+  }
+  if ($jenis === 'dp') {
+    $dpMinimal = minimal_dp($totalHarga);
+    if ($jumlah >= $sisa) {
+      kirim_error('Jumlah DP harus kurang dari ' . $formatRp($sisa) . '. Pilih Lunas untuk membayar penuh', 400);
+    }
+    if ($jumlah < $dpMinimal) {
+      kirim_error('DP minimal ' . DP_MINIMAL_PERSEN . '% dari total (' . $formatRp($dpMinimal) . ')', 400);
+    }
   }
 
   /* ========================= 5. VALIDASI FILE =========================
