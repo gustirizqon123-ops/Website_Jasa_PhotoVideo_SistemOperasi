@@ -564,6 +564,11 @@
     margin-left: auto;
   }
 
+  /* Di HP cukup avatar saja, supaya judul halaman tidak terlipat */
+  .admin-header-admin span {
+    display: none;
+  }
+
   .admin-konten {
     margin-left: 0;
   }
@@ -585,6 +590,88 @@
 @media (max-width: 1024px) {
   .admin-catat-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* TABEL JADI KARTU DI HP
+   Setiap <tr> menjadi satu kartu, setiap <td> menjadi baris "label - nilai".
+   Labelnya dari atribut data-label, diisi otomatis oleh layout.js
+   (siapkanLabelTabel()) dari <th> tabel. Kolom tanpa judul (kolom aksi:
+   Lihat, Ubah/Hapus, Verifikasi/Tolak) ditaruh rata kanan tanpa label. */
+@media (max-width: 640px) {
+  .admin-tabel thead {
+    display: none;
+  }
+
+  .admin-tabel,
+  .admin-tabel tbody,
+  .admin-tabel tr,
+  .admin-tabel td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-tabel tr {
+    padding: var(--jarak-2) var(--jarak-3);
+    border-bottom: 1px solid var(--warna-garis);
+  }
+
+  .admin-tabel tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .admin-tabel td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--jarak-2);
+    padding: 6px 0;
+    border-bottom: none;
+    white-space: normal;
+    text-align: right;
+  }
+
+  .admin-tabel td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    color: var(--warna-teks-redup);
+    font-size: var(--teks-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  /* Kolom aksi (judul kolom kosong): tanpa label, tombol rata kanan */
+  .admin-tabel td[data-label=""]::before,
+  .admin-tabel td[colspan]::before {
+    content: none;
+  }
+
+  .admin-tabel td[data-label=""] {
+    justify-content: flex-end;
+    padding-top: var(--jarak-1);
+  }
+
+  .admin-tabel td[colspan] {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  /* Baris "Ubah Status Pesanan" di Detail Pesanan: label di atas,
+     dropdown + tombol Simpan di bawah, supaya tidak keluar dari kartu */
+  .admin-ubah-status {
+    flex-wrap: wrap;
+    gap: var(--jarak-2);
+  }
+
+  .admin-ubah-status .select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .admin-ubah-status > .flex {
+    width: 100%;
   }
 }
 

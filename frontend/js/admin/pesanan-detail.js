@@ -91,11 +91,12 @@ function gambarDetailPesanan(pesanan) {
       barisInfo('Lokasi', escapeHtml(pesanan.lokasi)) +
       barisInfo('Catatan', pesanan.catatan ? escapeHtml(pesanan.catatan) : '<span class="teks-redup">-</span>') +
       barisInfo('Total Harga', '<strong>' + formatRupiah(pesanan.total_harga) + '</strong>') +
-      barisInfo('Dibuat Pada', formatTanggal(pesanan.dibuat_pada.split(' ')[0]) + ' ' + pesanan.dibuat_pada.split(' ')[1]) +
+      // dibuat_pada dari API: "2026-10-30 20:11:00" -> "30 Oktober 2026, 20:11" (tanpa detik)
+      barisInfo('Dibuat Pada', formatTanggal(pesanan.dibuat_pada.split(' ')[0]) + ', ' + (pesanan.dibuat_pada.split(' ')[1] || '').slice(0, 5)) +
 
       '<hr class="garis" style="margin-block: var(--jarak-3);">' +
 
-      '<div class="flex-antar">' +
+      '<div class="flex-antar admin-ubah-status">' +
         '<label class="label" for="selectStatusPesanan" style="margin-bottom:0;">Ubah Status Pesanan</label>' +
         '<div class="flex jarak-1">' +
           '<select class="select" id="selectStatusPesanan" style="width:auto; min-height:40px;">' + optionHtml + '</select>' +

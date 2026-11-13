@@ -29,7 +29,40 @@
 document.addEventListener('DOMContentLoaded', function () {
   muatSidebarAdmin();
   isiNamaAdmin();
+  siapkanLabelTabel();
 });
+
+/* TABEL DI LAYAR SEMPIT
+   Di HP (<= 640px, lihat admin.css bagian 9) setiap baris .admin-tabel
+   ditampilkan sebagai kartu: judul kolom di kiri, nilainya di kanan. Judul
+   kolom itu diambil dari atribut data-label di setiap <td>, yang diisi
+   fungsi ini dari <th> tabelnya -- jadi file JS halaman (dashboard.js,
+   pesanan.js, paket.js, pesanan-detail.js) tidak perlu diubah.
+
+   Isi tabel dibuat ulang oleh JS halaman (filter, muat ulang, dll), jadi
+   MutationObserver dipakai untuk memberi label lagi setiap kali isi
+   halaman berubah. Mengubah atribut tidak memicu observer ini lagi
+   (yang diamati hanya childList), jadi tidak terjadi perulangan. */
+function siapkanLabelTabel() {
+  function beriLabel() {
+    document.querySelectorAll('.admin-tabel').forEach(function (tabel) {
+      var judul = Array.prototype.map.call(tabel.querySelectorAll('thead th'), function (th) {
+        return th.textContent.trim();
+      });
+      tabel.querySelectorAll('tbody tr').forEach(function (baris) {
+        Array.prototype.forEach.call(baris.children, function (sel, i) {
+          if (sel.colSpan > 1) { return; } // baris "Memuat data..." / "Gagal memuat"
+          if (sel.getAttribute('data-label') !== (judul[i] || '')) {
+            sel.setAttribute('data-label', judul[i] || '');
+          }
+        });
+      });
+    });
+  }
+
+  beriLabel();
+  new MutationObserver(beriLabel).observe(document.body, { childList: true, subtree: true });
+}
 
 /* Mengisi nama dan huruf avatar di header (.admin-header-admin) dari nama
    yang disimpan login.js di sessionStorage saat login. Kalau tidak ada
