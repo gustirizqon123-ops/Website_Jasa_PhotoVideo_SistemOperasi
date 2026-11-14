@@ -6,6 +6,8 @@
    3. Mengatur tombol menu di mobile
    4. Mengganti gambar yang filenya belum ada dengan kotak PENANDA bertuliskan
       nama file yang harus diisi (pengingat, lihat tandaiGambarKosong())
+   5. Menandai foto paket MENDATAR di dalam .foto-utuh supaya tampil penuh
+      tanpa latar buram (lihat tandaiOrientasiFoto())
 
    CARA PAKAI di halaman HTML:
    <body data-halaman="beranda">          <- nama halaman, cocok dengan data-menu di navbar.html
@@ -22,6 +24,25 @@ document.addEventListener('DOMContentLoaded', function () {
   muatSemuaKomponen();
   tandaiGambarKosong();
 });
+
+/* ORIENTASI FOTO PAKET (.foto-utuh, lihat css/style.css bagian "FOTO UTUH")
+   Foto TEGAK tampil utuh dengan latar buram di kiri-kanan. Foto MENDATAR
+   (contoh: Event Dokumentasi) cukup memenuhi bingkai seperti setelan awal,
+   jadi bingkainya diberi kelas .foto-mendatar.
+
+   Foto paket dibuat/diisi belakangan oleh katalog.js dan pemesanan.js, dan
+   event "load" gambar tidak merambat ke atas (bubble). Karena itu listener
+   dipasang di document dengan mode capture (argumen ketiga = true), supaya
+   SEMUA gambar yang selesai dimuat, kapan pun dibuat, ikut tertangkap. */
+document.addEventListener('load', tandaiOrientasiFoto, true);
+
+function tandaiOrientasiFoto(e) {
+  var gambar = e.target;
+  if (!gambar || gambar.tagName !== 'IMG' || gambar.classList.contains('foto-utuh-latar')) { return; }
+  var bingkai = gambar.parentElement;
+  if (!bingkai || !bingkai.classList.contains('foto-utuh')) { return; }
+  bingkai.classList.toggle('foto-mendatar', gambar.naturalWidth >= gambar.naturalHeight);
+}
 
 /* Mencari semua elemen yang punya atribut data-muat, lalu mengisinya */
 function muatSemuaKomponen() {

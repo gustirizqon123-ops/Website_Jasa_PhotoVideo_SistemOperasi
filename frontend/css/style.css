@@ -576,6 +576,13 @@ p {
   object-position: center;
   background: transparent;
 }
+/* Foto MENDATAR (contoh: Event Dokumentasi) memakai setelan awal: penuh
+   memenuhi bingkai (cover), tanpa sisa latar buram di atas/bawah. Kelas
+   .foto-mendatar dipasang otomatis oleh js/komponen.js (tandaiOrientasiFoto)
+   begitu foto selesai dimuat dan ternyata lebarnya >= tingginya. */
+.foto-utuh.foto-mendatar > img:not(.foto-utuh-latar) { object-fit: cover; }
+.foto-utuh.foto-mendatar > .foto-utuh-latar { display: none; }
+
 .card-paket .foto-utuh { height: 300px; }   /* [UKUR] tinggi bingkai foto kartu paket */
 
 .card-paket-isi {
