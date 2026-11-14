@@ -59,7 +59,7 @@ var KONFIG = {
      1 Wedding, 2 Wisuda, 3 Event). Disusun oleh teksDurasiPaket() di util.js.
      [UBAH] kalau aturan durasi studio berubah, cukup ubah di sini. */
   DURASI_PER_KATEGORI: {
-    1: '8 jam dokumentasi',
+    1: 'Hingga 8 jam dokumentasi',   // "Hingga": Pistachio 6 jam, Sage & Emerald 8 jam
     2: '1 jam sesi foto',
     3: 'Maksimal 8 jam dokumentasi',
   },

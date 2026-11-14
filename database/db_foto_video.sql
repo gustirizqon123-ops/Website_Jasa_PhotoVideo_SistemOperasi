@@ -85,7 +85,7 @@ INSERT INTO `paket` (`id`, `kategori_id`, `nama`, `deskripsi`, `harga`, `gambar`
 (2, 1, 'Wedding Sage Package', 'Foto dan video 8 jam kerja, 2 kru foto dan video, album softcover 20 halaman, Photoscan Barcode, durasi video 1 menit, all foto edit', 2500000, 'wedding-sage.jpg'),
 (3, 1, 'Wedding Emerald Package', 'Foto dan video 8 jam kerja, 3 kru, album hardcover 25 halaman, Photoscan Barcode, durasi video 2 menit, all foto edit', 3500000, 'wedding-emerald.jpg'),
 (4, 2, 'Wisuda Solo', 'Sesi foto 1 jam, 30 foto edit', 500000, 'wisuda-solo.jpg'),
-(5, 2, 'Wisuda Grup', 'Sesi foto 2 jam, maksimal 6 orang, 60 foto edit', 900000, 'wisuda-grup.jpeg'),
+(5, 2, 'Wisuda Grup', 'Sesi foto 1 jam, maksimal 6 orang, 60 foto edit', 900000, 'wisuda-grup.jpeg'),
 (6, 3, 'Event Dokumentasi', 'Foto dan video acara 6 jam, highlight 2 menit', 3500000, 'event-dokumentasi.jpg');
 
 -- --------------------------------------------------------
