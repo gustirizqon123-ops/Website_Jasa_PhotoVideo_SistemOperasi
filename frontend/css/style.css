@@ -99,14 +99,11 @@
   --radius-xl: 20px;              /* gambar hero */
   --radius-pill: 999px;
 
-  /* ---- POSISI POTONG FOTO PAKET ----
-     Foto paket kebanyakan TEGAK, sedangkan bingkainya mendatar, jadi foto
-     pasti terpotong. Nilai ini menentukan bagian mana yang ditampilkan:
-     "center 50%" = tengah foto (kepala sering terpotong), angka lebih kecil =
-     lebih ke atas. 30% menampilkan kepala + wajah di semua foto paket yang ada.
-     Dipakai di kartu Katalog, modal detail, ringkasan Pemesanan (form.css),
-     dan thumbnail Kelola Paket (admin-paket.css).
-     [UBAH] kalau foto paket baru masih terpotong kepalanya, kecilkan angkanya */
+  /* ---- POSISI POTONG THUMBNAIL PAKET (admin) ----
+     Hanya dipakai thumbnail kecil di Kelola Paket (admin-paket.css), yang
+     masih dipotong (cover) karena ukurannya sangat kecil. Foto paket di
+     halaman pelanggan TIDAK dipotong lagi, lihat bagian "FOTO UTUH".
+     Angka lebih kecil = potongan lebih ke atas (kepala tidak terpotong). */
   --fokus-foto-paket: center 30%;
   --bayangan: 0 4px 16px rgba(24, 59, 48, 0.08);
   --bayangan-kuat: 0 12px 32px rgba(24, 59, 48, 0.14);
@@ -531,13 +528,55 @@ p {
 }
 .card-paket:hover { transform: translateY(-2px); }
 
+/* Dipakai tanpa bingkai (contoh: komponen.html): foto dipotong (cover).
+   Di Katalog, foto ini dibungkus .foto-utuh sehingga tampil UTUH (lihat
+   bagian "FOTO UTUH" di bawah). */
 .card-paket-gambar {
   width: 100%;
   height: 248px;                       /* [UKUR] tinggi gambar kartu paket */
   object-fit: cover;
-  object-position: var(--fokus-foto-paket);   /* lihat :root, supaya kepala tidak terpotong */
   background: var(--warna-tint);
 }
+
+/* ---- FOTO UTUH (foto paket di Katalog, modal detail, ringkasan Pemesanan) ----
+   Foto paket kebanyakan TEGAK, bingkainya mendatar. Supaya foto tampil
+   UTUH di tengah (tidak terpotong atas/bawah), foto depan memakai
+   object-fit: contain. Ruang kosong di kiri-kanan diisi foto yang SAMA
+   versi buram (.foto-utuh-latar), jadi tidak terlihat polos. Browser hanya
+   mengunduh fotonya sekali karena src-nya sama.
+   Struktur HTML:
+   <div class="foto-utuh">
+     <img class="foto-utuh-latar" src="X.jpg" alt="" aria-hidden="true">
+     <img class="card-paket-gambar" src="X.jpg" alt="Nama paket">
+   </div>
+   Tinggi bingkai diatur per tempat: .card-paket .foto-utuh (di bawah),
+   .modal .foto-utuh, dan .form-ringkasan .foto-utuh (form.css). */
+.foto-utuh {
+  position: relative;
+  overflow: hidden;
+  background: var(--warna-tint);
+}
+.foto-utuh-latar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px) brightness(0.85);
+  transform: scale(1.15);              /* tepi buram tidak terlihat transparan */
+}
+.foto-utuh > img:not(.foto-utuh-latar) {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  object-fit: contain;                 /* foto tampil utuh, tidak terpotong */
+  object-position: center;
+  background: transparent;
+}
+.card-paket .foto-utuh { height: 300px; }   /* [UKUR] tinggi bingkai foto kartu paket */
 
 .card-paket-isi {
   display: flex;
@@ -684,6 +723,7 @@ p {
 
 .modal-tutup {
   position: absolute;
+  z-index: 2;                          /* tetap di atas foto .foto-utuh (yang juga position: relative) */
   top: 12px;
   right: 12px;
   width: 40px;
@@ -1107,9 +1147,10 @@ p {
 .card-paket-aksi { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
 
 /* Gambar besar di modal detail paket */
-/* [UKUR] tinggi foto di modal detail: dulu 280px, dinaikkan supaya foto paket
-   yang tegak tidak terpotong di wajah (bingkai modal lebar tapi pendek) */
-.modal-gambar { width: 100%; height: 380px; object-fit: cover; object-position: var(--fokus-foto-paket); background: var(--warna-tint); }
+/* Di katalog.html foto ini dibungkus .foto-utuh, jadi tampil utuh (lihat
+   bagian "FOTO UTUH"). [UKUR] tinggi bingkai foto modal detail: */
+.modal-gambar { width: 100%; height: 380px; object-fit: cover; background: var(--warna-tint); }
+.modal .foto-utuh { height: 380px; }
 
 /* [TAMBAH] bagian Beranda lain di sini */
 
@@ -1184,7 +1225,8 @@ p {
   .keunggulan img { height: 280px; }
   .hero-penanda { right: var(--jarak-3); bottom: var(--jarak-3); }
   .hero-statistik { flex-direction: column; }
-  .modal-gambar { height: 260px; }   /* dulu 200px, lihat catatan .modal-gambar */
+  .modal-gambar,
+  .modal .foto-utuh { height: 300px; }   /* [UKUR] tinggi bingkai foto modal di HP */
 
   .footer-grid { grid-template-columns: 1fr; gap: var(--jarak-4); }
   .footer-bawah { flex-direction: column; }

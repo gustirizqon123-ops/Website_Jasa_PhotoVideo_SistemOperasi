@@ -64,6 +64,9 @@ function gambarRingkasanPaket(paket) {
 
   gambar.src = '../uploads/paket/' + paket.gambar;
   gambar.alt = paket.nama;
+  // Foto latar buram di belakang foto utama (lihat .foto-utuh di style.css)
+  var latar = wadah.querySelector('.foto-utuh-latar');
+  if (latar) { latar.src = gambar.src; }
   label.textContent = paket.kategori;
   judul.textContent = paket.nama;
   harga.innerHTML = formatRupiah(paket.harga) + ' <small>/ acara</small>';

@@ -156,8 +156,15 @@ function gambarDaftarPaket(daftarPaket) {
   var html = '';
 
   daftarPaket.forEach(function (paket) {
+    // Foto dibungkus .foto-utuh: tampil UTUH (tidak terpotong atas/bawah),
+    // ruang kosong di sampingnya diisi foto yang sama versi buram.
+    // Lihat css/style.css bagian "FOTO UTUH".
+    var alamatGambar = '../uploads/paket/' + escapeHtml(paket.gambar);
     html += '<article class="card card-paket" data-id="' + paket.id + '">' +
-      '<img class="card-paket-gambar" src="../uploads/paket/' + escapeHtml(paket.gambar) + '" alt="' + escapeHtml(paket.nama) + '">' +
+      '<div class="foto-utuh">' +
+        '<img class="foto-utuh-latar" src="' + alamatGambar + '" alt="" aria-hidden="true">' +
+        '<img class="card-paket-gambar" src="' + alamatGambar + '" alt="' + escapeHtml(paket.nama) + '">' +
+      '</div>' +
       '<div class="card-paket-isi">' +
         '<span class="badge-label">' + escapeHtml(paket.kategori) + '</span>' +
         '<div>' +
@@ -242,6 +249,9 @@ function isiModalDetail(paket) {
     elGambar.src = '../uploads/paket/' + paket.gambar;
     elGambar.alt = paket.nama;
   }
+  // Foto latar buram di belakang foto utama (lihat .foto-utuh di style.css)
+  var elLatar = document.getElementById('modal-gambar-latar');
+  if (elLatar) { elLatar.src = '../uploads/paket/' + paket.gambar; }
   if (elJudul) { elJudul.textContent = paket.nama; }
   if (elEyebrow) { elEyebrow.textContent = 'Detail paket · ' + paket.kategori; }
   if (elHarga) {

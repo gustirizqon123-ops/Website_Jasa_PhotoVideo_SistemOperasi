@@ -152,11 +152,18 @@
 
 .form-ringkasan-gambar {
   width: 100%;
-  height: 200px;                 /* [UKUR] tinggi gambar paket di ringkasan (dulu 160px, dinaikkan supaya wajah tidak terpotong) */
+  height: 200px;
   object-fit: cover;
-  object-position: var(--fokus-foto-paket);   /* dari style.css :root, supaya kepala tidak terpotong */
   border-radius: var(--radius);
   background: var(--warna-tint);
+  margin-bottom: var(--jarak-2);
+}
+
+/* Di pemesanan.html foto ringkasan dibungkus .foto-utuh (style.css bagian
+   "FOTO UTUH"), jadi tampil utuh tanpa terpotong atas/bawah. */
+.form-ringkasan .foto-utuh {
+  height: 260px;                 /* [UKUR] tinggi bingkai foto paket di ringkasan */
+  border-radius: var(--radius);
   margin-bottom: var(--jarak-2);
 }
 

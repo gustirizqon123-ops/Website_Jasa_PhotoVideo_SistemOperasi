@@ -122,8 +122,13 @@
                (gambarRingkasanPaket) menggantinya dengan data dari
                api/paket/detail.php sesuai paket_id. -->
           <aside class="form-ringkasan" id="ringkasanPaket">
-            <!-- src sengaja kosong: diisi pemesanan.js (gambarRingkasanPaket) dari api/paket/detail.php -->
-            <img class="form-ringkasan-gambar" alt="">
+            <!-- src kedua gambar sengaja kosong: diisi pemesanan.js (gambarRingkasanPaket)
+                 dari api/paket/detail.php. .foto-utuh = foto tampil utuh + latar buram
+                 (lihat css/style.css bagian "FOTO UTUH") -->
+            <div class="foto-utuh">
+              <img class="foto-utuh-latar" alt="" aria-hidden="true">
+              <img class="form-ringkasan-gambar" alt="">
+            </div>
             <span class="badge-label">Foto &amp; Video</span>
             <h3 style="margin-top:12px;">Wedding Signature</h3>
             <!-- Durasi per kategori, diisi pemesanan.js dari teksDurasiPaket() (util.js) -->
