@@ -3,7 +3,11 @@
   Footer dipakai semua halaman pelanggan. Dimuat oleh js/komponen.js ke dalam:
   <div data-muat="komponen/footer.html"></div>
 
-  [UBAH] Semua teks kontak di bawah adalah CONTOH. Ganti dengan data asli dari Figma.
+  Data asli studio diisi 2026-11-14.
+  Nomor WhatsApp: tautan dan teksnya diisi ulang otomatis oleh js/komponen.js
+  (isiWhatsAppFooter()) dari KONFIG.NOMOR_WA_ADMIN di js/config.js, jadi kalau
+  nomornya berganti CUKUP ubah di config.js. Nomor yang tertulis di bawah hanya
+  cadangan untuk halaman yang tidak memuat config.js (contoh: komponen.html).
 -->
 <footer class="footer">
   <div class="container">
@@ -15,27 +19,29 @@
         <p class="navbar-nama" style="color:#fff;">For Us Picture.</p>
         <p style="margin-top:12px; max-width:360px;">
           <!-- [UBAH] deskripsi singkat studio -->
-          Studio foto dan video untuk pernikahan, wisuda, dan acara. Berbasis di Banjarmasin, siap bercerita untukmu.
+          Jasa foto dan video kami tersedia untuk semua momen yang ingin diabadikan. Kami akan selalu ada.
         </p>
       </div>
 
       <!-- Kolom 2: kontak -->
       <div>
-        <h4>Alat kontak</h4>
+        <h4>Kontak</h4>
         <ul>
-          <li>halo@forus.picture</li>                     <!-- [UBAH] email -->
-          <li>WhatsApp: 0812-3456-7890</li>               <!-- [UBAH] nomor -->
-          <li>Banjarmasin, Kalimantan Selatan</li>        <!-- [UBAH] alamat -->
+          <li>foruspicture@gmail.com</li>
+          <li>
+            WhatsApp:
+            <a href="https://wa.me/6285166626282" data-wa-admin target="_blank" rel="noopener">0851-6662-6282</a>
+          </li>
+          <li>Banjarmasin, Kalimantan Selatan</li>
         </ul>
       </div>
 
-      <!-- Kolom 3: media sosial -->
+      <!-- Kolom 3: media sosial. [TAMBAH] akun baru (TikTok, YouTube, dll) cukup
+           ditambah satu <li> lagi dengan pola yang sama -->
       <div>
         <h4>Ikuti kami</h4>
         <ul>
-          <li><a href="#">Instagram</a></li>              <!-- [UBAH] ganti # dengan tautan asli -->
-          <li><a href="#">TikTok</a></li>
-          <li><a href="#">YouTube</a></li>
+          <li><a href="https://www.instagram.com/porto.nemoo/" target="_blank" rel="noopener">Instagram</a></li>
         </ul>
       </div>
 
@@ -43,9 +49,6 @@
 
     <div class="footer-bawah">
       <span>&copy; 2026 For Us Picture. Semua hak dilindungi.</span>
-      <span>
-        <a href="#">Kebijakan Privasi</a> &nbsp;·&nbsp; <a href="#">Syarat &amp; Ketentuan</a>
-      </span>
     </div>
 
   </div>

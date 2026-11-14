@@ -37,6 +37,8 @@ function muatSemuaKomponen() {
         wadah.innerHTML = html;
         /* Setelah navbar masuk ke halaman, aktifkan menu dan tombol mobile */
         if (alamat.indexOf('navbar') !== -1) { siapkanNavbar(); }
+        /* Setelah footer masuk, samakan nomor WhatsApp-nya dengan config.js */
+        if (alamat.indexOf('footer') !== -1) { isiWhatsAppFooter(wadah); }
       })
       .catch(function (error) {
         console.error(error);
@@ -44,6 +46,25 @@ function muatSemuaKomponen() {
           '<p style="padding:16px;color:#C64444;font-size:14px;">' +
           'Komponen gagal dimuat. Buka halaman lewat http://localhost/... (bukan file://).</p>';
       });
+  });
+}
+
+/* Nomor WhatsApp di footer (elemen ber-atribut data-wa-admin) diisi dari
+   KONFIG.NOMOR_WA_ADMIN di config.js, supaya nomor admin cukup diubah di SATU
+   tempat. Tautannya ke wa.me, teksnya ditulis format lokal, contoh:
+   "6285166626282" -> tautan https://wa.me/6285166626282, teks "0851-6662-6282".
+   Halaman yang tidak memuat config.js (komponen.html) tetap memakai nomor
+   cadangan yang tertulis di footer.html. */
+function isiWhatsAppFooter(wadah) {
+  if (typeof KONFIG === 'undefined' || !KONFIG.NOMOR_WA_ADMIN) { return; }
+
+  var nomor = String(KONFIG.NOMOR_WA_ADMIN).replace(/[^0-9]/g, '');
+  var lokal = nomor.indexOf('62') === 0 ? '0' + nomor.substring(2) : nomor;
+  var tampil = lokal.replace(/(\d{4})(?=\d)/g, '$1-'); // kelompok 4 digit: 0851-6662-6282
+
+  wadah.querySelectorAll('[data-wa-admin]').forEach(function (tautan) {
+    tautan.href = 'https://wa.me/' + nomor;
+    tautan.textContent = tampil;
   });
 }
 
