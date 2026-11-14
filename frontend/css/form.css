@@ -342,6 +342,51 @@
 
 
 /* ==========================================================================
+   4b. KARTU QRIS (halaman Pembayaran)
+   Markup:
+   <div class="bayar-qris">
+     <h3 class="bayar-qris-judul">Bayar dengan QRIS</h3>
+     <p class="bayar-qris-teks">...</p>
+     <img class="bayar-qris-gambar" src="assets/img/qris.jpeg" alt="...">
+     <a class="btn btn-secondary" download>Unduh gambar QRIS</a>
+   </div>
+   ========================================================================== */
+.bayar-qris {
+  padding: var(--jarak-4);
+  text-align: center;
+  background: var(--warna-tint);
+  border: 1px solid var(--warna-garis);
+  border-radius: var(--radius-lg);
+}
+
+.bayar-qris-judul {
+  font-size: var(--teks-h4);
+  margin-bottom: 4px;
+}
+
+.bayar-qris-teks {
+  max-width: 420px;
+  margin-inline: auto;
+  font-size: 14px;
+  color: var(--warna-teks-sekunder);
+}
+
+.bayar-qris-gambar {
+  display: block;
+  width: 100%;
+  max-width: 280px;              /* [UKUR] lebar gambar QRIS di desktop */
+  height: auto;
+  margin: var(--jarak-3) auto;
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+}
+
+.bayar-qris .btn {
+  margin-top: var(--jarak-3);
+}
+
+
+/* ==========================================================================
    5. HALAMAN KONFIRMASI
    Markup:
    <div class="selesai-kartu">

@@ -83,6 +83,8 @@ function siapkanPilihanJenisBayar() {
   });
 
   aturJumlahSesuaiJenis(); // isi awal, sesuai pilihan yang ter-checked (DP)
+
+  document.getElementById('jumlah').addEventListener('input', perbaruiNominalQris);
 }
 
 /* Batas jumlah untuk TAMPILAN saja. Angka yang sah dicek ulang di server
@@ -130,6 +132,18 @@ function aturJumlahSesuaiJenis() {
         '%) dan kurang dari ' + formatRupiah(batas.total) + '. Boleh diubah.';
     }
   }
+
+  perbaruiNominalQris();
+}
+
+/* Nominal di kartu QRIS ("Masukkan nominal Rp...") mengikuti kolom Jumlah
+   Dibayar: berubah saat memilih DP/Lunas dan saat jumlah DP diketik ulang.
+   QRIS-nya statis, jadi pelanggan mengetik sendiri nominal ini di aplikasinya. */
+function perbaruiNominalQris() {
+  var el = document.getElementById('nominalQris');
+  if (!el) { return; }
+  var jumlah = parseInt(document.getElementById('jumlah').value, 10);
+  el.textContent = jumlah > 0 ? formatRupiah(jumlah) + ' (sesuai Jumlah Dibayar)' : 'sesuai Jumlah Dibayar';
 }
 
 /** Mengembalikan pesan error, atau null kalau jumlah sudah sesuai aturan. */

@@ -26,7 +26,7 @@
 
         <span class="eyebrow">Langkah 2 dari 3</span>
         <h1 class="judul-halaman" style="margin-top:16px; font-size: 40px;">Kirim bukti pembayaran.</h1>
-        <p class="lead">Transfer sesuai jumlah di bawah, lalu unggah bukti bayarnya.</p>
+        <p class="lead">Bayar lewat QRIS sesuai jumlah di bawah, lalu unggah bukti bayarnya.</p>
 
         <ol class="form-langkah" style="margin-top: var(--jarak-4);">
           <li class="selesai">1. Pemesanan</li>
@@ -61,14 +61,26 @@
           </div>
         </div>
 
-        <!-- Rekening / QRIS studio. [UBAH] isi dengan info rekening asli.
-             Teks dibungkus satu <span>: .alert memakai display:flex, jadi tanpa
-             pembungkus setiap potongan teks menjadi kolom sendiri-sendiri. -->
-        <div class="alert" style="margin-top: var(--jarak-3);">
-          <span>
-            Transfer ke <strong>BCA 1234567890 a.n. For Us Picture Studio</strong>
-            atau scan QRIS yang tersedia di tempat.
-          </span>
+        <!-- ================================================================
+             QRIS STUDIO (keputusan kelompok 2026-11-14: pembayaran HANYA lewat
+             QRIS, tanpa nomor rekening).
+             [UBAH] kalau gambar QRIS diganti, simpan dengan nama yang sama di
+             frontend/assets/img/qris.jpeg (atau ubah src + href di bawah).
+             Nominal di #nominalQris diisi bayar.js sesuai Jumlah Dibayar.
+             ================================================================ -->
+        <div class="bayar-qris" style="margin-top: var(--jarak-3);">
+          <h3 class="bayar-qris-judul">Bayar dengan QRIS</h3>
+          <p class="bayar-qris-teks">Bisa dibayar dari m-banking atau e-wallet apa pun.</p>
+          <img class="bayar-qris-gambar" src="assets/img/qris.jpeg" alt="Kode QRIS For Us Picture untuk pembayaran">
+          <p class="bayar-qris-teks">
+            Masukkan nominal <strong id="nominalQris">sesuai Jumlah Dibayar</strong>
+            di aplikasimu, lalu unggah bukti pembayarannya di bawah.
+          </p>
+          <!-- Pelanggan yang membuka dari HP tidak bisa men-scan layarnya sendiri:
+               simpan gambar ini, lalu pakai fitur "scan dari galeri" di aplikasinya -->
+          <a class="btn btn-secondary" href="assets/img/qris.jpeg" download="QRIS-For-Us-Picture.jpeg">
+            Unduh gambar QRIS <span class="ikon ikon-bawah" aria-hidden="true"></span>
+          </a>
         </div>
 
         <!-- ================================================================
@@ -99,16 +111,13 @@
               </label>
             </div>
 
-            <div class="form-baris-2">
-              <div class="form-field">
-                <label class="label" for="metode">Metode Pembayaran</label>
-                <select class="select" id="metode" name="metode" required>
-                  <option value="">Pilih metode</option>
-                  <option value="transfer_bank">Transfer Bank</option>
-                  <option value="ewallet">E-Wallet</option>
-                  <option value="qris">QRIS</option>
-                </select>
-              </div>
+            <!-- Metode pembayaran SELALU "qris" (pembayaran hanya lewat QRIS),
+                 jadi tidak ditampilkan sebagai pilihan. Tetap dikirim lewat
+                 FormData karena wajib di api/pembayaran/upload.php. Server dan
+                 form Catat Pembayaran admin tetap menerima transfer_bank/ewallet. -->
+            <input type="hidden" name="metode" id="metode" value="qris">
+
+            <div>
               <div class="form-field">
                 <label class="label" for="jumlah">Jumlah Dibayar</label>
                 <input class="input" type="number" id="jumlah" name="jumlah" placeholder="Contoh: 2000000" min="1" required>
