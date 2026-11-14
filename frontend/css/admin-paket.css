@@ -37,6 +37,7 @@
   width: 72px;                    /* [UKUR] */
   height: 48px;
   object-fit: cover;
+  object-position: var(--fokus-foto-paket);   /* dari style.css :root */
   border-radius: var(--radius-sm);
   background: var(--warna-tint);
 }

@@ -152,8 +152,9 @@
 
 .form-ringkasan-gambar {
   width: 100%;
-  height: 160px;                 /* [UKUR] tinggi gambar paket di ringkasan */
+  height: 200px;                 /* [UKUR] tinggi gambar paket di ringkasan (dulu 160px, dinaikkan supaya wajah tidak terpotong) */
   object-fit: cover;
+  object-position: var(--fokus-foto-paket);   /* dari style.css :root, supaya kepala tidak terpotong */
   border-radius: var(--radius);
   background: var(--warna-tint);
   margin-bottom: var(--jarak-2);
