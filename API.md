@@ -121,6 +121,7 @@ Tampilan teks untuk pengguna (misalnya `transfer_bank` menjadi "Transfer Bank") 
 | 10 | `api/admin/paket.php` | POST | Tambah, ubah, hapus paket | Ya | C |
 | 11 | `api/kategori/list.php` | GET | Daftar kategori | Tidak | A |
 | 12 | `api/admin/catat-pembayaran.php` | POST | Admin mencatat pembayaran (pelunasan / bukti ulang via WhatsApp) | Ya | C |
+| 13 | `api/admin/bukti.php` | GET | Menampilkan file bukti bayar (hanya admin) | Ya | C |
 
 ---
 
@@ -677,6 +678,32 @@ di 5.4.
 | 404 | `Pesanan tidak ditemukan` |
 | 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dicatat` / `Pesanan ini sudah lunas` |
 
+### 5.7 GET `api/admin/bukti.php`
+
+**Pemilik:** C | **Login:** Ya | **Dipakai oleh:** tautan "Lihat bukti" di Detail Pesanan (`pesanan-detail.js`)
+
+Menampilkan satu file bukti bayar. Ditambahkan 2026-11-16: folder `uploads/bukti-bayar/`
+sekarang **diblokir untuk akses langsung** lewat `.htaccess` (bukti bayar berisi data
+pribadi pelanggan), jadi file bukti hanya bisa dibuka lewat endpoint ini setelah admin login.
+
+**Parameter (query):**
+
+| Parameter | Wajib | Aturan |
+|---|---|---|
+| `file` | Ya | Nama file dari kolom `pembayaran.bukti_bayar`, berpola `bukti_<huruf/angka/_>.jpg/.jpeg/.png/.pdf`. Nama lain (termasuk yang memuat `/` atau `..`) ditolak |
+
+**Respons sukses (200):** isi file **apa adanya** (bukan JSON), dengan `Content-Type`
+`image/jpeg`, `image/png`, atau `application/pdf`, supaya bisa dibuka di tab baru.
+
+**Kemungkinan error (JSON seperti endpoint lain):**
+
+| Kode | Pesan |
+|---|---|
+| 400 | `Nama file tidak valid` / `Tipe file tidak diizinkan` |
+| 401 | `Silakan login terlebih dahulu` |
+| 404 | `File bukti tidak ditemukan` |
+| 405 | `Method tidak diizinkan` |
+
 ---
 
 ## 6. Contoh Memanggil dari JavaScript
@@ -802,3 +829,5 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-12 | Endpoint baru `api/admin/catat-pembayaran.php` (5.6): admin mencatat pelunasan / bukti ulang yang dikirim via WhatsApp | |
 | 2026-11-12 | `api/admin/ubah-status.php` (5.4): verifikasi pembayaran otomatis mengubah pesanan `menunggu` menjadi `dikonfirmasi`; respons target `pembayaran` ditambah `status_pesanan_berubah` | |
 | 2026-11-14 | `api/pembayaran/upload.php` (4.5): aturan jumlah DP (minimal 50%, kurang dari sisa tagihan) dan Lunas (sama dengan sisa tagihan); error 409 untuk pesanan batal / sudah lunas. Bagian 4.6 dipindah keluar dari tengah 4.5 | |
+| 2026-11-16 | Endpoint baru `api/admin/bukti.php` (5.7): file bukti bayar hanya bisa dilihat admin yang login; akses langsung ke `uploads/bukti-bayar/` diblokir `.htaccess` | |
+| 2026-11-16 | Semua endpoint: zona waktu PHP dan MySQL diset WITA (`Asia/Makassar`, `+08:00`) di `config/koneksi.php`. Cek "tanggal acara tidak boleh di masa lalu" (4.4) kini memakai tanggal WITA | |

@@ -174,9 +174,11 @@ function gambarTabelPembayaran(daftarBayar) {
       '<td>' + (bayar.jenis === 'dp' ? 'DP' : 'Lunas') + '</td>' +
       '<td>' + formatRupiah(bayar.jumlah) + '</td>' +
       '<td><span class="badge badge-' + bayar.status + '">' + labelStatus(bayar.status) + '</span></td>' +
-      // bukti_bayar boleh kosong untuk pembayaran yang dicatat admin tanpa lampiran
+      // bukti_bayar boleh kosong untuk pembayaran yang dicatat admin tanpa lampiran.
+      // File bukti dibuka lewat api/admin/bukti.php (cek login admin), BUKAN
+      // langsung ke uploads/bukti-bayar/ yang sekarang diblokir .htaccess.
       '<td>' + (bayar.bukti_bayar
-        ? '<a href="../../uploads/bukti-bayar/' + encodeURIComponent(bayar.bukti_bayar) + '" target="_blank" rel="noopener">Lihat bukti</a>'
+        ? '<a href="../../api/admin/bukti.php?file=' + encodeURIComponent(bayar.bukti_bayar) + '" target="_blank" rel="noopener">Lihat bukti</a>'
         : '<span class="teks-redup">-</span>') + '</td>' +
       '<td>' + tombolAksi + '</td>' +
     '</tr>';

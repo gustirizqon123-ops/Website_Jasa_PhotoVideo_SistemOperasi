@@ -80,8 +80,15 @@ function panggilApi(path, opsi) {
     .then(function (respons) {
       /* Sesi admin habis (lihat auth.php) -> arahkan ke login, TAPI hanya
          kalau memang sedang di halaman admin. Halaman publik (katalog,
-         pemesanan) tidak pernah menerima 401, jadi aman untuk semua. */
-      if (respons.status === 401 && window.location.pathname.indexOf('/admin/') !== -1) {
+         pemesanan) tidak pernah menerima 401, jadi aman untuk semua.
+
+         PENGECUALIAN (perbaikan 2026-11-16): api/admin/login.php juga membalas
+         401 untuk "Username atau password salah". Kalau ikut dialihkan,
+         halaman login ter-reload dan pesan error tidak pernah tampil. Jadi
+         401 dari login.php TIDAK dialihkan; pesannya diteruskan ke login.js. */
+      var halamanAdmin = window.location.pathname.indexOf('/admin/') !== -1;
+      var dariLogin = path.indexOf('admin/login.php') !== -1;
+      if (respons.status === 401 && halamanAdmin && !dariLogin) {
         window.location.href = 'login.html'; // [UBAH] sesuaikan kalau struktur folder admin berbeda
       }
       return respons.json();

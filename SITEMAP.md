@@ -117,6 +117,7 @@ flowchart LR
         e9["admin/ubah-status.php"]
         e10["admin/paket.php"]
         e11["admin/catat-pembayaran.php"]
+        e12["admin/bukti.php"]
     end
 
     h0 -.->|tidak memanggil API<br/>isi ditulis langsung di HTML| api
@@ -133,6 +134,7 @@ flowchart LR
     h8 --> e8
     h8 --> e9
     h8 --> e11
+    h8 -->|Lihat bukti| e12
     h9 --> e2
     h9 --> e10
     h10 --> e1

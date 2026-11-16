@@ -100,9 +100,11 @@ sequenceDiagram
     end
 
     B->>S: Baca "pesananAktif" (kalau kosong, kembali ke Katalog)
-    P->>B: Pilih DP / lunas, metode, jumlah, unggah bukti
-    B->>API: POST pembayaran/upload.php (FormData)
-    API->>API: Validasi metode, jenis, jumlah tidak melebihi total
+    P->>B: Pilih DP / lunas (jumlah terisi otomatis)
+    P->>P: Bayar lewat QRIS (scan / unduh gambar QRIS)
+    P->>B: Unggah bukti bayar
+    B->>API: POST pembayaran/upload.php (FormData, metode otomatis "qris")
+    API->>API: Validasi jenis + jumlah: DP min. 50% dan kurang dari sisa tagihan, Lunas = sisa tagihan
     API->>API: Cek isi file (JPG, PNG, PDF) dan ukuran maks. 2 MB
     API->>DB: INSERT pembayaran (status menunggu)
     API-->>B: 201 + status pembayaran
@@ -123,6 +125,12 @@ Catatan:
   dengan status apa pun **selain batal**, berapa pun paketnya.
 - Data di Pembayaran dan Konfirmasi diambil dari `sessionStorage`, bukan dari
   API, karena tidak ada endpoint publik untuk membaca pesanan.
+- Pembayaran **hanya lewat QRIS** (keputusan kelompok 2026-11-14): halaman
+  Pembayaran menampilkan gambar QRIS + tombol unduh, dan tidak ada pilihan
+  metode. Jumlah DP/Lunas terisi otomatis (DP minimal 50%, Lunas = total) dan
+  dicek ulang di server.
+- Kalender Tanggal Acara hanya bisa memilih hari ini ke depan; server tetap
+  menolak tanggal yang sudah lewat (zona waktu WITA).
 
 ---
 
@@ -159,7 +167,7 @@ sequenceDiagram
     T->>API: GET admin/pesanan.php?id=ID
     API-->>T: Data pesanan + semua pembayarannya
 
-    A->>T: Klik "Lihat bukti" (file di uploads/bukti-bayar/)
+    A->>T: Klik "Lihat bukti" (lewat admin/bukti.php, cek login dulu; folder uploads/bukti-bayar/ tidak bisa dibuka langsung)
     alt Bukti sah
         A->>T: Klik "Verifikasi"
         T->>API: POST admin/ubah-status.php (target pembayaran, terverifikasi)

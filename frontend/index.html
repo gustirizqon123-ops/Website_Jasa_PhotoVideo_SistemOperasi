@@ -24,6 +24,18 @@
   <main>
 
     <!-- ==================================================================
+         DAFTAR [KONTEN-CONTOH] DI HALAMAN INI (ditandai 2026-11-16)
+         Teks di bawah masih CONTOH dari desain Figma, bukan data asli studio.
+         Cari "[KONTEN-CONTOH]" (Ctrl+F) untuk menemukan semuanya:
+           1. Hero      : keterangan foto "Nadia & Rizky · Banjarmasin"
+           2. Hero      : penanda "01 / 04" (tidak ada slider sungguhan)
+           3. Hero      : klaim "250 cerita" dan "4,9/5 dari 120+ ulasan"
+           4. Portofolio: judul + label + alt 6 foto galeri
+           5. Testimoni : rating, kutipan, nama, dan foto avatar
+         Setelah diganti dengan data asli, hapus komentar [KONTEN-CONTOH]-nya.
+         ================================================================== -->
+
+    <!-- ==================================================================
          1. HERO
          [UBAH] Semua teks di bagian ini bisa disalin ulang dari Figma.
          ================================================================== -->
@@ -56,11 +68,18 @@
           <div class="hero-keterangan">
             <p class="eyebrow">Kisah pilihan / 2026</p>
             <h3>Tentang kita, selamanya.</h3>
+            <!-- [KONTEN-CONTOH] 1: nama pasangan & kota di foto hero masih contoh.
+                 Ganti dengan nama asli (dengan izin mereka), atau hapus baris ini. -->
             <p>Nadia &amp; Rizky · Banjarmasin</p>
           </div>
+          <!-- [KONTEN-CONTOH] 2: "01 / 04" berasal dari desain slider di Figma, padahal
+               hero hanya punya 1 foto. Hapus baris ini, atau ganti teksnya. -->
           <span class="hero-penanda">01 / 04</span>
         </div>
 
+        <!-- [KONTEN-CONTOH] 3: angka "250 cerita" dan "4,9/5 dari 120+ ulasan" masih
+             contoh. Ganti dengan angka asli studio, atau hapus kalau belum ada datanya
+             (angka yang sama juga ada di bagian Testimoni). -->
         <div class="hero-statistik">
           <span>Lebih dari 250 cerita telah kami abadikan.</span>
           <span><span class="bintang">★★★★★</span> 4,9/5 dari 120+ ulasan pelanggan</span>
@@ -148,7 +167,13 @@
           </div>
         </div>
 
-        <!-- Enam foto. [UBAH] ganti judul dan label sesuai Figma -->
+        <!-- [KONTEN-CONTOH] 4: enam foto galeri. Judul (<h4>), label kategori
+             (<span class="tag">: Wedding / Wisuda / Event), dan teks alt masih contoh.
+             Setelah foto galeri-1.jpg s/d galeri-6.jpg disimpan di frontend/assets/img/,
+             sesuaikan ketiganya dengan isi foto masing-masing.
+             Foto sebaiknya MENDATAR (landscape). Kalau tegak dan kepalanya terpotong,
+             tambahkan style="object-position: center 10%;" pada <img>-nya
+             (angka kecil = bagian atas foto lebih banyak terlihat). -->
         <div class="grid grid-3" style="row-gap:40px;">
           <article class="galeri-item">
             <img src="assets/img/galeri-1.jpg" alt="Nadia dan Ruby">
@@ -282,9 +307,16 @@
           <div>
             <span class="eyebrow">05 / Kata mereka</span>
             <h2 style="margin-top:16px;">Yang tinggal,<br>bukan cuma foto.</h2>
+            <!-- [KONTEN-CONTOH] 5a: rating "4,9/5 dari 120+ ulasan" masih contoh
+                 (samakan dengan angka di Hero kalau diganti) -->
             <p style="margin-top:24px;"><span class="bintang">★★★★★</span> &nbsp;4,9/5 dari 120+ ulasan</p>
           </div>
 
+          <!-- [KONTEN-CONTOH] 5b: kutipan testimoni, nama "Dinda & Fajar", keterangan
+               "Wedding · Banjarmasin", dan foto avatar masih contoh. Ganti dengan ulasan
+               asli pelanggan (dengan izin mereka). Kalau nama diganti, ganti juga nama
+               file foto avatar-nya (src di bawah) atau simpan fotonya dengan nama
+               avatar-dinda-fajar.jpg, dan isi alt="" dengan nama pelanggan. -->
           <figure class="kutipan">
             <blockquote>“Kami yang biasanya kaku di depan kamera nyaman banget. Setiap hasilnya terasa seperti kami sedang mengulang hari itu lagi.”</blockquote>
             <figcaption class="kutipan-penulis">

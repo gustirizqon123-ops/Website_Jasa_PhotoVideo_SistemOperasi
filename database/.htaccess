@@ -1,0 +1,3 @@
+# Folder database/ hanya berisi file .sql untuk diimpor lewat phpMyAdmin.
+# Tidak boleh dibuka atau diunduh lewat browser.
+Require all denied

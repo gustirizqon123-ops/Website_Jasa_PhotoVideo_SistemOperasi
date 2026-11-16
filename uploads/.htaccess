@@ -1,0 +1,11 @@
+# ==========================================================================
+# uploads/.htaccess - folder berisi file unggahan dari luar (foto paket,
+# bukti bayar). Lapisan pengaman cadangan: walaupun upload.php dan paket.php
+# sudah memeriksa isi file dan mengganti namanya menjadi .jpg/.png/.pdf,
+# file skrip di folder ini TIDAK BOLEH bisa dijalankan.
+# (Sengaja memakai "Require all denied", bukan "php_flag engine off", karena
+#  php_flag menyebabkan error 500 di hosting yang tidak memakai mod_php.)
+# ==========================================================================
+<FilesMatch "\.(php\d?|phtml|phar|pl|py|cgi|sh|asp|aspx|jsp)$">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,9 @@
+# ==========================================================================
+# uploads/bukti-bayar/.htaccess
+# Bukti bayar berisi data pribadi pelanggan, jadi file di folder ini TIDAK
+# bisa dibuka langsung lewat browser oleh siapa pun.
+# Admin melihatnya lewat api/admin/bukti.php?file=..., yang mengecek login
+# admin lebih dulu (dipakai tautan "Lihat bukti" di Detail Pesanan).
+# Menyimpan file baru tetap bisa (PHP menulis langsung ke disk, bukan lewat web).
+# ==========================================================================
+Require all denied

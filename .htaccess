@@ -1,0 +1,28 @@
+# ==========================================================================
+# .htaccess (akar proyek) - pengaman akses lewat browser
+# Ditambahkan 2026-11-16. Berlaku di XAMPP dan di hosting (Apache/LiteSpeed).
+# File ini TIDAK mengubah cara kerja website; hanya menutup akses yang tidak
+# seharusnya terbuka untuk umum.
+# ==========================================================================
+
+# 1. Jangan tampilkan daftar isi folder.
+#    Tanpa ini, membuka /uploads/bukti-bayar/ menampilkan SEMUA bukti bayar.
+Options -Indexes
+
+# 2. Blokir file dokumen, database, dan log. Browser tidak pernah butuh file ini.
+#    README.md memuat password admin contoh; *.sql memuat hash password admin.
+<FilesMatch "\.(md|sql|log|bak|zip)$">
+    Require all denied
+</FilesMatch>
+
+# 3. Blokir file tersembunyi (.gitignore, .gitkeep, .env, dll).
+#    (.htaccess sendiri sudah diblokir Apache secara bawaan.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# 4. Blokir folder yang tidak boleh dibuka lewat browser:
+#    database/ (file .sql), laporan/ (screenshot & slide kelompok),
+#    .git/ dan .vscode/ (data Git & editor).
+#    Di hosting, folder-folder ini memang tidak di-upload (lihat README).
+RedirectMatch 403 "/(database|laporan|\.git|\.vscode)(/|$)"

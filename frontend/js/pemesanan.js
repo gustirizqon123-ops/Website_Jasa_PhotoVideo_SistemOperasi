@@ -16,9 +16,25 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', function () {
+  batasiTanggalMulaiHariIni();
   siapkanPaketDariUrl();
   siapkanFormPemesanan();
 });
+
+/* Kalender "Tanggal Acara" hanya bisa memilih HARI INI ke depan (perbaikan
+   2026-11-16). Dulu tanggal yang sudah lewat bisa dipilih, lalu baru ditolak
+   server setelah form dikirim. Server tetap mengecek ulang (buat.php), ini
+   hanya supaya pelanggan tidak salah pilih sejak awal.
+   Dipakai tanggal lokal perangkat, BUKAN toISOString() (itu tanggal UTC,
+   bisa mundur sehari sebelum pukul 08.00 WITA). */
+function batasiTanggalMulaiHariIni() {
+  var input = document.getElementById('tanggalAcara');
+  if (!input) { return; }
+  var hariIni = new Date();
+  var bulan = String(hariIni.getMonth() + 1).padStart(2, '0');
+  var tanggal = String(hariIni.getDate()).padStart(2, '0');
+  input.min = hariIni.getFullYear() + '-' + bulan + '-' + tanggal;
+}
 
 
 /* ==========================================================================
