@@ -28,10 +28,60 @@
 
 /* session_start() wajib dipanggil di SETIAP file yang membaca/menulis $_SESSION,
    dan harus di baris paling atas sebelum ada output apa pun ke layar.
-   if (session_status() === PHP_SESSION_NONE) mencegah error "session sudah dimulai"
-   kalau file ini ternyata di-require dua kali. */
-if (session_status() === PHP_SESSION_NONE) {
+   Dipanggil lewat mulai_session() di bawah, yang juga mengamankan cookie
+   login. File ini dipakai SEMUA endpoint admin, termasuk login.php dan
+   logout.php, jadi pengaturan cookie-nya selalu sama. */
+mulai_session();
+
+/**
+ * Memulai session dengan COOKIE LOGIN YANG AMAN (Tahap 0.6 hosting, 2026-11-16).
+ *
+ * - httponly : cookie tidak bisa dibaca JavaScript, jadi kalaupun ada celah
+ *              XSS, cookie login admin tidak bisa dicuri lewat script.
+ * - samesite : "Lax" = cookie TIDAK ikut terkirim saat situs LAIN mengirim
+ *              form POST ke API kita (mencegah serangan CSRF), tapi tetap
+ *              ikut saat admin membuka tautan biasa.
+ * - secure   : cookie hanya dikirim lewat HTTPS. Otomatis aktif kalau situs
+ *              dibuka dengan https:// (hosting); di XAMPP (http://localhost)
+ *              tetap mati supaya login lokal tetap bisa.
+ * - use_strict_mode: PHP menolak ID session buatan sendiri yang belum pernah
+ *              dibuat server (mencegah "session fixation").
+ *
+ * if (session_status() === PHP_SESSION_NONE) mencegah error "session sudah
+ * dimulai" kalau file ini ternyata di-require dua kali.
+ */
+function mulai_session() {
+    if (session_status() !== PHP_SESSION_NONE) {
+        return;
+    }
+
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+
+    session_set_cookie_params([
+        'lifetime' => 0,          // cookie hilang saat browser ditutup
+        'path'     => '/',
+        'secure'   => pakai_https(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
     session_start();
+}
+
+/**
+ * true kalau halaman sedang dibuka lewat HTTPS. HTTP_X_FORWARDED_PROTO
+ * dicek juga karena sebagian hosting memasang HTTPS di server perantara
+ * (proxy), sehingga PHP sendiri melihat koneksinya sebagai http biasa.
+ */
+function pakai_https() {
+    if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+        return true;
+    }
+    if (($_SERVER['SERVER_PORT'] ?? '') == 443) {
+        return true;
+    }
+    return strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
 }
 
 /**

@@ -28,16 +28,18 @@ cek_login(); // dari auth.php -- menolak dengan 401 kalau belum login
 $_SESSION = [];
 
 if (ini_get('session.use_cookies')) {
+  // Hapus cookie dengan pengaturan yang SAMA seperti saat dibuat (termasuk
+  // samesite, lihat mulai_session() di auth.php), supaya browser benar-benar
+  // menghapusnya.
   $parameter = session_get_cookie_params();
-  setcookie(
-    session_name(),
-    '',
-    time() - 42000,
-    $parameter['path'],
-    $parameter['domain'],
-    $parameter['secure'],
-    $parameter['httponly']
-  );
+  setcookie(session_name(), '', [
+    'expires'  => time() - 42000,
+    'path'     => $parameter['path'],
+    'domain'   => $parameter['domain'],
+    'secure'   => $parameter['secure'],
+    'httponly' => $parameter['httponly'],
+    'samesite' => $parameter['samesite'] ?? 'Lax',
+  ]);
 }
 
 session_destroy();

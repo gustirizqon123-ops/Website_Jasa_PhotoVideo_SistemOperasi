@@ -9,10 +9,29 @@ require_once __DIR__ . '/response.php';
    tanggal KEMARIN. */
 date_default_timezone_set('Asia/Makassar');
 
+/* DATA LOGIN DATABASE (Tahap 0.7 hosting, 2026-11-16)
+   Nilai bawaan di bawah = XAMPP (root tanpa password), jadi di laptop
+   TIDAK perlu mengubah apa pun.
+
+   Di HOSTING: buat file api/config/kredensial.php (salin dari
+   kredensial.contoh.php) berisi data MySQL dari panel hosting. Kalau file
+   itu ada, nilainya MENGGANTIKAN nilai bawaan. File kredensial.php
+   diabaikan Git (.gitignore) supaya password hosting TIDAK PERNAH masuk ke
+   GitHub (repository ini publik). Jangan menulis password hosting di sini. */
 $host = 'localhost';
 $db   = 'db_foto_video';
 $user = 'root';
 $pass = '';
+
+$fileKredensial = __DIR__ . '/kredensial.php';
+if (is_file($fileKredensial)) {
+    $kredensial = require $fileKredensial;
+    $host = $kredensial['host'] ?? $host;
+    $db   = $kredensial['db']   ?? $db;
+    $user = $kredensial['user'] ?? $user;
+    $pass = $kredensial['pass'] ?? $pass;
+    unset($kredensial);
+}
 
 try {
     $pdo = new PDO(
@@ -29,5 +48,7 @@ try {
     // MySQL-nya memakai UTC.
     $pdo->exec("SET time_zone = '+08:00'");
 } catch (PDOException $e) {
+  // Pesan asli (berisi nama host/user) hanya ke log, bukan ke respons
+  error_log('koneksi.php: ' . $e->getMessage());
   kirim_error('Koneksi database gagal', 500);
 }

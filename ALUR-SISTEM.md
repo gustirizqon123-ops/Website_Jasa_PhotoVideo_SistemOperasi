@@ -322,7 +322,7 @@ Diagram di atas adalah **alur yang dimaksudkan**. Di kode sekarang:
 
 ## 6. Keputusan Alur dan Batasan Sistem
 
-### Keputusan kelompok (2026-11-12)
+### Keputusan kelompok (2026-11-12, nomor 4: 2026-11-16)
 
 1. **Pelunasan dan bukti ulang dicatat admin.** Halaman Pembayaran pelanggan
    hanya bisa dipakai tepat setelah memesan (datanya dari `sessionStorage`,
@@ -340,6 +340,13 @@ Diagram di atas adalah **alur yang dimaksudkan**. Di kode sekarang:
 3. **Tidak ada halaman Cek Status untuk pelanggan.** Endpoint
    `api/pesanan/status.php` yang sempat dibuat sudah dihapus.
 
+4. **Satu tanggal = satu pesanan** (diputuskan 2026-11-16). Satu tanggal
+   acara hanya bisa dipakai satu pesanan yang belum batal, **berapa pun
+   paket dan durasinya** (termasuk sesi Wisuda 1 jam). Pesanan kedua di
+   tanggal yang sama ditolak dengan pesan "Tanggal tersebut sudah dipesan,
+   silakan pilih tanggal lain" (409). Kalau pesanan di tanggal itu dibatalkan,
+   tanggalnya bisa dipesan lagi.
+
 ### Batasan sistem (disadari, tidak diperbaiki dalam lingkup tugas ini)
 
 1. **Urutan status tidak dibatasi** (lihat bagian 5). Admin bisa memilih
@@ -352,6 +359,10 @@ Diagram di atas adalah **alur yang dimaksudkan**. Di kode sekarang:
 3. **Pelanggan tidak bisa mengunggah sendiri setelah meninggalkan halaman
    Pembayaran**, sehingga bergantung pada admin untuk mencatat pembayaran
    berikutnya (lihat keputusan 1).
+4. **Dua pelanggan yang memesan tanggal sama di detik yang hampir
+   bersamaan** bisa sama-sama lolos cek bentrok (cek dan simpan tidak
+   dikunci bersama). Peluangnya sangat kecil untuk studio kecil; kalau
+   terjadi, admin membatalkan salah satunya dan menghubungi pelanggan.
 
 ---
 

@@ -13,23 +13,20 @@
    Kalau cocok, buat session PHP ($_SESSION['admin_id']) yang akan dibaca
    oleh api/config/auth.php di semua endpoint admin lain.
 
-   PENTING: file ini TIDAK require_once auth.php (endpoint ini justru
-   dipanggil SEBELUM admin login, jadi tidak boleh dihalangi cek login).
+   PENTING: file ini me-require auth.php HANYA untuk memulai session dengan
+   pengaturan cookie yang aman (mulai_session()), sama seperti endpoint admin
+   lain. cek_login() SENGAJA TIDAK dipanggil di sini: endpoint ini justru
+   dipanggil SEBELUM admin login, jadi tidak boleh dihalangi cek login.
 
    Lihat API.md bagian 5.1 untuk kontrak lengkapnya.
    ========================================================================== */
 
 require_once __DIR__ . '/../config/response.php';
 require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../config/auth.php'; // memulai session (cookie aman), TANPA cek_login()
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
-}
-
-/* Session harus dimulai SEBELUM ada output apa pun. response.php sudah
-   memanggil header(), tapi itu bukan output body, jadi masih aman. */
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
 }
 
 // Baca body JSON. file_get_contents('php://input') dipakai (bukan $_POST)

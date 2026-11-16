@@ -813,7 +813,7 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 4 | **Nomor WhatsApp admin** untuk tombol konfirmasi | Simpan sebagai satu konstanta di `frontend/js/config.js`, format `62812xxxxxxx` (tanpa `+` dan `0` di depan) |
 | 5 | **Alamat gambar paket di frontend** | `../uploads/paket/<gambar>` dari `frontend/`, dan `../../uploads/paket/<gambar>` dari `frontend/admin/` |
 | 6 | **Batas ukuran upload** (2 MB) | Cek juga `upload_max_filesize` dan `post_max_size` di `php.ini` XAMPP. Nilai bawaannya biasanya cukup |
-| 7 | **Aturan bentrok tanggal.** Satu tanggal hanya satu pesanan | Sudah ditulis di 4.4. Jika studio boleh melayani beberapa pesanan sehari, aturan ini diganti |
+| 7 | **Aturan bentrok tanggal.** Satu tanggal hanya satu pesanan | **Selesai (2026-11-16): dipertahankan.** Satu tanggal hanya untuk satu pesanan (yang belum batal), berapa pun paket dan durasinya, termasuk sesi Wisuda 1 jam. Sudah berjalan di 4.4 |
 | 8 | **Admin lebih dari satu?** | Cukup satu akun admin untuk tugas ini. Tidak ada endpoint tambah admin |
 
 ---

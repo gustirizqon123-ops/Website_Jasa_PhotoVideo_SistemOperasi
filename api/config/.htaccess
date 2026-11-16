@@ -1,0 +1,5 @@
+# api/config/ hanya berisi file yang di-require endpoint lain lewat disk
+# (koneksi, kredensial, auth, response, aturan pesanan). Browser tidak
+# pernah perlu membukanya langsung, jadi semua akses web ke folder ini ditolak.
+# Endpoint di api/ lain TETAP bisa memakainya (require tidak lewat web).
+Require all denied

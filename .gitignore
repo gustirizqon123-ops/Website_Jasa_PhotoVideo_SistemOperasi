@@ -7,3 +7,5 @@ ROADMAP.md
 README.md
 # Screenshot, slide, dan laporan: hanya disimpan lokal (repository publik)
 laporan/
+# Data login database hosting: JANGAN PERNAH masuk GitHub (lihat koneksi.php)
+api/config/kredensial.php
