@@ -46,9 +46,13 @@
         </div>
 
         <!-- Gambar utama (frontend/assets/img/hero.jpg, sudah diisi 2026-11-14).
-             [UBAH] kalau fotonya diganti, sesuaikan juga teks alt di bawah. -->
+             Bingkai hero di desktop sangat lebar, jadi foto pasti terpotong atas-bawah.
+             object-position "center 4%" mengambil bagian ATAS foto supaya kepala
+             (ujung rambut pengantin pria ada di ±10% dari atas foto) tidak terpotong.
+             [UBAH] kalau fotonya diganti, sesuaikan teks alt dan angka % ini
+             (0% = paling atas, 50% = tengah) -->
         <div class="hero-gambar">
-          <img src="assets/img/hero.jpg" alt="Pasangan pengantin tersenyum di pelaminan berhias bunga">
+          <img src="assets/img/hero.jpg" alt="Pasangan pengantin tersenyum di pelaminan berhias bunga" style="object-position: center 4%;">
           <div class="hero-keterangan">
             <p class="eyebrow">Kisah pilihan / 2026</p>
             <h3>Tentang kita, selamanya.</h3>

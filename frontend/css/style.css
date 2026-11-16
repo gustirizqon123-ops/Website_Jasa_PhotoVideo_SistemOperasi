@@ -938,7 +938,7 @@ p {
 
 .hero-gambar {
   position: relative;
-  height: 520px;                       /* [UBAH] tinggi gambar hero desktop */
+  height: 580px;                       /* [UBAH] tinggi gambar hero desktop (dulu 520px; dinaikkan supaya foto tidak terlalu terpotong) */
   overflow: hidden;
   border-radius: var(--radius-xl);
   background: var(--warna-gelap);
