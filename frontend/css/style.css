@@ -1081,7 +1081,7 @@ p {
 /* ---- GALERI PORTOFOLIO ---- */
 .galeri-item img {
   width: 100%;
-  height: 300px;                       /* [UBAH] tinggi foto galeri */
+  height: 360px;                       /* [UBAH] tinggi foto galeri (dulu 300px; dinaikkan supaya wajah di foto tegak tidak terpotong) */
   object-fit: cover;
   border-radius: var(--radius-lg);
   background: var(--warna-garis);
@@ -1228,7 +1228,7 @@ p {
 
   .judul-halaman { font-size: 38px; }
   .section-pendek { padding-block: var(--jarak-6); }
-  .galeri-item img { height: 260px; }
+  .galeri-item img { height: 340px; }   /* dulu 260px, lihat catatan .galeri-item img */
   .keunggulan img { height: 280px; }
   .hero-penanda { right: var(--jarak-3); bottom: var(--jarak-3); }
   .hero-statistik { flex-direction: column; }

@@ -164,41 +164,50 @@
           </div>
         </div>
 
-        <!-- [KONTEN-CONTOH] 4: enam foto galeri. Judul (<h4>), label kategori
-             (<span class="tag">: Wedding / Wisuda / Event), dan teks alt masih contoh.
-             Setelah foto galeri-1.jpg s/d galeri-6.jpg disimpan di frontend/assets/img/,
-             sesuaikan ketiganya dengan isi foto masing-masing.
-             Foto sebaiknya MENDATAR (landscape). Kalau tegak dan kepalanya terpotong,
-             tambahkan style="object-position: center 10%;" pada <img>-nya
-             (angka kecil = bagian atas foto lebih banyak terlihat). -->
+        <!-- [KONTEN-CONTOH] 4: judul (<h4>) dan teks alt 6 foto galeri masih contoh.
+             Sesuaikan dengan isi foto masing-masing (label kategori <span class="tag">
+             sudah disesuaikan).
+
+             POSISI POTONG FOTO (diatur 2026-11-18): bingkai galeri mendatar, sedangkan
+             4 dari 6 foto TEGAK, jadi hanya sebagian tinggi foto yang terlihat. Angka
+             di style="object-position: center N%;" menentukan bagian mana yang
+             ditampilkan: kecil = bagian ATAS foto, besar = bagian BAWAH. Angka di
+             bawah dipilih supaya wajah terlihat. Kalau salah satu foto diganti,
+             sesuaikan angkanya (foto mendatar tidak perlu diatur). -->
         <div class="grid grid-3" style="row-gap:40px;">
           <article class="galeri-item">
-            <img src="assets/img/galeri-1.jpg" alt="Nadia dan Ruby">
+            <!-- galeri-1: foto tegak, wajah di ±22-50% dari atas -->
+            <img src="assets/img/galeri-1.jpg" alt="Nadia dan Ruby" style="object-position: center 22%;">
             <span class="tag">Wedding</span>
             <h4>Nadia &amp; Ruby</h4>
           </article>
           <article class="galeri-item">
-            <img src="assets/img/galeri-2.jpg" alt="Langkah baru, Alya">
+            <!-- galeri-2: foto tegak, wajah di ±27-40% dari atas (topi toga ±18%) -->
+            <img src="assets/img/galeri-2.jpg" alt="Langkah baru, Alya" style="object-position: center 25%;">
             <span class="tag">Wisuda</span>
             <h4>Langkah baru, Alya</h4>
           </article>
           <article class="galeri-item">
+            <!-- galeri-3: foto mendatar, tidak perlu diatur -->
             <img src="assets/img/galeri-3.jpg" alt="Ruang untuk bertumbuh">
-            <span class="tag">Event</span>
+            <span class="tag">PreWedding</span>
             <h4>Ruang untuk bertumbuh</h4>
           </article>
           <article class="galeri-item">
-            <img src="assets/img/galeri-4.jpg" alt="Sebuah janji, Dinda dan Fajar">
+            <!-- galeri-4: foto tegak, kepala di ±8-40% dari atas -->
+            <img src="assets/img/galeri-4.jpg" alt="Sebuah janji, Dinda dan Fajar" style="object-position: center 8%;">
             <span class="tag">Wedding</span>
             <h4>Sebuah janji, Dinda &amp; Fajar</h4>
           </article>
           <article class="galeri-item">
+            <!-- galeri-5: foto mendatar, tidak perlu diatur -->
             <img src="assets/img/galeri-5.jpg" alt="Malam penuh pertemuan">
             <span class="tag">Event</span>
             <h4>Malam penuh pertemuan</h4>
           </article>
           <article class="galeri-item">
-            <img src="assets/img/galeri-6.jpg" alt="Sampai di sini, bersama">
+            <!-- galeri-6: foto tegak, wajah di ±30-52% dari atas -->
+            <img src="assets/img/galeri-6.jpg" alt="Sampai di sini, bersama" style="object-position: center 45%;">
             <span class="tag">Wedding</span>
             <h4>Sampai di sini, bersama</h4>
           </article>
