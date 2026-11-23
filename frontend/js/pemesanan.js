@@ -102,6 +102,13 @@ function gambarRingkasanPaket(paket) {
     bantuanJam.textContent = 'Butuh jam tambahan? Tulis jumlah jam tambahan di catatan. Biaya ' +
       formatRupiah(KONFIG.TAMBAH_JAM.harga) + '/jam, dikonfirmasi admin lewat WhatsApp dan dibayar terpisah.';
     bantuanJam.hidden = false;
+  } else if (/tambah jam/i.test(paket.deskripsi || '')) {
+    // Prewedding, Aqiqah & Tasmiyah, Ulang Tahun: tarif tambah jam beda-beda
+    // per paket dan sudah tertulis di fasilitas paket (kolom deskripsi), jadi
+    // di sini cukup petunjuk caranya. Total di sistem tetap tidak berubah.
+    bantuanJam.textContent = 'Butuh jam tambahan? Tulis jumlah jam tambahan di catatan. ' +
+      'Biaya sesuai tarif tambah jam di fasilitas paket, dikonfirmasi admin lewat WhatsApp dan dibayar terpisah.';
+    bantuanJam.hidden = false;
   } else {
     bantuanJam.hidden = true;
   }

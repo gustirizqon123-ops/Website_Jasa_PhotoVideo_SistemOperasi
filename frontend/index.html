@@ -90,7 +90,7 @@
          2. KATEGORI
          Ditulis langsung (belum dari api/kategori/list.php), jadi HARUS
          disamakan manual dengan tabel kategori & paket di database:
-         - ?kategori=ID = id di tabel kategori (1 Wedding, 2 Wisuda, 3 Event)
+         - ?kategori=ID = id di tabel kategori (1 Wedding, 2 Wisuda, 3 Event, 4 Prewedding, 5 Aqiqah & Tasmiyah, 6 Ulang Tahun)
          - "Mulai Rp..." = harga paket termurah di kategori itu
          Kalau kategori/paket di database berubah, ubah juga kartu di bawah.
          ================================================================== -->
@@ -140,6 +140,43 @@
             </div>
             <p>Energi acara, terasa kembali.</p>
             <span class="mulai">Mulai Rp3.500.000</span>
+          </a>
+
+          <!-- Tiga foto di bawah TEGAK di bingkai mendatar: object-position menggeser
+               potongan ke bagian wajah (0% = paling atas, 100% = paling bawah).
+               [UBAH] kalau fotonya diganti, sesuaikan angka % ini. Tagline di bawah
+               ([KONTEN-CONTOH]) boleh diganti sendiri. -->
+          <a href="katalog.html?kategori=4" class="kartu-kategori">
+            <img src="assets/img/kategori-prewedding.jpg" alt="Pasangan berfoto prewedding di alam terbuka" style="object-position: center 45%;">
+            <div class="kartu-kategori-judul">
+              <h3>Prewedding</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <!-- [KONTEN-CONTOH] tagline -->
+            <p>Sebelum janji, ada cerita.</p>
+            <span class="mulai">Mulai Rp750.000</span>
+          </a>
+
+          <a href="katalog.html?kategori=5" class="kartu-kategori">
+            <img src="assets/img/kategori-aqiqah.jpg" alt="Bayi di dalam keranjang saat acara aqiqah" style="object-position: center 50%;">
+            <div class="kartu-kategori-judul">
+              <h3>Aqiqah &amp; Tasmiyah</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <!-- [KONTEN-CONTOH] tagline -->
+            <p>Awal syukur si kecil.</p>
+            <span class="mulai">Mulai Rp600.000</span>
+          </a>
+
+          <a href="katalog.html?kategori=6" class="kartu-kategori">
+            <img src="assets/img/kategori-ulang-tahun.jpg" alt="Keluarga berfoto di pesta ulang tahun pertama" style="object-position: center 40%;">
+            <div class="kartu-kategori-judul">
+              <h3>Ulang Tahun</h3>
+              <span class="ikon ikon-panah" aria-hidden="true"></span>
+            </div>
+            <!-- [KONTEN-CONTOH] tagline -->
+            <p>Satu tahun lagi, satu kenangan baru.</p>
+            <span class="mulai">Mulai Rp500.000</span>
           </a>
 
         </div>

@@ -56,12 +56,19 @@ var KONFIG = {
   /* ---- DURASI PAKET PER KATEGORI ----
      Teks durasi di bawah nama paket (modal detail Katalog dan ringkasan
      Pemesanan), ditentukan dari kategori_id paket (lihat tabel kategori:
-     1 Wedding, 2 Wisuda, 3 Event). Disusun oleh teksDurasiPaket() di util.js.
+     1 Wedding, 2 Wisuda, 3 Event, 4 Prewedding, 5 Aqiqah & Tasmiyah,
+     6 Ulang Tahun). Disusun oleh teksDurasiPaket() di util.js.
      [UBAH] kalau aturan durasi studio berubah, cukup ubah di sini. */
   DURASI_PER_KATEGORI: {
     1: 'Hingga 8 jam dokumentasi',   // "Hingga": Pistachio 6 jam, Sage & Emerald 8 jam
     2: '1 jam sesi foto',
     3: 'Maksimal 8 jam dokumentasi',
+    4: '3 jam sesi foto',               // Prewedding
+    5: '5 jam sesi foto',               // Aqiqah & Tasmiyah
+    6: '5 jam sesi foto',               // Ulang Tahun
+    // Kategori baru yang ditambah lewat Dashboard Admin (id 7 dst) tidak perlu
+    // diisi di sini: tanpa aturan, baris durasi tidak ditampilkan dan
+    // keterangan durasi cukup ditulis di fasilitas paket.
   },
 
   /* ---- TAMBAH JAM (hanya informasi) ----

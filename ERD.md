@@ -70,7 +70,7 @@ erDiagram
 
 | Relasi | Jenis | Keterangan |
 |---|---|---|
-| `kategori` → `paket` | 1 ke banyak | Satu kategori (Wedding, Wisuda, Event) menaungi banyak paket. Satu paket hanya punya satu kategori. |
+| `kategori` → `paket` | 1 ke banyak | Satu kategori (Wedding, Wisuda, Event, Prewedding, Aqiqah & Tasmiyah, Ulang Tahun) menaungi banyak paket. Satu paket hanya punya satu kategori. |
 | `paket` → `pesanan` | 1 ke banyak | Satu paket bisa dipesan berkali-kali. Satu pesanan hanya memuat satu paket. |
 | `pesanan` → `pembayaran` | 1 ke banyak | Satu pesanan bisa punya lebih dari satu pembayaran (contoh: DP dulu, lalu pelunasan, atau kirim ulang bukti setelah ditolak). |
 

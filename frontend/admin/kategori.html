@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kelola Kategori | For Us Picture.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin-paket.css">
+</head>
+
+<body data-halaman="admin-kategori">
+
+  <div class="admin-tata-letak">
+
+    <div data-muat="../komponen/admin-sidebar.html"></div>
+
+    <main class="admin-konten">
+
+      <header class="admin-header">
+        <div>
+          <p class="admin-header-eyebrow">Panel Administrasi</p>
+          <h1 class="admin-header-judul">Kelola Kategori</h1>
+        </div>
+        <div class="admin-header-admin">
+          <div class="admin-avatar">A</div>
+          <span>Administrator</span>
+        </div>
+      </header>
+
+      <div class="admin-container">
+
+        <div class="paket-toolbar">
+          <p class="teks-redup" style="margin:0;">Kategori jadi tab di halaman Katalog dan pilihan di form paket.</p>
+          <button type="button" class="btn btn-primary" id="tombolTambahKategori">+ Tambah Kategori</button>
+        </div>
+
+        <div class="admin-tabel-bungkus">
+          <table class="admin-tabel">
+            <thead>
+              <tr>
+                <th>Nama Kategori</th>
+                <th>Jumlah Paket</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabelKategori">
+              <tr><td colspan="3" class="teks-redup">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-kosong" id="kosongKategori" style="display:none;">
+          <p class="admin-kosong-judul">Belum ada kategori</p>
+          <p class="admin-kosong-teks">Klik "Tambah Kategori" untuk membuat yang pertama.</p>
+        </div>
+
+        <p class="bantuan" style="margin-top: var(--jarak-3);">
+          Catatan: kartu kategori di Beranda ditulis manual di <code>index.html</code>,
+          jadi kategori baru langsung muncul di Katalog tapi belum otomatis di Beranda.
+        </p>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODAL TAMBAH / UBAH KATEGORI (judul & mode diatur kategori.js)
+       ==================================================================== -->
+  <div class="modal-lapisan" id="modal-form-kategori" role="dialog" aria-modal="true" aria-labelledby="judulFormKategori">
+    <div class="modal">
+      <button type="button" class="modal-tutup" data-tutup-modal="modal-form-kategori" aria-label="Tutup">&times;</button>
+      <div class="modal-isi">
+        <h3 class="paket-hapus-judul" id="judulFormKategori">Tambah Kategori</h3>
+        <form id="formKategori" novalidate>
+          <input type="hidden" id="idKategori" value="">
+          <div class="form-field" style="margin-bottom: var(--jarak-3);">
+            <label class="label" for="namaKategori">Nama Kategori</label>
+            <input class="input" type="text" id="namaKategori" maxlength="50" placeholder="Contoh: Prewedding" required>
+          </div>
+          <div class="paket-hapus-aksi">
+            <button type="button" class="btn btn-sekunder" data-tutup-modal="modal-form-kategori">Batal</button>
+            <button type="submit" class="btn btn-primary" id="tombolSimpanKategori">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL KONFIRMASI HAPUS
+       ==================================================================== -->
+  <div class="modal-lapisan" id="modal-hapus-kategori" role="dialog" aria-modal="true" aria-labelledby="judulHapusKategori">
+    <div class="modal">
+      <button type="button" class="modal-tutup" data-tutup-modal="modal-hapus-kategori" aria-label="Tutup">&times;</button>
+      <div class="modal-isi">
+        <h3 class="paket-hapus-judul" id="judulHapusKategori">Hapus kategori ini?</h3>
+        <p class="paket-hapus-teks">
+          Kategori <strong id="namaKategoriDihapus">-</strong> akan dihapus permanen.
+          Kategori yang masih punya paket tidak bisa dihapus.
+        </p>
+        <div class="paket-hapus-aksi">
+          <button type="button" class="btn btn-sekunder" data-tutup-modal="modal-hapus-kategori">Batal</button>
+          <button type="button" class="btn btn-error" id="tombolKonfirmasiHapusKategori">Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script src="../js/config.js" defer></script>
+  <script src="../js/util.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/ui.js" defer></script>
+  <script src="../js/admin/layout.js" defer></script>
+  <script src="../js/admin/kategori.js" defer></script>
+
+</body>
+</html>

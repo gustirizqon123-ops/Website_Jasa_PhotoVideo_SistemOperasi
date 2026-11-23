@@ -59,7 +59,10 @@ CREATE TABLE `kategori` (
 INSERT INTO `kategori` (`id`, `nama_kategori`) VALUES
 (1, 'Wedding'),
 (2, 'Wisuda'),
-(3, 'Event');
+(3, 'Event'),
+(4, 'Prewedding'),
+(5, 'Aqiqah & Tasmiyah'),
+(6, 'Ulang Tahun');
 
 -- --------------------------------------------------------
 
@@ -86,7 +89,13 @@ INSERT INTO `paket` (`id`, `kategori_id`, `nama`, `deskripsi`, `harga`, `gambar`
 (3, 1, 'Wedding Emerald Package', 'Foto dan video 8 jam kerja, 3 kru, album hardcover 25 halaman, Photoscan Barcode, durasi video 2 menit, all foto edit', 3500000, 'wedding-emerald.jpg'),
 (4, 2, 'Wisuda Solo', 'Sesi foto 1 jam, 30 foto edit', 500000, 'wisuda-solo.jpg'),
 (5, 2, 'Wisuda Grup', 'Sesi foto 1 jam, maksimal 6 orang, 60 foto edit', 900000, 'wisuda-grup.jpeg'),
-(6, 3, 'Event Dokumentasi', 'Foto dan video acara 6 jam, highlight 2 menit', 3500000, 'event-dokumentasi.jpg');
+(6, 3, 'Event Dokumentasi', 'Foto dan video acara 6 jam, highlight 2 menit', 3500000, 'event-dokumentasi.jpg'),
+(7, 4, 'Prewedding Foto', '3 jam sesi foto, All foto edit, 1 Photografer, 1 Helper, Tambah jam kerja Rp100.000/jam (berlaku kelipatan)', 750000, 'prewedding-foto.jpg'),
+(8, 4, 'Prewedding Foto & Video', '3 jam sesi foto dan video, Durasi video highlight 1 menit, All foto edit, 1 Photografer, 1 Videografer, 1 Helper, Tambah jam kerja Rp200.000/jam (berlaku kelipatan)', 1500000, 'prewedding-foto-video.jpg'),
+(9, 5, 'Aqiqah & Tasmiyah Foto', '5 jam sesi foto, All foto edit, 1 Photografer, Tambah jam kerja Rp150.000/jam (berlaku kelipatan)', 600000, 'aqiqah-foto.jpg'),
+(10, 5, 'Aqiqah & Tasmiyah Foto & Video', '5 jam sesi foto dan video, Durasi video highlight 1 menit, All foto edit, 1 Photografer, 1 Videografer, Tambah jam kerja Rp250.000/jam (berlaku kelipatan)', 1000000, 'aqiqah-foto-video.jpg'),
+(11, 6, 'Ulang Tahun Foto', '5 jam sesi foto, All foto edit, 1 Photografer, Tambah jam kerja Rp100.000/jam (berlaku kelipatan)', 500000, 'ulang-tahun-foto.jpg'),
+(12, 6, 'Ulang Tahun Foto & Video', '5 jam sesi foto dan video, Durasi video highlight 1 menit, All foto edit, 1 Photografer, 1 Videografer, Tambah jam kerja Rp200.000/jam (berlaku kelipatan)', 950000, 'ulang-tahun-foto-video.jpg');
 
 -- --------------------------------------------------------
 
@@ -180,13 +189,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `kategori`
 --
 ALTER TABLE `kategori`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `paket`
 --
 ALTER TABLE `paket`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `pembayaran`

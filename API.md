@@ -122,6 +122,7 @@ Tampilan teks untuk pengguna (misalnya `transfer_bank` menjadi "Transfer Bank") 
 | 11 | `api/kategori/list.php` | GET | Daftar kategori | Tidak | A |
 | 12 | `api/admin/catat-pembayaran.php` | POST | Admin mencatat pembayaran (pelunasan / bukti ulang via WhatsApp) | Ya | C |
 | 13 | `api/admin/bukti.php` | GET | Menampilkan file bukti bayar (hanya admin) | Ya | C |
+| 14 | `api/admin/kategori.php` | POST | Tambah, ubah, hapus kategori | Ya | A |
 
 ---
 
@@ -706,6 +707,28 @@ pribadi pelanggan), jadi file bukti hanya bisa dibuka lewat endpoint ini setelah
 
 ---
 
+### 5.8 POST `api/admin/kategori.php`
+
+Tambah, ubah, hapus kategori (pemilik: A). Login wajib. Body JSON, satu endpoint dibedakan field `aksi`, pola sama dengan 5.5.
+
+| Field | Wajib untuk | Keterangan |
+|---|---|---|
+| `aksi` | semua | `tambah`, `ubah`, atau `hapus` |
+| `id` | `ubah`, `hapus` | id kategori |
+| `nama_kategori` | `tambah`, `ubah` | maksimal 50 karakter, tidak boleh sama dengan kategori lain (huruf besar/kecil dianggap sama) |
+
+Respons sukses: `tambah` 201 dan `ubah` 200 mengembalikan `{ "id": 7, "nama_kategori": "..." }`; `hapus` 200 dengan `data: null`.
+
+| Kode | Pesan |
+|---|---|
+| 400 | `Aksi tidak valid` / `Nama kategori wajib diisi` / `Nama kategori maksimal 50 karakter` / `Field wajib belum lengkap` |
+| 401 | `Silakan login terlebih dahulu` |
+| 404 | `Kategori tidak ditemukan` |
+| 405 | `Method tidak diizinkan` |
+| 409 | `Nama kategori sudah dipakai` / `Kategori tidak dapat dihapus karena masih memiliki N paket...` |
+
+---
+
 ## 6. Contoh Memanggil dari JavaScript
 
 ### GET
@@ -831,3 +854,4 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-14 | `api/pembayaran/upload.php` (4.5): aturan jumlah DP (minimal 50%, kurang dari sisa tagihan) dan Lunas (sama dengan sisa tagihan); error 409 untuk pesanan batal / sudah lunas. Bagian 4.6 dipindah keluar dari tengah 4.5 | |
 | 2026-11-16 | Endpoint baru `api/admin/bukti.php` (5.7): file bukti bayar hanya bisa dilihat admin yang login; akses langsung ke `uploads/bukti-bayar/` diblokir `.htaccess` | |
 | 2026-11-16 | Semua endpoint: zona waktu PHP dan MySQL diset WITA (`Asia/Makassar`, `+08:00`) di `config/koneksi.php`. Cek "tanggal acara tidak boleh di masa lalu" (4.4) kini memakai tanggal WITA | |
+| 2026-11-23 | Endpoint baru `api/admin/kategori.php` (5.8): tambah, ubah, hapus kategori dari Dashboard Admin. Kategori baru: Prewedding (4), Aqiqah & Tasmiyah (5), Ulang Tahun (6) beserta 6 paketnya | |

@@ -11,7 +11,7 @@ otomatis sebagai gambar di GitHub dan VS Code.
 ```mermaid
 flowchart TD
     subgraph publik["Halaman Pelanggan — tanpa login"]
-        beranda["index.html<br/><b>Beranda</b><br/>kartu kategori Wedding, Wisuda, Event"]
+        beranda["index.html<br/><b>Beranda</b><br/>kartu 6 kategori"]
         katalog["katalog.html<br/><b>Katalog</b><br/>tab kategori + modal detail"]
         pemesanan["pemesanan.html?paket=ID<br/><b>Langkah 1 — Pemesanan</b><br/>data pemesan & acara"]
         bayar["pembayaran.html<br/><b>Langkah 2 — Pembayaran</b><br/>DP/lunas + unggah bukti"]
@@ -102,7 +102,8 @@ flowchart LR
         h8["admin/pesanan-detail.html"]
         h9["admin/paket.html"]
         h10["admin/paket-form.html"]
-        hs[["Sidebar admin — tombol Keluar<br/>(di h6 sampai h10)"]]
+        h11["admin/kategori.html"]
+        hs[["Sidebar admin — tombol Keluar<br/>(di h6 sampai h11)"]]
     end
 
     subgraph api["Endpoint API"]
@@ -118,6 +119,7 @@ flowchart LR
         e10["admin/paket.php"]
         e11["admin/catat-pembayaran.php"]
         e12["admin/bukti.php"]
+        e13["admin/kategori.php"]
     end
 
     h0 -.->|tidak memanggil API<br/>isi ditulis langsung di HTML| api
@@ -138,6 +140,9 @@ flowchart LR
     h9 --> e2
     h9 --> e10
     h10 --> e1
+    h11 --> e1
+    h11 --> e2
+    h11 --> e13
     h10 --> e3
     h10 --> e10
     hs --> e7

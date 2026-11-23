@@ -51,7 +51,9 @@
 /* ==========================================================================
    3. MODAL KONFIRMASI HAPUS (paket.html)
    ========================================================================== */
-#modal-hapus-paket .modal {
+#modal-hapus-paket .modal,
+#modal-hapus-kategori .modal,
+#modal-form-kategori .modal {
   max-width: 440px;               /* [UKUR] modal konfirmasi lebih kecil dari modal detail */
 }
 
