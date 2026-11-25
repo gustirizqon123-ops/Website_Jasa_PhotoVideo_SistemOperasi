@@ -26,3 +26,29 @@ Options -Indexes
 #    .git/ dan .vscode/ (data Git & editor).
 #    Di hosting, folder-folder ini memang tidak di-upload (lihat README).
 RedirectMatch 403 "/(database|laporan|\.git|\.vscode)(/|$)"
+
+# 5. Header keamanan (ditambahkan 2026-11-25).
+#    - X-Frame-Options: halaman (terutama admin) tidak bisa disisipkan diam-diam
+#      ke situs lain lewat <iframe> untuk menipu klik (clickjacking).
+#    - X-Content-Type-Options: browser tidak menebak-nebak tipe file, jadi file
+#      unggahan tidak bisa "menyamar" jadi skrip.
+#    - Referrer-Policy: alamat lengkap halaman (mis. ?id= pesanan) tidak ikut
+#      terkirim ke situs lain saat pengunjung mengeklik tautan keluar.
+#    - X-Powered-By dihapus: versi PHP tidak diumumkan ke penyerang.
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+</IfModule>
+
+# 6. Paksa HTTPS -- MASIH NONAKTIF. Aktifkan (hapus tanda # di 5 baris
+#    bawah) HANYA di hosting, SETELAH SSL aktif (README Tahap 7). Jangan
+#    diaktifkan di XAMPP: localhost tidak punya HTTPS, situs tidak akan
+#    bisa dibuka.
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>

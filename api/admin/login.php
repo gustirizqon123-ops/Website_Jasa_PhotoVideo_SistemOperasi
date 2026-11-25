@@ -24,6 +24,7 @@
 require_once __DIR__ . '/../config/response.php';
 require_once __DIR__ . '/../config/koneksi.php';
 require_once __DIR__ . '/../config/auth.php'; // memulai session (cookie aman), TANPA cek_login()
+require_once __DIR__ . '/../config/batas.php'; // batas percobaan login
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
@@ -41,6 +42,14 @@ if ($username === '' || $password === '') {
 }
 
 try {
+  /* Batas percobaan (perbaikan keamanan 2026-11-25): setelah BATAS_LOGIN_GAGAL
+     kali salah dalam BATAS_LOGIN_MENIT menit dari IP yang sama, login ditolak
+     sementara -- bahkan kalau password-nya benar -- supaya password tidak bisa
+     ditebak terus-menerus. Lihat config/batas.php. */
+  if (hitung_akses($pdo, 'login', BATAS_LOGIN_MENIT) >= BATAS_LOGIN_GAGAL) {
+    kirim_error('Terlalu banyak percobaan login. Coba lagi dalam ' . BATAS_LOGIN_MENIT . ' menit.', 429);
+  }
+
   $stmt = $pdo->prepare('SELECT id, username, password, nama FROM admin WHERE username = :username');
   $stmt->execute(['username' => $username]);
   $admin = $stmt->fetch();
@@ -49,8 +58,11 @@ try {
   // salah" (lihat API.md) -- supaya orang yang mencoba menebak-nebak
   // tidak tahu apakah username-nya benar atau tidak.
   if (!$admin || !password_verify($password, $admin['password'])) {
+    catat_akses($pdo, 'login');
     kirim_error('Username atau password salah', 401);
   }
+
+  hapus_akses($pdo, 'login'); // berhasil -> hitungan salah untuk IP ini direset
 
   // [UBAH/KEAMANAN] regenerate id session setelah login berhasil, supaya
   // id session yang dipakai sebelum login tidak bisa dipakai lagi
@@ -59,6 +71,7 @@ try {
 
   $_SESSION['admin_id'] = (int) $admin['id'];
   $_SESSION['admin_nama'] = $admin['nama'];
+  $_SESSION['terakhir_aktif'] = time(); // untuk batas sesi tidak aktif (auth.php)
 
   kirim_sukses(['nama' => $admin['nama']], 'Login berhasil');
 } catch (PDOException $e) {

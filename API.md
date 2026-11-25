@@ -56,6 +56,7 @@ Frontend cukup memeriksa `status`. Jika `error`, tampilkan `message` ke pengguna
 | 404 | Tidak ditemukan | Paket atau pesanan tidak ada |
 | 405 | Method salah | GET dikirim ke endpoint yang meminta POST |
 | 409 | Bentrok | Tanggal sudah dipesan, paket masih dipakai pesanan |
+| 429 | Terlalu banyak permintaan | Batas percobaan login / batas pemesanan per IP terlampaui (lihat `api/config/batas.php`) |
 | 500 | Kesalahan server | Koneksi database gagal |
 
 ### Format data
@@ -283,6 +284,7 @@ Menyimpan pesanan baru dengan status awal `menunggu`, lalu membuat kode pesanan 
 | 400 | `Field wajib belum lengkap` / `Format nomor WhatsApp tidak valid` / `Tanggal acara tidak boleh di masa lalu` |
 | 404 | `Paket tidak ditemukan` |
 | 409 | `Tanggal tersebut sudah dipesan, silakan pilih tanggal lain` |
+| 429 | `Terlalu banyak pemesanan dari jaringan Anda...` (lebih dari 3 pesanan per jam dari IP yang sama; permintaan dari localhost tidak dibatasi) |
 | 405, 500 | Standar |
 
 **Aturan bentrok tanggal:** tanggal dianggap sudah dipesan jika ada pesanan lain dengan `tanggal_acara` yang sama **dan** status bukan `batal`.
@@ -302,6 +304,7 @@ Menyimpan data pembayaran beserta file bukti. Mengirim file, jadi memakai **`For
 | Field | Wajib | Tipe | Aturan |
 |---|---|---|---|
 | `kode_pesanan` | Ya | teks | Harus ada di tabel `pesanan` |
+| `no_wa` | Ya | teks | Nomor WhatsApp saat memesan, harus cocok dengan pesanan (`08...` dan `62...` dianggap sama). Kalau tidak cocok, pesan error-nya sama dengan kode yang tidak ada |
 | `metode` | Ya | teks | hanya `qris` (pelanggan membayar lewat QRIS; admin tetap bisa mencatat metode lain lewat 5.6) |
 | `jenis` | Ya | teks | `dp` atau `lunas` |
 | `jumlah` | Ya | angka | Lebih dari 0, lalu mengikuti aturan DP/Lunas di bawah |
@@ -415,6 +418,7 @@ Server membuat session dan mencocokkan password dengan `password_verify()`.
 |---|---|
 | 400 | `Username dan password wajib diisi` |
 | 401 | `Username atau password salah` (pesan yang sama untuk username salah **maupun** password salah) |
+| 429 | `Terlalu banyak percobaan login. Coba lagi dalam 15 menit.` (5 kali salah dalam 15 menit dari IP yang sama; berlaku juga kalau password benar) |
 
 ---
 
@@ -859,3 +863,4 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-23 | Endpoint baru `api/admin/kategori.php` (5.8): tambah, ubah, hapus kategori dari Dashboard Admin. Kategori baru: Prewedding (4), Aqiqah & Tasmiyah (5), Ulang Tahun (6) beserta 6 paketnya | |
 | 2026-11-25 | `api/pembayaran/upload.php` (4.5): `metode` hanya `qris`; ditolak 409 kalau pesanan masih punya pembayaran berstatus `menunggu` |
 | 2026-11-25 | `api/pesanan/buat.php` (4.4): respons ditambah `email` dan `catatan` (`null` kalau kosong), dipakai untuk menyusun pesan WhatsApp di halaman Konfirmasi |
+| 2026-11-25 | Keamanan: login dibatasi 5 kali salah per 15 menit per IP (5.1, kode 429); pemesanan dibatasi 3 per jam per IP (4.4, kode 429); `upload.php` (4.5) mewajibkan `no_wa` yang cocok; sesi admin berakhir setelah 2 jam tidak aktif (401 `Sesi berakhir karena tidak aktif...`) |

@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+header_remove('X-Powered-By'); // jangan umumkan versi PHP (cadangan kalau .htaccess tidak bisa menghapusnya)
 
 /* ==========================================================================
    SEMBUNYIKAN ERROR PHP DARI RESPONS (Tahap 0.5 hosting, 2026-11-16)

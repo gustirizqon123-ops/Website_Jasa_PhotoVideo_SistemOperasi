@@ -15,6 +15,7 @@
 
 require_once __DIR__ . '/../config/response.php';
 require_once __DIR__ . '/../config/koneksi.php';
+require_once __DIR__ . '/../config/batas.php'; // batas pemesanan per IP
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
@@ -101,6 +102,15 @@ try {
     kirim_error('Tanggal tersebut sudah dipesan, silakan pilih tanggal lain', 409);
   }
 
+  /* ========================= 7b. BATAS PEMESANAN PER IP =========================
+     Perbaikan keamanan 2026-11-25: karena satu tanggal = satu pesanan, pesanan
+     palsu bisa mengunci kalender. Satu IP dibatasi BATAS_PESANAN pesanan per
+     BATAS_PESANAN_MENIT menit (lihat config/batas.php). Komputer sendiri
+     (localhost) tidak dibatasi supaya kelompok tetap bisa menguji. */
+  if (!ip_lokal() && hitung_akses($pdo, 'pesanan', BATAS_PESANAN_MENIT) >= BATAS_PESANAN) {
+    kirim_error('Terlalu banyak pemesanan dari jaringan Anda. Silakan coba lagi nanti, atau hubungi admin lewat WhatsApp.', 429);
+  }
+
   /* ========================= 8. SIMPAN PESANAN =========================
      total_harga disalin dari harga paket SAAT INI (bukan dikirim
      frontend), sesuai catatan di API.md 4.4. kode_pesanan diisi
@@ -132,6 +142,7 @@ try {
   $stmtUpdateKode->execute(['kode' => $kodePesanan, 'id' => $idBaru]);
 
   $pdo->commit();
+  catat_akses($pdo, 'pesanan');
 
   kirim_sukses([
     'kode_pesanan' => $kodePesanan,

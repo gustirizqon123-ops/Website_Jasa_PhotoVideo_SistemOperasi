@@ -101,7 +101,22 @@ function cek_login() {
         // ditulis supaya jelas saja bagi pembaca kode.
         return;
     }
+
+    // Sesi berakhir kalau tidak aktif lebih dari BATAS_SESI_TIDAK_AKTIF
+    // (ditambahkan 2026-11-25): kalau admin lupa keluar di komputer bersama,
+    // panel tidak terbuka terus.
+    $terakhir = (int) ($_SESSION['terakhir_aktif'] ?? 0);
+    if ($terakhir === 0 || time() - $terakhir > BATAS_SESI_TIDAK_AKTIF) {
+        $_SESSION = [];
+        session_destroy();
+        kirim_error('Sesi berakhir karena tidak aktif, silakan login kembali', 401);
+        return;
+    }
+    $_SESSION['terakhir_aktif'] = time();
 }
+
+/* [UBAH] lama sesi admin boleh tidak aktif sebelum otomatis keluar (detik). */
+const BATAS_SESI_TIDAK_AKTIF = 2 * 60 * 60; // 2 jam
 
 /**
  * [TAMBAH] Kalau nanti butuh, fungsi kecil untuk mengambil data admin yang

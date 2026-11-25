@@ -24,6 +24,7 @@ $kodePesanan = trim($_POST['kode_pesanan'] ?? '');
 $metode = trim($_POST['metode'] ?? '');
 $jenis = trim($_POST['jenis'] ?? '');
 $jumlah = $_POST['jumlah'] ?? null;
+$noWa = trim($_POST['no_wa'] ?? ''); // harus sama dengan nomor WhatsApp saat memesan
 
 /* ========================= 1. FIELD WAJIB ========================= */
 if ($kodePesanan === '' || $metode === '' || $jenis === '' || $jumlah === null || $jumlah === '') {
@@ -50,11 +51,21 @@ $jumlah = (int) $jumlah;
 
 try {
   /* ========================= 4. PESANAN HARUS ADA ========================= */
-  $stmtPesanan = $pdo->prepare('SELECT id, total_harga, status FROM pesanan WHERE kode_pesanan = :kode');
+  $stmtPesanan = $pdo->prepare('SELECT id, no_wa, total_harga, status FROM pesanan WHERE kode_pesanan = :kode');
   $stmtPesanan->execute(['kode' => $kodePesanan]);
   $pesanan = $stmtPesanan->fetch();
 
-  if (!$pesanan) {
+  /* Kode pesanan berurutan (FV-0001, FV-0002, ...) jadi mudah ditebak.
+     Perbaikan keamanan 2026-11-25: nomor WhatsApp pemesan juga harus cocok,
+     supaya orang lain tidak bisa mengirim bukti ke pesanan yang bukan
+     miliknya. 08xx dan 62xx dianggap sama. Kalau tidak cocok, pesannya
+     SAMA dengan kode yang tidak ada, supaya tidak membocorkan kode mana
+     yang benar-benar terpakai. */
+  $samakanWa = function ($nomor) {
+    $angka = preg_replace('/\D/', '', (string) $nomor);
+    return strpos($angka, '62') === 0 ? '0' . substr($angka, 2) : $angka;
+  };
+  if (!$pesanan || $noWa === '' || $samakanWa($noWa) !== $samakanWa($pesanan['no_wa'])) {
     kirim_error('Pesanan tidak ditemukan', 404);
   }
   if ($pesanan['status'] === 'batal') {

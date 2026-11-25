@@ -245,6 +245,9 @@ function siapkanFormPembayaran() {
     // field ber-"name" di dalamnya (kode_pesanan, jenis, metode, jumlah,
     // bukti) -- sesuai contoh di API.md bagian 6.
     var formData = new FormData(form);
+    // Nomor WhatsApp saat memesan, dicocokkan server dengan kode pesanan
+    // (pengaman 2026-11-25, lihat api/pembayaran/upload.php).
+    formData.append('no_wa', PESANAN_AKTIF.no_wa || '');
 
     var tombol = document.getElementById('tombolKirimBukti');
     setMemuat(tombol, true, 'Mengirim...');
