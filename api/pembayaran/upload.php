@@ -35,7 +35,7 @@ if (!isset($_FILES['bukti']) || $_FILES['bukti']['error'] === UPLOAD_ERR_NO_FILE
 
 /* ========================= 2. METODE DAN JENIS =========================
    Nilai yang sah HARUS SAMA dengan API.md bagian 2. */
-$metodeSah = ['transfer_bank', 'ewallet', 'qris'];
+$metodeSah = ['qris']; // pelanggan hanya membayar lewat QRIS (keputusan 2026-11-14). Admin tetap bisa mencatat metode lain lewat catat-pembayaran.php
 $jenisSah = ['dp', 'lunas'];
 
 if (!in_array($metode, $metodeSah, true) || !in_array($jenis, $jenisSah, true)) {
@@ -72,6 +72,16 @@ try {
 
   if ($sisa === 0) {
     kirim_error('Pesanan ini sudah lunas', 409);
+  }
+
+  /* Bukti sebelumnya belum diperiksa admin -> jangan terima bukti kedua
+     (perbaikan 2026-11-25), supaya admin tidak melihat dua pembayaran
+     "Menunggu" untuk satu pesanan. Setelah admin menolak/memverifikasi,
+     pelanggan bebas mengirim lagi. */
+  $stmtMenunggu = $pdo->prepare("SELECT id FROM pembayaran WHERE pesanan_id = :id AND status = 'menunggu' LIMIT 1");
+  $stmtMenunggu->execute(['id' => (int) $pesanan['id']]);
+  if ($stmtMenunggu->fetch()) {
+    kirim_error('Bukti pembayaran sebelumnya masih diperiksa admin. Mohon tunggu konfirmasi, atau hubungi admin lewat WhatsApp', 409);
   }
 
   $formatRp = function ($angka) { return 'Rp' . number_format($angka, 0, ',', '.'); };

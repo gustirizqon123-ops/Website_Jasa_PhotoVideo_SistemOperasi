@@ -137,11 +137,13 @@ try {
     'kode_pesanan' => $kodePesanan,
     'nama' => $nama,
     'no_wa' => $noWa,
+    'email' => $email !== '' ? $email : null,
     'paket_id' => (int) $paketId,
     'nama_paket' => $paket['nama'],
     'tanggal_acara' => $tanggalAcara,
     'jam' => $jam !== '' ? $jam : null,
     'lokasi' => $lokasi,
+    'catatan' => $catatan !== '' ? $catatan : null,
     'total_harga' => (int) $paket['harga'],
     'status' => 'menunggu',
   ], 'Pesanan berhasil dibuat', 201);

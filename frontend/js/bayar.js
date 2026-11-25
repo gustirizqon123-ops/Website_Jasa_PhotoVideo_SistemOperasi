@@ -257,6 +257,10 @@ function siapkanFormPembayaran() {
         // Gabungkan info pembayaran ke data pesanan yang sudah ada,
         // supaya konfirmasi.js bisa menampilkan status pembayaran juga.
         PESANAN_AKTIF.status_pembayaran = hasilBayar.status;
+        // Pilihan pelanggan (DP / Lunas + jumlahnya), dipakai konfirmasi.js
+        // untuk menyusun kalimat terakhir pesan WhatsApp ke admin.
+        PESANAN_AKTIF.jenis_pembayaran = hasilBayar.jenis;
+        PESANAN_AKTIF.jumlah_pembayaran = hasilBayar.jumlah;
         sessionStorage.setItem('pesananAktif', JSON.stringify(PESANAN_AKTIF));
         window.location.href = 'konfirmasi.html';
       })

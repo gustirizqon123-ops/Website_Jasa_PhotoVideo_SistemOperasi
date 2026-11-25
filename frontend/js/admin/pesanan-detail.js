@@ -320,9 +320,9 @@ function gambarFormCatatBayar(pesanan) {
         '<div>' +
           '<label class="label" for="catatMetode">Metode</label>' +
           '<select class="select" id="catatMetode" name="metode">' +
+            '<option value="qris" selected>QRIS</option>' +
             '<option value="transfer_bank">Transfer Bank</option>' +
             '<option value="ewallet">E-Wallet</option>' +
-            '<option value="qris">QRIS</option>' +
           '</select>' +
         '</div>' +
         '<div>' +

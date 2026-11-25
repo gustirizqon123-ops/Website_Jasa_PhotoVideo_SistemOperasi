@@ -45,10 +45,15 @@ function siapkanPaketDariUrl() {
   var idDariUrl = parameter.get('paket');
   var inputPaketId = document.getElementById('paketId');
 
-  // Kalau ?paket=ID ada di alamat, pakai itu. Kalau tidak ada, PAKAI nilai
-  // CONTOH yang sudah tertulis di pemesanan.html (supaya halaman tetap
-  // bisa dicoba langsung tanpa harus selalu datang dari katalog.html).
-  var idPaket = (idDariUrl && /^[0-9]+$/.test(idDariUrl)) ? idDariUrl : inputPaketId.value;
+  // ?paket=ID wajib ada dan berupa angka. Kalau tidak (halaman dibuka langsung,
+  // tautan rusak), pelanggan diarahkan ke Katalog untuk memilih paket. Dulu
+  // dipakai paket contoh dari HTML, tapi paket itu bisa saja sudah dihapus
+  // admin (perbaikan 2026-11-25).
+  if (!idDariUrl || !/^[0-9]+$/.test(idDariUrl)) {
+    kembaliKeKatalog('Pilih paket terlebih dahulu sebelum memesan.');
+    return;
+  }
+  var idPaket = idDariUrl;
   inputPaketId.value = idPaket;
 
   muatRingkasanPaket(idPaket);
@@ -65,8 +70,21 @@ function muatRingkasanPaket(idPaket) {
       gambarRingkasanPaket(paket);
     })
     .catch(function (error) {
-      tampilToast('Paket tidak ditemukan: ' + error.message, 'error');
+      // Paket sudah dihapus / id salah: kembali ke Katalog, bukan menampilkan
+      // paket contoh. Gangguan lain (koneksi putus) cukup ditampilkan sebagai toast.
+      if (/tidak ditemukan/i.test(error.message)) {
+        kembaliKeKatalog('Paket tidak ditemukan atau sudah tidak tersedia, silakan pilih paket lain.');
+      } else {
+        tampilToast(error.message, 'error');
+      }
     });
+}
+
+/* Pindah ke Katalog dan menampilkan pesan di sana (toast ikut pindah halaman,
+   lihat tampilToastSetelahPindah di ui.js). */
+function kembaliKeKatalog(pesan) {
+  tampilToastSetelahPindah(pesan, 'error');
+  window.location.href = 'katalog.html';
 }
 
 function gambarRingkasanPaket(paket) {

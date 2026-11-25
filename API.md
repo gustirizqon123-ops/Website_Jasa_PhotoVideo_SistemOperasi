@@ -261,11 +261,13 @@ Menyimpan pesanan baru dengan status awal `menunggu`, lalu membuat kode pesanan 
     "kode_pesanan": "FV-0012",
     "nama": "Budi Santoso",
     "no_wa": "081234567890",
+    "email": "budi@example.com",
     "paket_id": 1,
     "nama_paket": "Wedding Silver",
     "tanggal_acara": "2026-12-20",
     "jam": "09:30",
     "lokasi": "Gedung Serbaguna, Banjarbaru",
+    "catatan": "Tema putih dan emas",
     "total_harga": 3500000,
     "status": "menunggu"
   }
@@ -300,7 +302,7 @@ Menyimpan data pembayaran beserta file bukti. Mengirim file, jadi memakai **`For
 | Field | Wajib | Tipe | Aturan |
 |---|---|---|---|
 | `kode_pesanan` | Ya | teks | Harus ada di tabel `pesanan` |
-| `metode` | Ya | teks | `transfer_bank`, `ewallet`, atau `qris` |
+| `metode` | Ya | teks | hanya `qris` (pelanggan membayar lewat QRIS; admin tetap bisa mencatat metode lain lewat 5.6) |
 | `jenis` | Ya | teks | `dp` atau `lunas` |
 | `jumlah` | Ya | angka | Lebih dari 0, lalu mengikuti aturan DP/Lunas di bawah |
 | `bukti` | Ya | file | JPG, PNG, atau PDF, maksimal 2 MB |
@@ -345,7 +347,7 @@ Persentase DP disimpan di `DP_MINIMAL_PERSEN` (`api/config/pesanan.php`) dan `KO
 |---|---|
 | 400 | `Field wajib belum lengkap` / `Metode atau jenis pembayaran tidak valid` / `Jumlah pembayaran tidak valid` / `Pembayaran lunas harus sebesar Rp...` / `DP minimal 50% dari total (Rp...)` / `Jumlah DP harus kurang dari Rp.... Pilih Lunas untuk membayar penuh` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
 | 404 | `Pesanan tidak ditemukan` |
-| 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dikirim` / `Pesanan ini sudah lunas` |
+| 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dikirim` / `Pesanan ini sudah lunas` / `Bukti pembayaran sebelumnya masih diperiksa admin...` (masih ada pembayaran berstatus `menunggu`) |
 | 500 | `Gagal menyimpan file` |
 
 ### 4.6 GET `api/kategori/list.php`
@@ -855,3 +857,5 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-16 | Endpoint baru `api/admin/bukti.php` (5.7): file bukti bayar hanya bisa dilihat admin yang login; akses langsung ke `uploads/bukti-bayar/` diblokir `.htaccess` | |
 | 2026-11-16 | Semua endpoint: zona waktu PHP dan MySQL diset WITA (`Asia/Makassar`, `+08:00`) di `config/koneksi.php`. Cek "tanggal acara tidak boleh di masa lalu" (4.4) kini memakai tanggal WITA | |
 | 2026-11-23 | Endpoint baru `api/admin/kategori.php` (5.8): tambah, ubah, hapus kategori dari Dashboard Admin. Kategori baru: Prewedding (4), Aqiqah & Tasmiyah (5), Ulang Tahun (6) beserta 6 paketnya | |
+| 2026-11-25 | `api/pembayaran/upload.php` (4.5): `metode` hanya `qris`; ditolak 409 kalau pesanan masih punya pembayaran berstatus `menunggu` |
+| 2026-11-25 | `api/pesanan/buat.php` (4.4): respons ditambah `email` dan `catatan` (`null` kalau kosong), dipakai untuk menyusun pesan WhatsApp di halaman Konfirmasi |
