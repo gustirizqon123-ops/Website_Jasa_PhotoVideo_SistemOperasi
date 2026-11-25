@@ -169,7 +169,7 @@ function siapkanFormPemesanan() {
     // balasan server untuk kesalahan yang jelas-jelas sepele. Validasi
     // LENGKAP tetap dilakukan server (lihat api/pesanan/buat.php) --
     // ini cuma mempercepat, BUKAN pengganti validasi server.
-    if (!dataForm.nama || !dataForm.no_wa || !dataForm.tanggal_acara || !dataForm.lokasi) {
+    if (!dataForm.nama || !dataForm.no_wa || !dataForm.email || !dataForm.tanggal_acara || !dataForm.jam || !dataForm.lokasi) {
       kotakError.textContent = 'Mohon lengkapi semua field yang wajib diisi.';
       kotakError.style.display = 'flex'; // .alert aslinya display:flex (lihat style.css)
       return;
