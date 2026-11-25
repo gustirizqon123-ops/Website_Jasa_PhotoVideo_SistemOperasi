@@ -63,3 +63,25 @@ function kirim_error($pesan, $kode = 400) {
     );
     exit;
 }
+
+/**
+ * Mengambil satu field teks dari input ($_POST, $_GET, atau body JSON),
+ * sudah di-trim. Kosong / tidak ada -> ''.
+ *
+ * Ditambahkan 2026-11-25: dulu trim($_POST['x']) langsung dipakai, jadi
+ * kalau seseorang mengirim field sebagai daftar (x[]=1) atau objek JSON,
+ * PHP error dan server membalas 500. Sekarang ditolak rapi dengan 400.
+ *
+ *   $nama = ambil_teks($body, 'nama');
+ *   $aksi = ambil_teks($_POST, 'aksi');
+ */
+function ambil_teks($sumber, $kunci) {
+    if (!is_array($sumber) || !isset($sumber[$kunci])) {
+        return '';
+    }
+    $nilai = $sumber[$kunci];
+    if (!is_scalar($nilai)) {
+        kirim_error('Field wajib belum lengkap', 400);
+    }
+    return trim((string) $nilai);
+}

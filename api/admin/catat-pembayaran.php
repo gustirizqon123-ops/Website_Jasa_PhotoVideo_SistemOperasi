@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $pesananId = $_POST['pesanan_id'] ?? '';
-$metode = trim($_POST['metode'] ?? '');
-$jenis = trim($_POST['jenis'] ?? '');
+$metode = ambil_teks($_POST, 'metode');
+$jenis = ambil_teks($_POST, 'jenis');
 $jumlah = $_POST['jumlah'] ?? '';
 
 /* ========================= 1. VALIDASI FIELD ========================= */

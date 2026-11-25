@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
 }
 
-$aksi = trim($_POST['aksi'] ?? '');
+$aksi = ambil_teks($_POST, 'aksi');
 $aksiSah = ['tambah', 'ubah', 'hapus'];
 
 if (!in_array($aksi, $aksiSah, true)) {
@@ -85,6 +85,17 @@ function simpanGambarBaru(array $file, string $folderTujuan, array $tipeDiizinka
   return $namaFileBaru;
 }
 
+/* Harga harus bilangan bulat Rp1 sampai HARGA_PAKET_MAKS (ditambahkan 2026-11-25).
+   Dulu "1.5" diam-diam jadi Rp1, dan harga di atas batas kolom database
+   tersimpan salah (XAMPP) atau error 500 (hosting dengan MySQL mode ketat). */
+const HARGA_PAKET_MAKS = 1000000000; // [UBAH] Rp1.000.000.000, samakan dengan max di paket-form.html
+
+function cek_harga_paket($harga): void {
+  if (!ctype_digit((string) $harga) || (int) $harga > HARGA_PAKET_MAKS) {
+    kirim_error('Harga harus bilangan bulat antara Rp1 dan Rp1.000.000.000', 400);
+  }
+}
+
 /* Hapus file gambar lama dari disk. Dibungkus try supaya kalau filenya
    sudah tidak ada (hilang manual, dll) tidak membuat seluruh request gagal. */
 function hapusGambarLama(?string $namaFile, string $folder): void {
@@ -100,8 +111,8 @@ try {
      ====================================================================== */
   if ($aksi === 'tambah') {
     $kategoriId = $_POST['kategori_id'] ?? null;
-    $nama = trim($_POST['nama'] ?? '');
-    $deskripsi = trim($_POST['deskripsi'] ?? '');
+    $nama = ambil_teks($_POST, 'nama');
+    $deskripsi = ambil_teks($_POST, 'deskripsi');
     $harga = $_POST['harga'] ?? null;
 
     if ($kategoriId === null || $kategoriId === '' || $nama === '' || $deskripsi === '' || $harga === null || $harga === '') {
@@ -110,6 +121,7 @@ try {
     if (!ctype_digit((string) $kategoriId) || !is_numeric($harga) || (int) $harga <= 0) {
       kirim_error('Field wajib belum lengkap', 400);
     }
+    cek_harga_paket($harga);
     if (!isset($_FILES['gambar']) || $_FILES['gambar']['error'] === UPLOAD_ERR_NO_FILE) {
       kirim_error('Gambar paket wajib diunggah', 400);
     }
@@ -150,8 +162,8 @@ try {
   if ($aksi === 'ubah') {
     $id = $_POST['id'] ?? null;
     $kategoriId = $_POST['kategori_id'] ?? null;
-    $nama = trim($_POST['nama'] ?? '');
-    $deskripsi = trim($_POST['deskripsi'] ?? '');
+    $nama = ambil_teks($_POST, 'nama');
+    $deskripsi = ambil_teks($_POST, 'deskripsi');
     $harga = $_POST['harga'] ?? null;
 
     if ($id === null || $id === '' || !ctype_digit((string) $id)) {
@@ -163,6 +175,7 @@ try {
     if (!ctype_digit((string) $kategoriId) || !is_numeric($harga) || (int) $harga <= 0) {
       kirim_error('Field wajib belum lengkap', 400);
     }
+    cek_harga_paket($harga);
 
     $stmtPaket = $pdo->prepare('SELECT id, gambar FROM paket WHERE id = :id');
     $stmtPaket->execute(['id' => (int) $id]);

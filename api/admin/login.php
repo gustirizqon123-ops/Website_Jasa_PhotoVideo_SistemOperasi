@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // karena body dikirim sebagai JSON, sesuai API.md ("POST biasa: JSON di body").
 $body = json_decode(file_get_contents('php://input'), true);
 
-$username = trim($body['username'] ?? '');
+$username = ambil_teks($body, 'username');
 $password = (string) ($body['password'] ?? '');
 
 if ($username === '' || $password === '') {

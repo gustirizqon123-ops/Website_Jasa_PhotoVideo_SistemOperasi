@@ -24,13 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $body = json_decode(file_get_contents('php://input'), true);
 
 $paketId = $body['paket_id'] ?? null;
-$nama = trim($body['nama'] ?? '');
-$noWa = trim($body['no_wa'] ?? '');
-$email = trim($body['email'] ?? '');
-$tanggalAcara = trim($body['tanggal_acara'] ?? '');
-$jam = trim($body['jam'] ?? '');
-$lokasi = trim($body['lokasi'] ?? '');
-$catatan = trim($body['catatan'] ?? '');
+$nama = ambil_teks($body, 'nama');
+$noWa = ambil_teks($body, 'no_wa');
+$email = ambil_teks($body, 'email');
+$tanggalAcara = ambil_teks($body, 'tanggal_acara');
+$jam = ambil_teks($body, 'jam');
+$lokasi = ambil_teks($body, 'lokasi');
+$catatan = ambil_teks($body, 'catatan');
 
 /* ========================= 1. VALIDASI FIELD WAJIB ========================= */
 if (
@@ -45,6 +45,11 @@ if (mb_strlen($nama) > 100) {
 }
 if (mb_strlen($lokasi) > 255) {
   kirim_error('Field wajib belum lengkap', 400);
+}
+/* Catatan dibatasi (ditambahkan 2026-11-25): tanpa batas, pengirim iseng bisa
+   mengirim teks ratusan ribu karakter dan memenuhi database. */
+if (mb_strlen($catatan) > 1000) {
+  kirim_error('Catatan maksimal 1.000 karakter', 400);
 }
 
 /* ========================= 2. FORMAT NOMOR WHATSAPP =========================
@@ -69,6 +74,12 @@ if (!$tanggalValid) {
 }
 if ($tanggalAcara < date('Y-m-d')) {
   kirim_error('Tanggal acara tidak boleh di masa lalu', 400);
+}
+/* Batas atas (ditambahkan 2026-11-25): tanggal yang tidak masuk akal
+   (mis. tahun 9999) tidak boleh mengunci kalender. [UBAH] angka tahunnya
+   di sini dan di pemesanan.js (BATAS_TAHUN_PESAN) kalau kebijakan berubah. */
+if ($tanggalAcara > date('Y-m-d', strtotime('+2 years'))) {
+  kirim_error('Tanggal acara maksimal 2 tahun dari sekarang', 400);
 }
 
 /* ========================= 5. JAM (OPSIONAL) ========================= */

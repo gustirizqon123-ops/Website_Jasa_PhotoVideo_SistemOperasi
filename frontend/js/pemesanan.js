@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
    hanya supaya pelanggan tidak salah pilih sejak awal.
    Dipakai tanggal lokal perangkat, BUKAN toISOString() (itu tanggal UTC,
    bisa mundur sehari sebelum pukul 08.00 WITA). */
+var BATAS_TAHUN_PESAN = 2; // [UBAH] samakan dengan batas di api/pesanan/buat.php
+
 function batasiTanggalMulaiHariIni() {
   var input = document.getElementById('tanggalAcara');
   if (!input) { return; }
@@ -34,6 +36,8 @@ function batasiTanggalMulaiHariIni() {
   var bulan = String(hariIni.getMonth() + 1).padStart(2, '0');
   var tanggal = String(hariIni.getDate()).padStart(2, '0');
   input.min = hariIni.getFullYear() + '-' + bulan + '-' + tanggal;
+  // Batas atas 2 tahun ke depan, sama dengan api/pesanan/buat.php (2026-11-25).
+  input.max = (hariIni.getFullYear() + BATAS_TAHUN_PESAN) + '-' + bulan + '-' + tanggal;
 }
 
 

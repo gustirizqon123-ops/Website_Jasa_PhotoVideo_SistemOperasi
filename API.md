@@ -281,7 +281,7 @@ Menyimpan pesanan baru dengan status awal `menunggu`, lalu membuat kode pesanan 
 
 | Kode | Pesan |
 |---|---|
-| 400 | `Field wajib belum lengkap` / `Format nomor WhatsApp tidak valid` / `Tanggal acara tidak boleh di masa lalu` |
+| 400 | `Field wajib belum lengkap` / `Format nomor WhatsApp tidak valid` / `Tanggal acara tidak boleh di masa lalu` / `Tanggal acara maksimal 2 tahun dari sekarang` / `Catatan maksimal 1.000 karakter` |
 | 404 | `Paket tidak ditemukan` |
 | 409 | `Tanggal tersebut sudah dipesan, silakan pilih tanggal lain` |
 | 429 | `Terlalu banyak pemesanan dari jaringan Anda...` (lebih dari 3 pesanan per jam dari IP yang sama; permintaan dari localhost tidak dibatasi) |
@@ -620,7 +620,7 @@ Pada `ubah`, jika `gambar` tidak dikirim, gambar lama dipertahankan.
 
 | Kode | Pesan |
 |---|---|
-| 400 | `Aksi tidak valid` / `Field wajib belum lengkap` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
+| 400 | `Aksi tidak valid` / `Field wajib belum lengkap` / `Harga harus bilangan bulat antara Rp1 dan Rp1.000.000.000` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
 | 401 | `Silakan login terlebih dahulu` |
 | 404 | `Paket tidak ditemukan` |
 | 409 | `Paket tidak dapat dihapus karena sudah dipakai pesanan` |
@@ -864,3 +864,4 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-25 | `api/pembayaran/upload.php` (4.5): `metode` hanya `qris`; ditolak 409 kalau pesanan masih punya pembayaran berstatus `menunggu` |
 | 2026-11-25 | `api/pesanan/buat.php` (4.4): respons ditambah `email` dan `catatan` (`null` kalau kosong), dipakai untuk menyusun pesan WhatsApp di halaman Konfirmasi |
 | 2026-11-25 | Keamanan: login dibatasi 5 kali salah per 15 menit per IP (5.1, kode 429); pemesanan dibatasi 3 per jam per IP (4.4, kode 429); `upload.php` (4.5) mewajibkan `no_wa` yang cocok; sesi admin berakhir setelah 2 jam tidak aktif (401 `Sesi berakhir karena tidak aktif...`) |
+| 2026-11-25 | Validasi: `catatan` maks. 1.000 karakter dan `tanggal_acara` maks. 2 tahun ke depan (4.4); harga paket bilangan bulat Rp1-Rp1.000.000.000 (5.5); field yang dikirim sebagai array/objek ditolak 400 `Field wajib belum lengkap` di semua endpoint (dulu 500) |

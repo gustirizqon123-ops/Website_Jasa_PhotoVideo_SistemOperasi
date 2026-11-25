@@ -20,11 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 /* FormData -> field teks biasa ada di $_POST, file ada di $_FILES.
    (Beda dengan buat.php yang bodinya JSON dan dibaca dari php://input.) */
-$kodePesanan = trim($_POST['kode_pesanan'] ?? '');
-$metode = trim($_POST['metode'] ?? '');
-$jenis = trim($_POST['jenis'] ?? '');
+$kodePesanan = ambil_teks($_POST, 'kode_pesanan');
+$metode = ambil_teks($_POST, 'metode');
+$jenis = ambil_teks($_POST, 'jenis');
 $jumlah = $_POST['jumlah'] ?? null;
-$noWa = trim($_POST['no_wa'] ?? ''); // harus sama dengan nomor WhatsApp saat memesan
+$noWa = ambil_teks($_POST, 'no_wa'); // harus sama dengan nomor WhatsApp saat memesan
 
 /* ========================= 1. FIELD WAJIB ========================= */
 if ($kodePesanan === '' || $metode === '' || $jenis === '' || $jumlah === null || $jumlah === '') {
