@@ -281,10 +281,11 @@ Menyimpan pesanan baru dengan status awal `menunggu`, lalu membuat kode pesanan 
 
 | Kode | Pesan |
 |---|---|
-| 400 | `Field wajib belum lengkap` / `Format nomor WhatsApp tidak valid` / `Tanggal acara tidak boleh di masa lalu` / `Tanggal acara maksimal 2 tahun dari sekarang` / `Catatan maksimal 1.000 karakter` |
+| 400 | `Field wajib belum lengkap` / `Format nomor WhatsApp tidak valid` / `Tanggal acara tidak boleh di masa lalu` / `Tanggal acara maksimal 2 tahun dari sekarang` / `Catatan maksimal 1.000 karakter` / `Email maksimal 100 karakter` |
 | 404 | `Paket tidak ditemukan` |
 | 409 | `Tanggal tersebut sudah dipesan, silakan pilih tanggal lain` |
 | 429 | `Terlalu banyak pemesanan dari jaringan Anda...` (lebih dari 3 pesanan per jam dari IP yang sama; permintaan dari localhost tidak dibatasi) |
+| 503 | `Server sedang sibuk, silakan coba lagi sebentar` (pemesanan lain untuk tanggal yang sama sedang diproses lebih dari 5 detik) |
 | 405, 500 | Standar |
 
 **Aturan bentrok tanggal:** tanggal dianggap sudah dipesan jika ada pesanan lain dengan `tanggal_acara` yang sama **dan** status bukan `batal`.
@@ -585,6 +586,7 @@ dikonfirmasi), dipakai frontend untuk menampilkan pesan yang sesuai.
 | 400 | `Target tidak valid` / `Status tidak valid untuk target ini` |
 | 401 | `Silakan login terlebih dahulu` |
 | 404 | `Data tidak ditemukan` |
+| 409 | `Tanggal acara pesanan ini sudah dipakai pesanan FV-xxxx...` (pesanan `batal` diaktifkan lagi, padahal tanggalnya sudah dipesan pesanan aktif lain) / `Jumlah pembayaran ini melebihi sisa tagihan (RpX)...` (memverifikasi pembayaran yang membuat total melebihi harga) |
 
 ---
 
@@ -620,7 +622,7 @@ Pada `ubah`, jika `gambar` tidak dikirim, gambar lama dipertahankan.
 
 | Kode | Pesan |
 |---|---|
-| 400 | `Aksi tidak valid` / `Field wajib belum lengkap` / `Harga harus bilangan bulat antara Rp1 dan Rp1.000.000.000` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
+| 400 | `Aksi tidak valid` / `Field wajib belum lengkap` / `Harga harus bilangan bulat antara Rp1 dan Rp1.000.000.000` / `Nama paket maksimal 100 karakter` / `Tipe gambar tidak diizinkan, gunakan JPG atau PNG` / `Ukuran gambar maksimal 2 MB` |
 | 401 | `Silakan login terlebih dahulu` |
 | 404 | `Paket tidak ditemukan` |
 | 409 | `Paket tidak dapat dihapus karena sudah dipakai pesanan` |
@@ -683,7 +685,7 @@ di 5.4.
 | 400 | `Field wajib belum lengkap` / `Metode atau jenis pembayaran tidak valid` / `Jumlah pembayaran tidak valid` / `Jumlah melebihi sisa tagihan (RpX)` / `Tipe file tidak diizinkan` / `Ukuran file maksimal 2 MB` |
 | 401 | `Silakan login terlebih dahulu` |
 | 404 | `Pesanan tidak ditemukan` |
-| 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dicatat` / `Pesanan ini sudah lunas` |
+| 409 | `Pesanan sudah dibatalkan, pembayaran tidak bisa dicatat` / `Pesanan ini sudah lunas` / `Masih ada bukti pembayaran berstatus Menunggu...` (verifikasi atau tolak bukti pelanggan dulu) |
 
 ### 5.7 GET `api/admin/bukti.php`
 
@@ -865,3 +867,5 @@ Bagian ini berisi usulan yang perlu disepakati sebelum mulai koding. Setelah dip
 | 2026-11-25 | `api/pesanan/buat.php` (4.4): respons ditambah `email` dan `catatan` (`null` kalau kosong), dipakai untuk menyusun pesan WhatsApp di halaman Konfirmasi |
 | 2026-11-25 | Keamanan: login dibatasi 5 kali salah per 15 menit per IP (5.1, kode 429); pemesanan dibatasi 3 per jam per IP (4.4, kode 429); `upload.php` (4.5) mewajibkan `no_wa` yang cocok; sesi admin berakhir setelah 2 jam tidak aktif (401 `Sesi berakhir karena tidak aktif...`) |
 | 2026-11-25 | Validasi: `catatan` maks. 1.000 karakter dan `tanggal_acara` maks. 2 tahun ke depan (4.4); harga paket bilangan bulat Rp1-Rp1.000.000.000 (5.5); field yang dikirim sebagai array/objek ditolak 400 `Field wajib belum lengkap` di semua endpoint (dulu 500) |
+| 2026-11-27 | `ubah-status.php` (5.4): pesanan `batal` tidak bisa diaktifkan lagi kalau tanggalnya sudah dipesan pesanan aktif lain; verifikasi pembayaran ditolak kalau melebihi sisa tagihan (409). `catat-pembayaran.php` (5.6): ditolak 409 kalau masih ada pembayaran `menunggu`. `pesanan/buat.php` (4.4): `email` maks. 100 karakter | |
+| 2026-11-27 | `pesanan/buat.php` (4.4): cek bentrok tanggal dan penyimpanan dikunci per tanggal, jadi pemesanan bersamaan untuk tanggal yang sama tidak bisa lolos dua-duanya (503 kalau menunggu lebih dari 5 detik). `paket.php` (5.5): nama paket maks. 100 karakter. File yang melebihi batas unggah PHP (`upload_max_filesize` / `post_max_size`) dibalas 400 dengan pesan ukuran, bukan 500 (4.5, 5.5, 5.6). `kategori.php` (5.8): field berupa array/objek ditolak 400 | |

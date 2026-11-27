@@ -25,12 +25,21 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  // Belum mengirim bukti bayar (halaman dibuka langsung setelah memesan)
+  // -> kembali ke Pembayaran dulu.
+  if (!pesanan.status_pembayaran) {
+    window.location.href = 'pembayaran.html';
+    return;
+  }
+
   gambarKonfirmasi(pesanan);
 
-  // Pesanan ini sudah sampai ke halaman terakhir -> sessionStorage boleh
-  // dibersihkan, supaya kalau pelanggan menekan "pesan lagi" nanti, tidak
-  // ada sisa data pesanan sebelumnya yang nyangkut.
-  sessionStorage.removeItem('pesananAktif');
+  /* sessionStorage SENGAJA TIDAK dihapus di sini (perbaikan 2026-11-27).
+     Dulu dihapus saat halaman dibuka, jadi kalau pelanggan me-refresh atau
+     kembali dari WhatsApp lalu browser memuat ulang halaman, mereka
+     dilempar ke Katalog dan tombol WhatsApp berisi detail pesanan hilang.
+     Data lama tidak nyangkut: pesanan baru menimpanya (pemesanan.js), dan
+     sessionStorage hilang sendiri saat tab ditutup. */
 });
 
 function ambilPesananAktif() {

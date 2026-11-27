@@ -98,15 +98,21 @@ function panggilApi(path, opsi) {
         // Pesan error dari server (lihat kolom "message") -- inilah yang
         // sebaiknya ditampilkan ke pengguna lewat tampilToast(), BUKAN
         // pesan teknis dari JavaScript.
-        throw new Error(hasil.message || 'Terjadi kesalahan, silakan coba lagi');
+        var errorApi = new Error(hasil.message || 'Terjadi kesalahan, silakan coba lagi');
+        errorApi.dariApi = true; // penanda: pesan ini aman ditampilkan apa adanya
+        throw errorApi;
       }
       return hasil.data;
     })
     .catch(function (error) {
       /* Kalau error BUKAN dari throw di atas (API.md), kemungkinan koneksi
          putus atau server tidak merespons sama sekali -- respons.json()
-         gagal karena bukan JSON (misalnya halaman error PHP biasa). */
-      if (error instanceof Error && error.message) {
+         gagal karena bukan JSON (misalnya halaman error PHP biasa).
+         Perbaikan 2026-11-27: dulu dicek "error instanceof Error", padahal
+         error koneksi (TypeError "Failed to fetch") dan JSON rusak
+         (SyntaxError "Unexpected token <") juga Error, jadi pesan teknisnya
+         yang tampil ke pengguna. Sekarang hanya error dari API yang diteruskan. */
+      if (error && error.dariApi) {
         throw error;
       }
       throw new Error('Tidak bisa terhubung ke server. Periksa koneksi atau coba lagi.');

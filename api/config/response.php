@@ -85,3 +85,50 @@ function ambil_teks($sumber, $kunci) {
     }
     return trim((string) $nilai);
 }
+
+/**
+ * Memeriksa hasil unggahan satu file dari $_FILES (ditambahkan 2026-11-27).
+ * Dipakai upload.php, catat-pembayaran.php, dan paket.php.
+ *
+ * Dulu semua kegagalan unggah dibalas 500 "Gagal menyimpan file". Padahal
+ * penyebab paling sering adalah file melebihi batas upload_max_filesize di
+ * php.ini (di hosting sering hanya 2 MB), dan itu kesalahan pengguna (400),
+ * bukan kerusakan server.
+ *
+ *   cek_file_unggahan($_FILES['bukti'], 'Ukuran file maksimal 2 MB');
+ */
+function cek_file_unggahan($file, $pesanUkuran) {
+    // bukti[]=... membuat setiap kolom berisi daftar, bukan satu file
+    if (!is_array($file) || !is_int($file['error'] ?? null)) {
+        kirim_error('Field wajib belum lengkap', 400);
+    }
+    if ($file['error'] === UPLOAD_ERR_INI_SIZE || $file['error'] === UPLOAD_ERR_FORM_SIZE) {
+        kirim_error($pesanUkuran, 400);
+    }
+    if ($file['error'] === UPLOAD_ERR_PARTIAL) {
+        kirim_error('File tidak terkirim utuh, silakan coba unggah lagi', 400);
+    }
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        error_log('Unggah file gagal, kode error PHP: ' . $file['error']);
+        kirim_error('Gagal menyimpan file', 500);
+    }
+}
+
+/**
+ * Kalau seluruh kiriman melebihi post_max_size di php.ini, PHP membuang
+ * SEMUA isinya: $_POST dan $_FILES kosong, sehingga endpoint keliru
+ * membalas "Field wajib belum lengkap". Fungsi ini membalas pesan ukuran
+ * yang benar. Panggil sebelum membaca $_POST (ditambahkan 2026-11-27).
+ */
+function cek_kiriman_terlalu_besar($pesanUkuran) {
+    $panjang = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
+    if ($panjang > 0 && empty($_POST) && empty($_FILES)) {
+        $batas = trim((string) ini_get('post_max_size'));
+        $angka = (int) $batas;
+        $satuan = strtoupper(substr($batas, -1));
+        $kali = ['K' => 1024, 'M' => 1024 * 1024, 'G' => 1024 * 1024 * 1024][$satuan] ?? 1;
+        if ($angka > 0 && $panjang > $angka * $kali) {
+            kirim_error($pesanUkuran, 400);
+        }
+    }
+}

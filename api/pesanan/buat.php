@@ -63,6 +63,11 @@ if (!preg_match('/^(08|62)[0-9]{7,13}$/', $noWa)) {
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
   kirim_error('Field wajib belum lengkap', 400); // format email salah dianggap input tidak lengkap/valid
 }
+/* Kolom email varchar(100) (ditambahkan 2026-11-27): dulu email yang lebih
+   panjang lolos validasi lalu ditolak MySQL, pelanggan hanya melihat 500. */
+if (mb_strlen($email) > 100) {
+  kirim_error('Email maksimal 100 karakter', 400);
+}
 
 /* ========================= 4. TANGGAL ACARA ========================= */
 $bagianTanggal = explode('-', $tanggalAcara);
@@ -103,7 +108,22 @@ try {
 
   /* ========================= 7. BENTROK TANGGAL =========================
      "tanggal dianggap sudah dipesan jika ada pesanan lain dengan
-     tanggal_acara yang sama DAN status bukan 'batal'" (API.md 4.4). */
+     tanggal_acara yang sama DAN status bukan 'batal'" (API.md 4.4).
+
+     KUNCI PER TANGGAL (perbaikan 2026-11-27): tanpa kunci, dua pemesanan
+     untuk tanggal yang sama yang dikirim PERSIS bersamaan bisa sama-sama
+     lolos cek di bawah sebelum salah satunya tersimpan. GET_LOCK membuat
+     pemesanan kedua menunggu (maks. 5 detik) sampai yang pertama selesai,
+     lalu cek bentroknya melihat pesanan pertama. Kunci dilepas
+     RELEASE_LOCK di bawah, atau otomatis oleh MySQL saat skrip selesai
+     (termasuk saat kirim_error() menghentikan skrip lebih awal). */
+  $namaKunci = 'fv_pesanan_' . $tanggalAcara;
+  $stmtKunci = $pdo->prepare('SELECT GET_LOCK(:nama, 5)');
+  $stmtKunci->execute(['nama' => $namaKunci]);
+  if ((int) $stmtKunci->fetchColumn() !== 1) {
+    kirim_error('Server sedang sibuk, silakan coba lagi sebentar', 503);
+  }
+
   $stmtBentrok = $pdo->prepare(
     "SELECT id FROM pesanan WHERE tanggal_acara = :tanggal AND status != 'batal'"
   );
@@ -153,6 +173,7 @@ try {
   $stmtUpdateKode->execute(['kode' => $kodePesanan, 'id' => $idBaru]);
 
   $pdo->commit();
+  $pdo->prepare('DO RELEASE_LOCK(:nama)')->execute(['nama' => $namaKunci]);
   catat_akses($pdo, 'pesanan');
 
   kirim_sukses([

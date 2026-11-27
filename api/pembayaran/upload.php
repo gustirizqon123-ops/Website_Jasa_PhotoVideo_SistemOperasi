@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
 }
 
+cek_kiriman_terlalu_besar('Ukuran file maksimal 2 MB');
+
 /* FormData -> field teks biasa ada di $_POST, file ada di $_FILES.
    (Beda dengan buat.php yang bodinya JSON dan dibaca dari php://input.) */
 $kodePesanan = ambil_teks($_POST, 'kode_pesanan');
@@ -114,10 +116,7 @@ try {
      Tipe file dicek dari ISI file (finfo), BUKAN hanya dari ekstensi nama
      file -- supaya file ".jpg" palsu yang isinya bukan gambar tetap ditolak. */
   $file = $_FILES['bukti'];
-
-  if ($file['error'] !== UPLOAD_ERR_OK) {
-    kirim_error('Gagal menyimpan file', 500);
-  }
+  cek_file_unggahan($file, 'Ukuran file maksimal 2 MB'); // response.php
 
   $UKURAN_MAKS = 2 * 1024 * 1024; // 2 MB, HARUS SAMA dengan KONFIG.UKURAN_FILE_MAKS di frontend/js/config.js
   if ($file['size'] > $UKURAN_MAKS) {
@@ -154,6 +153,7 @@ try {
   if (!move_uploaded_file($file['tmp_name'], $pathTujuan)) {
     kirim_error('Gagal menyimpan file', 500);
   }
+  $fileTersimpan = $pathTujuan; // dihapus lagi di catch kalau INSERT gagal
 
   /* ========================= 7. SIMPAN KE DATABASE ========================= */
   $stmtInsert = $pdo->prepare(
@@ -176,6 +176,11 @@ try {
     'status' => 'menunggu',
   ], 'Bukti pembayaran berhasil dikirim', 201);
 } catch (PDOException $e) {
+  // File sudah tersimpan tapi data gagal masuk -> hapus supaya tidak jadi
+  // file yatim tanpa baris pembayaran (perbaikan 2026-11-27)
+  if (isset($fileTersimpan) && is_file($fileTersimpan)) {
+    @unlink($fileTersimpan);
+  }
   error_log('pembayaran/upload.php: ' . $e->getMessage());
   kirim_error('Gagal menyimpan pembayaran', 500);
 }

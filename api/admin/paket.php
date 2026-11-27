@@ -37,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
 }
 
+cek_kiriman_terlalu_besar('Ukuran gambar maksimal 2 MB');
+
 $aksi = ambil_teks($_POST, 'aksi');
 $aksiSah = ['tambah', 'ubah', 'hapus'];
 
@@ -58,9 +60,7 @@ $UKURAN_GAMBAR_MAKS = 2 * 1024 * 1024; // 2 MB, samakan dengan KONFIG di fronten
    Mengirim error langsung (kirim_error menghentikan skrip) kalau tidak sah.
    ========================================================================== */
 function simpanGambarBaru(array $file, string $folderTujuan, array $tipeDiizinkan, int $ukuranMaks): string {
-  if ($file['error'] !== UPLOAD_ERR_OK) {
-    kirim_error('Gagal menyimpan gambar', 500);
-  }
+  cek_file_unggahan($file, 'Ukuran gambar maksimal 2 MB'); // response.php
   if ($file['size'] > $ukuranMaks) {
     kirim_error('Ukuran gambar maksimal 2 MB', 400);
   }
@@ -90,9 +90,22 @@ function simpanGambarBaru(array $file, string $folderTujuan, array $tipeDiizinka
    tersimpan salah (XAMPP) atau error 500 (hosting dengan MySQL mode ketat). */
 const HARGA_PAKET_MAKS = 1000000000; // [UBAH] Rp1.000.000.000, samakan dengan max di paket-form.html
 
-function cek_harga_paket($harga): void {
-  if (!ctype_digit((string) $harga) || (int) $harga > HARGA_PAKET_MAKS) {
+/* $harga bertipe string, BUKAN int: nilainya langsung dari $_POST (selalu
+   string), dan ctype_digit() di bawah justru memeriksa teks aslinya
+   ("1.5" dan "1e3" harus ditolak 400). Tipe int akan mengubah/menolak nilai
+   itu sebelum sempat divalidasi. Array sudah ditolak pemanggil (is_numeric). */
+function cek_harga_paket(string $harga): void {
+  if (!ctype_digit($harga) || (int) $harga > HARGA_PAKET_MAKS) {
     kirim_error('Harga harus bilangan bulat antara Rp1 dan Rp1.000.000.000', 400);
+  }
+}
+
+/* Kolom paket.nama varchar(100) (ditambahkan 2026-11-27): nama yang lebih
+   panjang dipotong diam-diam di XAMPP, atau error 500 di hosting dengan
+   MySQL mode ketat. Samakan dengan maxlength di paket-form.html. */
+function cek_nama_paket(string $nama): void {
+  if (mb_strlen($nama) > 100) {
+    kirim_error('Nama paket maksimal 100 karakter', 400);
   }
 }
 
@@ -104,6 +117,8 @@ function hapusGambarLama(?string $namaFile, string $folder): void {
     @unlink($path);
   }
 }
+
+$gambarBaruDisimpan = null; // nama file gambar yang baru disimpan di request ini
 
 try {
   /* ======================================================================
@@ -122,6 +137,7 @@ try {
       kirim_error('Field wajib belum lengkap', 400);
     }
     cek_harga_paket($harga);
+    cek_nama_paket($nama);
     if (!isset($_FILES['gambar']) || $_FILES['gambar']['error'] === UPLOAD_ERR_NO_FILE) {
       kirim_error('Gambar paket wajib diunggah', 400);
     }
@@ -133,6 +149,7 @@ try {
     }
 
     $namaFileGambar = simpanGambarBaru($_FILES['gambar'], $FOLDER_GAMBAR, $TIPE_GAMBAR_DIIZINKAN, $UKURAN_GAMBAR_MAKS);
+    $gambarBaruDisimpan = $namaFileGambar; // dihapus lagi di catch kalau INSERT gagal
 
     $stmtInsert = $pdo->prepare(
       'INSERT INTO paket (kategori_id, nama, deskripsi, harga, gambar)
@@ -176,6 +193,7 @@ try {
       kirim_error('Field wajib belum lengkap', 400);
     }
     cek_harga_paket($harga);
+    cek_nama_paket($nama);
 
     $stmtPaket = $pdo->prepare('SELECT id, gambar FROM paket WHERE id = :id');
     $stmtPaket->execute(['id' => (int) $id]);
@@ -197,6 +215,7 @@ try {
 
     if ($adaGambarBaru) {
       $namaFileGambar = simpanGambarBaru($_FILES['gambar'], $FOLDER_GAMBAR, $TIPE_GAMBAR_DIIZINKAN, $UKURAN_GAMBAR_MAKS);
+      $gambarBaruDisimpan = $namaFileGambar; // dihapus lagi di catch kalau UPDATE gagal
     }
 
     $stmtUpdate = $pdo->prepare(
@@ -266,6 +285,9 @@ try {
     kirim_sukses(null, 'Paket berhasil dihapus', 200);
   }
 } catch (PDOException $e) {
+  // Gambar baru sudah tersimpan tapi data gagal masuk -> hapus supaya tidak
+  // jadi file yatim (perbaikan 2026-11-27). Gambar lama tidak disentuh.
+  hapusGambarLama($gambarBaruDisimpan, $FOLDER_GAMBAR);
   error_log('admin/paket.php: ' . $e->getMessage());
   kirim_error('Gagal memproses data paket', 500);
 }

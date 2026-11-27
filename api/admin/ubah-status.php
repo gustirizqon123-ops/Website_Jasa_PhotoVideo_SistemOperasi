@@ -56,20 +56,56 @@ try {
   // dari input mentah -- supaya aman dari SQL injection lewat nama tabel.
   $tabel = $target;
 
-  // Kolom pesanan_id hanya ada di tabel pembayaran -- dipakai untuk
-  // konfirmasi otomatis di bawah.
-  $kolom = ($tabel === 'pembayaran') ? 'id, pesanan_id' : 'id';
-  $cek = $pdo->prepare("SELECT {$kolom} FROM {$tabel} WHERE id = :id");
+  // Satu transaksi: status pembayaran dan (kalau perlu) status pesanan
+  // berubah bersama, atau tidak sama sekali. FOR UPDATE mengunci baris
+  // selama transaksi, supaya dua klik/dua admin bersamaan tidak sama-sama
+  // lolos pengecekan di bawah.
+  $pdo->beginTransaction();
+
+  // Kolom tambahan dipakai pengecekan di bawah (bentrok tanggal untuk
+  // pesanan; jumlah dan pesanan_id untuk pembayaran).
+  $kolom = ($tabel === 'pembayaran') ? 'id, pesanan_id, jumlah, status' : 'id, tanggal_acara, status';
+  $cek = $pdo->prepare("SELECT {$kolom} FROM {$tabel} WHERE id = :id FOR UPDATE");
   $cek->execute(['id' => (int) $id]);
   $baris = $cek->fetch();
 
   if (!$baris) {
+    $pdo->rollBack();
     kirim_error('Data tidak ditemukan', 404);
   }
 
-  // Satu transaksi: status pembayaran dan (kalau perlu) status pesanan
-  // berubah bersama, atau tidak sama sekali.
-  $pdo->beginTransaction();
+  /* BENTROK TANGGAL (perbaikan 2026-11-27): pesanan "batal" tidak mengunci
+     tanggalnya, jadi tanggal itu bisa dipesan orang lain. Kalau pesanan
+     batal diaktifkan lagi, pastikan tanggalnya belum dipakai pesanan aktif
+     lain -- aturan yang sama dengan pesanan/buat.php. */
+  if ($target === 'pesanan' && $baris['status'] === 'batal' && $status !== 'batal') {
+    $stmtBentrok = $pdo->prepare(
+      "SELECT kode_pesanan FROM pesanan
+        WHERE tanggal_acara = :tanggal AND status != 'batal' AND id != :id
+        LIMIT 1"
+    );
+    $stmtBentrok->execute(['tanggal' => $baris['tanggal_acara'], 'id' => (int) $id]);
+    $bentrok = $stmtBentrok->fetch();
+    if ($bentrok) {
+      $pdo->rollBack();
+      kirim_error('Tanggal acara pesanan ini sudah dipakai pesanan ' . $bentrok['kode_pesanan'] . '. Pesanan tidak bisa diaktifkan lagi', 409);
+    }
+  }
+
+  /* TIDAK BOLEH MELEBIHI TOTAL (perbaikan 2026-11-27): sisa tagihan hanya
+     menghitung pembayaran terverifikasi, jadi bukti "menunggu" yang
+     diverifikasi belakangan (misalnya setelah admin mencatat pelunasan)
+     bisa membuat total pembayaran melebihi harga. Pembayaran yang sudah
+     terverifikasi tidak dicek ulang (sudah termasuk dalam hitungan). */
+  if ($target === 'pembayaran' && $status === 'terverifikasi' && $baris['status'] !== 'terverifikasi') {
+    $stmtPesanan = $pdo->prepare('SELECT total_harga FROM pesanan WHERE id = :id FOR UPDATE');
+    $stmtPesanan->execute(['id' => (int) $baris['pesanan_id']]);
+    $sisa = sisa_tagihan($pdo, (int) $baris['pesanan_id'], (int) $stmtPesanan->fetchColumn());
+    if ((int) $baris['jumlah'] > $sisa) {
+      $pdo->rollBack();
+      kirim_error('Jumlah pembayaran ini melebihi sisa tagihan (Rp' . number_format($sisa, 0, ',', '.') . '). Tolak pembayaran ini, atau periksa pembayaran yang sudah tercatat', 409);
+    }
+  }
 
   $update = $pdo->prepare("UPDATE {$tabel} SET status = :status WHERE id = :id");
   $update->execute([

@@ -32,15 +32,18 @@ if (!is_array($body)) {
   kirim_error('Body harus berupa JSON', 400);
 }
 
-$aksi = trim((string) ($body['aksi'] ?? ''));
+// ambil_teks() (response.php) menolak field berupa daftar/objek dengan 400.
+// Dulu dipakai trim((string) ...), jadi nama_kategori ["x"] tersimpan
+// sebagai teks "Array" (perbaikan 2026-11-27).
+$aksi = ambil_teks($body, 'aksi');
 if (!in_array($aksi, ['tambah', 'ubah', 'hapus'], true)) {
   kirim_error('Aksi tidak valid', 400);
 }
 
 $id = $body['id'] ?? null;
-$nama = trim((string) ($body['nama_kategori'] ?? ''));
+$nama = ambil_teks($body, 'nama_kategori');
 
-if ($aksi !== 'tambah' && ($id === null || !ctype_digit((string) $id))) {
+if ($aksi !== 'tambah' && ($id === null || !is_scalar($id) || !ctype_digit((string) $id))) {
   kirim_error('Field wajib belum lengkap', 400);
 }
 if ($aksi !== 'hapus') {

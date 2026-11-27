@@ -111,7 +111,7 @@ sequenceDiagram
     B->>S: Tambahkan status_pembayaran
     B->>C: Pindah ke konfirmasi.html
 
-    C->>S: Baca "pesananAktif", lalu HAPUS
+    C->>S: Baca "pesananAktif" (tidak dihapus, supaya aman di-refresh)
     C-->>P: Tampilkan kode FV-xxxx + ringkasan
     P->>P: Klik "Hubungi Admin via WhatsApp"
     Note over P: Pesan WA otomatis berisi nama,<br/>kode pesanan, paket, dan tanggal acara

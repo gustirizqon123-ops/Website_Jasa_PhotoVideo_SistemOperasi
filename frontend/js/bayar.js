@@ -31,6 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  // Bukti bayar pesanan ini sudah terkirim (konfirmasi.js tidak lagi
+  // menghapus sessionStorage, 2026-11-27) -> langsung ke Konfirmasi, jangan
+  // tampilkan form unggah lagi.
+  if (PESANAN_AKTIF.status_pembayaran) {
+    window.location.href = 'konfirmasi.html';
+    return;
+  }
+
   gambarRingkasanPesanan(PESANAN_AKTIF);
   siapkanPilihanJenisBayar();
   siapkanKotakUnggah();

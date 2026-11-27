@@ -223,14 +223,13 @@ function simpanStatusPesanan() {
   })
     .then(function () {
       tampilToast('Status pesanan diperbarui', 'sukses');
-      var badge = document.getElementById('badgeStatusPesanan');
-      badge.className = 'badge badge-' + statusBaru;
-      badge.textContent = labelStatus(statusBaru);
+      // Muat ulang seluruh detail (perbaikan 2026-11-27): dulu hanya badge
+      // yang diganti, jadi form Catat Pembayaran tetap tampil setelah
+      // pesanan dibatalkan (dan tetap tersembunyi setelah diaktifkan lagi).
+      muatDetailPesanan();
     })
     .catch(function (error) {
       tampilToast(error.message, 'error');
-    })
-    .finally(function () {
       setMemuat(tombol, false);
     });
 }

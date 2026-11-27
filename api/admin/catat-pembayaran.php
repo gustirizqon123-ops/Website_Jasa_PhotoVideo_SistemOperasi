@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   kirim_error('Method tidak diizinkan', 405);
 }
 
+cek_kiriman_terlalu_besar('Ukuran file maksimal 2 MB');
+
 $pesananId = $_POST['pesanan_id'] ?? '';
 $metode = ambil_teks($_POST, 'metode');
 $jenis = ambil_teks($_POST, 'jenis');
@@ -63,9 +65,7 @@ $ekstensiBukti = null;
 
 if ($adaBukti) {
   $file = $_FILES['bukti'];
-  if ($file['error'] !== UPLOAD_ERR_OK) {
-    kirim_error('Gagal menyimpan file', 500);
-  }
+  cek_file_unggahan($file, 'Ukuran file maksimal 2 MB'); // response.php
   if ($file['size'] > 2 * 1024 * 1024) {
     kirim_error('Ukuran file maksimal 2 MB', 400);
   }
@@ -109,6 +109,16 @@ try {
   if ($jumlah > $sisa) {
     $pdo->rollBack();
     kirim_error('Jumlah melebihi sisa tagihan (Rp' . number_format($sisa, 0, ',', '.') . ')', 400);
+  }
+
+  /* Bukti dari pelanggan yang belum diperiksa harus diputuskan dulu
+     (perbaikan 2026-11-27). Kalau tidak, pembayaran yang sama bisa tercatat
+     dua kali: sekali di sini, sekali lagi saat bukti itu diverifikasi. */
+  $stmtMenunggu = $pdo->prepare("SELECT id FROM pembayaran WHERE pesanan_id = :id AND status = 'menunggu' LIMIT 1");
+  $stmtMenunggu->execute(['id' => $pesananId]);
+  if ($stmtMenunggu->fetch()) {
+    $pdo->rollBack();
+    kirim_error('Masih ada bukti pembayaran berstatus Menunggu. Verifikasi atau tolak bukti itu dulu', 409);
   }
 
   /* ========================= 5. SIMPAN FILE ========================= */
