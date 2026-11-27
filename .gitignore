@@ -1,5 +1,4 @@
 uploads/bukti-bayar/*
-!uploads/bukti-bayar/.gitkeep
 !uploads/bukti-bayar/.htaccess
 .vscode/
 *.log
